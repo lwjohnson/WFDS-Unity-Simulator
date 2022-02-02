@@ -53,9 +53,15 @@
         "Temp/": true
     },
     "cSpell.words": [
+        "ncols",
         "OBST",
         "OBSTXB",
         "TIMET",
-        "WFDS"
+        "WFDS",
+        "xmax",
+        "xmin",
+        "ymax",
+        "zmax",
+        "zmin"
     ]
 }

@@ -16,11 +16,9 @@ public class TerrainManager : MonoBehaviour
     private int tStart = 0; // Time Start
     private int tEnd = 0; // Time End
     private float tStep = 0; // Time Step
-    private int xmax = 0;
-    private int ymax = 0;
-    private int zmax = 0;
-
-    // TODO: Add wall boundaries to scene.
+    public int xmax = 0;
+    public int ymax = 0;
+    public int zmax = 0;
 
     /// <summary>
     /// Generates the terrain and adds it to the scene.
@@ -74,9 +72,7 @@ public class TerrainManager : MonoBehaviour
     {
         GameObject XR_Origin = GameObject.Find("XR Origin");
 
-        Debug.Log("xmax: " + xmax + " ymax: " + ymax + " zmax: " + zmax);
-
-        Vector3 position = new Vector3(xmax / 2, zmax, ymax / 2); // x, z, y because WFDS is weird.
+        Vector3 position = new Vector3(xmax / 2, ymax, zmax / 2);
         XR_Origin.transform.position = position;
     }
 
@@ -115,14 +111,14 @@ public class TerrainManager : MonoBehaviour
                 int numz = int.Parse(mesh[2]);
                 int xmin = int.Parse(mesh[3]);
                 xmax = int.Parse(mesh[4]);
-                int ymin = int.Parse(mesh[5]);
-                ymax = int.Parse(mesh[6]);
-                int zmin = int.Parse(mesh[7]);
-                zmax = int.Parse(mesh[8]);
+                int ymin = int.Parse(mesh[7]);
+                ymax = int.Parse(mesh[8]);
+                int zmin = int.Parse(mesh[5]);
+                zmax = int.Parse(mesh[6]);
 
                 cellsize = (xmax - xmin) / numx;
                 ncols = xmax / cellsize;
-                nrows = ymax / cellsize;
+                nrows = zmax / cellsize;
             }
         }
     }
