@@ -16,7 +16,15 @@ public class TerrainManager : MonoBehaviour
     private int tStart = 0; // Time Start
     private int tEnd = 0; // Time End
     private float tStep = 0; // Time Step
+    private int xmax = 0;
+    private int ymax = 0;
+    private int zmax = 0;
 
+    // TODO: Add wall boundaries to scene.
+
+    /// <summary>
+    /// Generates the terrain and adds it to the scene.
+    /// </summary>
     public void generateTerrain()
     {
         Mesh mesh = new Mesh();
@@ -41,6 +49,7 @@ public class TerrainManager : MonoBehaviour
         triangles = getTriangles();
 
         generateTerrain();
+        setCameraPosition();
     }
 
     void Update()
@@ -63,10 +72,17 @@ public class TerrainManager : MonoBehaviour
     /// </summary>
     private void setCameraPosition()
     {
-        Vector3 cameraPosition = Camera.main.transform.position;
-        Debug.Log("Camera position: " + cameraPosition);
+        GameObject XR_Origin = GameObject.Find("XR Origin");
+
+        Debug.Log("xmax: " + xmax + " ymax: " + ymax + " zmax: " + zmax);
+
+        Vector3 position = new Vector3(xmax / 2, zmax, ymax / 2); // x, z, y because WFDS is weird.
+        XR_Origin.transform.position = position;
     }
 
+    /// <summary>
+    /// Sets the useful values for the simulation.
+    /// </summary>
     private void setUsefulValues()
     {
         foreach (string line in lines)
@@ -95,9 +111,14 @@ public class TerrainManager : MonoBehaviour
                 string[] mesh = clean.Replace("&MESHIJK=", string.Empty).Replace("XB=", string.Empty).Replace("/", string.Empty).Split(',');
 
                 int numx = int.Parse(mesh[0]);
+                int numy = int.Parse(mesh[1]);
+                int numz = int.Parse(mesh[2]);
                 int xmin = int.Parse(mesh[3]);
-                int xmax = int.Parse(mesh[4]);
-                int ymax = int.Parse(mesh[6]);
+                xmax = int.Parse(mesh[4]);
+                int ymin = int.Parse(mesh[5]);
+                ymax = int.Parse(mesh[6]);
+                int zmin = int.Parse(mesh[7]);
+                zmax = int.Parse(mesh[8]);
 
                 cellsize = (xmax - xmin) / numx;
                 ncols = xmax / cellsize;
@@ -118,7 +139,7 @@ public class TerrainManager : MonoBehaviour
         {
             string[] split = RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
 
-            vertices.Add(new Vector3(int.Parse(split[1]), int.Parse(split[5]), int.Parse(split[3])));
+            vertices.Add(new Vector3(int.Parse(split[1]), int.Parse(split[5]), int.Parse(split[3]))); // x, z, y because WFDS is weird.
         });
 
         return vertices;

@@ -126,3 +126,4 @@ crashlytics-build.properties
 *.prefab linguist-generated
 *.unity linguist-generated
 .vscode/settings.json
+Assets/TerrainManager.cs
