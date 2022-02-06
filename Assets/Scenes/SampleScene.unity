@@ -603,6 +603,7 @@ GameObject:
   - component: {fileID: 599916902}
   - component: {fileID: 599916906}
   - component: {fileID: 599916907}
+  - component: {fileID: 599916908}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -784,6 +785,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPath: C:\Users\xxtha\Documents\Unity\WFDS-Unity-Simulator\Assets\StramingAssets\input_BT10m_2x2km_LS1.fds
+  xmax: 0
+  ymax: 0
+  zmax: 0
+--- !u!114 &599916908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599916901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5717b091ea8e2a0419b13d88b34a0400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &657341556
 GameObject:
   m_ObjectHideFlags: 0
