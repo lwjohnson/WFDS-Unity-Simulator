@@ -1,24 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using UnityEngine;
 
 public class TerrainManager : MonoBehaviour
 {
-    [SerializeField] private string mapPath = ""; // Set to the full path of the .fds file you want to load.
-    private string[] lines = null; // The lines of the .fds file.
-    private List<Vector3> vertices = null; // The vertices of the terrain.
-    private List<int> triangles = null; // The triangles of the terrain.
-    private int cellsize = 0; // The size of each cell.
-    private int ncols = 0; // The number of columns in the terrain.
-    private int nrows = 0; // The number of rows in the terrain.
-    private string chid = string.Empty; // The CHID of the terrain.
-    private int tStart = 0; // Time Start
-    private int tEnd = 0; // Time End
-    private float tStep = 0; // Time Step
-    public int xmax = 0;
-    public int ymax = 0;
-    public int zmax = 0;
+    public string mapName = ""; // Set to the name of the .fds file you want to load.
+    public static string inputFilePath = ""; // Path of the .fds file you want to load.
+    private static string[] lines = null; // The lines of the .fds file.
+    private static List<Vector3> vertices = null; // The vertices of the terrain.
+    private static List<int> triangles = null; // The triangles of the terrain.
+    public static int cellsize = 0; // The size of each cell.
+    public static int ncols = 0; // The number of columns in the terrain.
+    public static int nrows = 0; // The number of rows in the terrain.
+    public static string chid = string.Empty; // The CHID of the terrain.
+    public static int tStart = 0; // Time Start
+    public static int tEnd = 0; // Time End
+    public static float tStep = 0; // Time Step
+    [HideInInspector] public static int xmax = 0;
+    [HideInInspector] public static int ymax = 0;
+    [HideInInspector] public static int zmax = 0;
 
     /// <summary>
     /// Generates the terrain and adds it to the scene.
@@ -38,7 +40,9 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        lines = System.IO.File.ReadAllLines(mapPath);
+        inputFilePath = Path.Combine(Application.streamingAssetsPath, mapName);
+        Debug.Log("inputFilePath: " + inputFilePath);
+        lines = File.ReadAllLines(inputFilePath);
         Debug.Log("Loaded " + lines.Length + " lines.");
 
         setUsefulValues();
@@ -164,5 +168,24 @@ public class TerrainManager : MonoBehaviour
         }
 
         return triangles;
+    }
+
+    // PRE: A number as a float
+    // POST: That number rounded down to the cellsize
+    public static double RoundDownToCellSize(float number)
+    {
+        return (System.Math.Floor(number / cellsize) * cellsize);
+    }
+
+    // PRE: A Vector2D coordinate within the bounds of the terrain
+    // POST: Returns the corresponding Vector3 coordinate
+    public static Vector3 find_vert(Vector2 coord)
+    {
+        Vector3 return_vert = vertices.Find(vert =>
+            RoundDownToCellSize(coord.x) == vert.x &&
+            RoundDownToCellSize(coord.y) == vert.z
+        );
+
+        return return_vert;
     }
 }

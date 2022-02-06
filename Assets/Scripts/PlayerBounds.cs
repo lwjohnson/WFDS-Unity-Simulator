@@ -8,15 +8,15 @@ public class PlayerBounds : MonoBehaviour
     private GameObject XROrigin;
     private int xmax = 0;
     private int zmax = 0;
-    private int offset = 10; // The offset from the edge of the terrain.
+    private int offset = 5; // The offset from the edge of the terrain.
 
     // Start is called before the first frame update
     void Start()
     {
-        terrain = GameObject.Find("Ground");
+        terrain = GameObject.Find("Terrain Manager");
         XROrigin = GameObject.Find("XR Origin");
-        xmax = terrain.GetComponent<TerrainManager>().xmax;
-        zmax = terrain.GetComponent<TerrainManager>().zmax;
+        xmax = TerrainManager.xmax;
+        zmax = TerrainManager.zmax;
     }
 
     // Update is called once per frame
