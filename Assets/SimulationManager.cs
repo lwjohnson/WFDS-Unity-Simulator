@@ -8,12 +8,15 @@ using System.Linq;
 
 public class SimulationManager : MonoBehaviour
 {
-    public static int time_to_run = 30;
+    public int time_to_run_inspector = 60;
+    public static int time_to_run = 0;
     public static bool wfds_run_once = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        time_to_run = time_to_run_inspector;
+
         setupInputFile();
         WFDSManager.callWFDS();
     }
@@ -48,11 +51,15 @@ public class SimulationManager : MonoBehaviour
             }
             else if (line.Contains("&TIME T_END"))
             {
-                line = "&TIME T_END= " + time_to_run + " /";
+                line = $"&TIME T_END= {time_to_run} /";
             }
             else if (line.Contains("&TIME T_START"))
             {
                 line = "&TIME T_START= 0 /";
+            }
+            else if (line.Contains("&DUMP"))
+            {
+                line = $"&DUMP DT_OUTPUT_LS={time_to_run}.0 /";
             }
 
             writer.WriteLine(line);

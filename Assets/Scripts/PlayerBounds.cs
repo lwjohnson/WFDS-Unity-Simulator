@@ -7,6 +7,7 @@ public class PlayerBounds : MonoBehaviour
     private GameObject terrain;
     private GameObject XROrigin;
     private int xmax = 0;
+    private int ymax = 0;
     private int zmax = 0;
     private int offset = 5; // The offset from the edge of the terrain.
 
@@ -16,6 +17,7 @@ public class PlayerBounds : MonoBehaviour
         terrain = GameObject.Find("Ground");
         XROrigin = GameObject.Find("XR Origin");
         xmax = terrain.GetComponent<TerrainManager>().xmax;
+        ymax = terrain.GetComponent<TerrainManager>().ymax;
         zmax = terrain.GetComponent<TerrainManager>().zmax;
     }
 
@@ -45,6 +47,11 @@ public class PlayerBounds : MonoBehaviour
         if (transform.position.z <= zmin)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, zmin);
+        }
+
+        if (transform.position.y <= 0)
+        {
+            transform.position = new Vector3(transform.position.x, ymax, transform.position.z);
         }
     }
 }

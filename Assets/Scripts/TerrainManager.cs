@@ -6,7 +6,7 @@ using UnityEngine;
 public class TerrainManager : MonoBehaviour
 {
     private string[] lines = null; // The lines of the .fds file.
-    private List<Vector3> vertices = null; // The vertices of the terrain.
+    private static List<Vector3> vertices = null; // The vertices of the terrain.
     private List<int> triangles = null; // The triangles of the terrain.
     public static int cellsize = 0; // The size of each cell.
     private int ncols = 0; // The number of columns in the terrain.
@@ -18,6 +18,11 @@ public class TerrainManager : MonoBehaviour
     public int xmax = 0;
     public int ymax = 0;
     public int zmax = 0;
+
+    public static Vector3 getVector3(long x, long z)
+    {
+        return vertices.Find(v => v.x == x && v.z == z);
+    }
 
     /// <summary>
     /// Generates the terrain and adds it to the scene.
