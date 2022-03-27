@@ -9,7 +9,7 @@ using System.Linq;
 public class SimulationManager : MonoBehaviour
 {
     public static int time_to_run = 30;
-    public static bool wfds_run_once = false; // TODO: This is to prevent the wfds from running multiple times. Eventually this should be removed.
+    public static bool wfds_run_once = false;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +25,7 @@ public class SimulationManager : MonoBehaviour
         {
             wfds_run_once = true;
 
-            // TODO: Wait for WFDS to finish then update the fires
+            FireManager.readFireData();
         }
     }
 

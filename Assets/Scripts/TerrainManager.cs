@@ -8,7 +8,7 @@ public class TerrainManager : MonoBehaviour
     private string[] lines = null; // The lines of the .fds file.
     private List<Vector3> vertices = null; // The vertices of the terrain.
     private List<int> triangles = null; // The triangles of the terrain.
-    private int cellsize = 0; // The size of each cell.
+    public static int cellsize = 0; // The size of each cell.
     private int ncols = 0; // The number of columns in the terrain.
     private int nrows = 0; // The number of rows in the terrain.
     private string chid = string.Empty; // The CHID of the terrain.
