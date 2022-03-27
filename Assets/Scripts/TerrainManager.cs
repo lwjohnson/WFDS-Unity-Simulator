@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TerrainManager : MonoBehaviour
 {
-    [SerializeField] private string mapPath = ""; // Set to the full path of the .fds file you want to load.
     private string[] lines = null; // The lines of the .fds file.
     private List<Vector3> vertices = null; // The vertices of the terrain.
     private List<int> triangles = null; // The triangles of the terrain.
@@ -38,7 +37,7 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        lines = System.IO.File.ReadAllLines(mapPath);
+        lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
         Debug.Log("Loaded " + lines.Length + " lines.");
 
         setUsefulValues();
@@ -72,7 +71,7 @@ public class TerrainManager : MonoBehaviour
     {
         GameObject XR_Origin = GameObject.Find("XR Origin");
 
-        Vector3 position = new Vector3(xmax / 2, ymax, zmax / 2);
+        Vector3 position = new Vector3(xmax / 2, ymax, zmax / 2); // TODO: Change this to the height at the center of the terrain
         XR_Origin.transform.position = position;
     }
 

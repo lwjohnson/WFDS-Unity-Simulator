@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using System.Linq;
+using System;
 
 public static class WFDSManager
 {
@@ -23,37 +24,48 @@ public static class WFDSManager
         wfds_running = true;
 
         Process wfds_process = new Process();
-        wfds_process.StartInfo.FileName = streamingAssetsPath + @"\wfds.exe";
-        wfds_process.StartInfo.Arguments = persistentDataPath + @"\wfds_input.fds";
+
+        wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
+        wfds_process.StartInfo.Arguments = "input.fds";
+        wfds_process.StartInfo.WorkingDirectory = persistentDataPath;
         wfds_process.StartInfo.UseShellExecute = false;
         wfds_process.StartInfo.RedirectStandardOutput = true;
         wfds_process.StartInfo.RedirectStandardError = true;
-        // wfds_process.StartInfo.CreateNoWindow = true; // TODO: Uncomment this line to show the window
+        wfds_process.StartInfo.CreateNoWindow = true;
 
+        // Set up redirected output to be displayed in the Unity console
+        wfds_process.OutputDataReceived += (sender, e) =>
+        {
+            logMessage(e.Data);
+        };
+
+        wfds_process.ErrorDataReceived += (sender, e) =>
+        {
+            logMessage(e.Data);
+        };
+
+        // Start the process
         wfds_process.Start();
 
-        string output = wfds_process.StandardOutput.ReadToEnd();
-        string error = wfds_process.StandardError.ReadToEnd();
+        // Start the asynchronous read of the streams
+        wfds_process.BeginOutputReadLine();
+        wfds_process.BeginErrorReadLine();
 
         wfds_process.WaitForExit();
 
         wfds_running = false;
+    }
 
-        UnityEngine.Debug.Log("WFDS OUTPUT: " + output);
-        UnityEngine.Debug.Log("WFDS ERROR:  " + error);
+    public static void logMessage(string message)
+    {
+        if (!String.IsNullOrEmpty(message))
+        {
+            UnityEngine.Debug.Log("WFDS: " + message);
+        }
     }
 
     public static void stopWFDS()
     {
-        using (StreamWriter stopper = new StreamWriter(Application.persistentDataPath + @"\" + "current_test" + ".stop")) { }
-    }
-
-    public static void deleteStopFile()
-    {
-        FileInfo stop_file = new DirectoryInfo(Application.persistentDataPath).GetFiles("*.stop").FirstOrDefault();
-        if (stop_file.Exists)
-        {
-            stop_file.Delete();
-        }
+        using (StreamWriter writer = new StreamWriter(Application.persistentDataPath + @"\" + "input" + ".stop")) { }
     }
 }

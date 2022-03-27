@@ -9,6 +9,10 @@ public class Startup : MonoBehaviour
     void Start()
     {
         cleanPersistentDataPath();
+
+        // Set up variables in other files
+        WFDSManager.persistentDataPath = Application.persistentDataPath;
+        WFDSManager.streamingAssetsPath = Application.streamingAssetsPath;
     }
 
     /// <summary>
@@ -17,16 +21,14 @@ public class Startup : MonoBehaviour
     /// </summary>
     private void cleanPersistentDataPath()
     {
-        var directories = Directory.GetDirectories(Application.persistentDataPath);
-        foreach (var directory in directories)
+        DirectoryInfo persistentDataPath = new DirectoryInfo(Application.persistentDataPath);
+        foreach (FileInfo file in persistentDataPath.GetFiles())
         {
-            Directory.Delete(directory, true);
+            file.Delete();
         }
-
-        var files = Directory.GetFiles(Application.persistentDataPath);
-        foreach (var file in files)
+        foreach (DirectoryInfo dir in persistentDataPath.GetDirectories())
         {
-            File.Delete(file);
+            dir.Delete(true);
         }
     }
 }
