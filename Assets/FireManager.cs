@@ -14,7 +14,7 @@ public class FireManager : MonoBehaviour
     private GameObject firePrefab;
 
     public static float wallclock_time = 0;
-    public static int fires_to_keep = 10;
+    public static int fires_to_keep = 200;
 
     // Start is called before the first frame update
     void Start()
