@@ -14,7 +14,7 @@ public class FireManager : MonoBehaviour
     private GameObject firePrefab;
 
     public static float wallclock_time = 0;
-    public static int fires_to_keep = 100;
+    public static int fires_to_keep = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -47,12 +47,19 @@ public class FireManager : MonoBehaviour
             }
         }
 
-        // If fires.Count > fires_to_keep, then Destroy the oldest fire
+        // If fires.Count > fires_to_keep, then destroy the oldest fire
         if (fires.Count > fires_to_keep)
         {
             Destroy(fires[0]);
             fires.RemoveAt(0);
         }
+        // If fires.Count > fires_to_keep, then stop the animation for the oldest fire
+        // if (fires.Count > fires_to_keep)
+        // {
+            // fires[0].GetComponent<ParticleSystem>().main.simulationSpeed = 0;
+            // fires[0].GetComponent<ParticleSystem>().Pause();
+            // fires[0].GetComponent<ParticleSystem>().Stop();
+        // }
     }
 
     public static void readFireData()
