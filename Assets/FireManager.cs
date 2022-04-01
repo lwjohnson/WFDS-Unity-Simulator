@@ -8,13 +8,14 @@ public class FireManager : MonoBehaviour
 {
     public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
     public static List<GameObject> fires = new List<GameObject>();
+    public static List<GameObject> stopepdFires = new List<GameObject>();
 
     [SerializeField]
     [Tooltip("The prefab for the fire")]
     private GameObject firePrefab;
 
     public static float wallclock_time = 0;
-    public static int fires_to_keep = 200;
+    public static int fires_to_keep = 100;
 
     // Start is called before the first frame update
     void Start()
@@ -47,19 +48,18 @@ public class FireManager : MonoBehaviour
             }
         }
 
-        // If fires.Count > fires_to_keep, then destroy the oldest fire
+        // If fires.Count > fires_to_keep, then stop the animation of the oldest fire
         if (fires.Count > fires_to_keep)
         {
-            Destroy(fires[0]);
-            fires.RemoveAt(0);
+            GameObject oldest_fire = fires[0];
+            ParticleSystem ps = oldest_fire.GetComponent<ParticleSystem>(); // Get the oldest fire's ParticleSystem
+            var main = ps.main; // Get the main module
+
+            main.simulationSpeed = 0; // Pause the particle system
+
+            stopepdFires.Add(oldest_fire);
+            fires.Remove(oldest_fire);
         }
-        // If fires.Count > fires_to_keep, then stop the animation for the oldest fire
-        // if (fires.Count > fires_to_keep)
-        // {
-            // fires[0].GetComponent<ParticleSystem>().main.simulationSpeed = 0;
-            // fires[0].GetComponent<ParticleSystem>().Pause();
-            // fires[0].GetComponent<ParticleSystem>().Stop();
-        // }
     }
 
     public static void readFireData()
