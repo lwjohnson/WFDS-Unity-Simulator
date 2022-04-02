@@ -15,14 +15,14 @@ public static class WFDSManager
 
     public static void callWFDS()
     {
+        wfds_running = true;
+
         Thread wfds_thread = new Thread(startWFDS);
         wfds_thread.Start();
     }
 
     public static void startWFDS()
     {
-        wfds_running = true;
-
         Process wfds_process = new Process();
 
         wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";

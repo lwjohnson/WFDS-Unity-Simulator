@@ -8,28 +8,25 @@ public class FireManager : MonoBehaviour
 {
     public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
     public static List<GameObject> fires = new List<GameObject>();
-    public static List<GameObject> stopepdFires = new List<GameObject>();
+    public static List<GameObject> stopped_fires = new List<GameObject>();
 
     [SerializeField]
     [Tooltip("The prefab for the fire")]
     private GameObject firePrefab;
 
     public static float wallclock_time = 0;
-    public static int fires_to_keep = 100;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    public static int fires_to_keep = 200;
 
     // Update is called once per frame
     void Update()
     {
-        if (fire_TOA.Count > 0)
+        if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run)
         {
             wallclock_time += Time.deltaTime;
+        }
 
+        if (fire_TOA.Count > 0)
+        {
             // If fire_TOA contains a key less than wallclock_time, then Instantiate new fires
             foreach (int key in fire_TOA.Keys.ToList())
             {
@@ -57,7 +54,7 @@ public class FireManager : MonoBehaviour
 
             main.simulationSpeed = 0; // Pause the particle system
 
-            stopepdFires.Add(oldest_fire);
+            stopped_fires.Add(oldest_fire);
             fires.Remove(oldest_fire);
         }
     }
@@ -70,46 +67,42 @@ public class FireManager : MonoBehaviour
         List<long> bounds = new List<long>();
 
         // Quantity
-        reader.ReadInt32(); // Read the opening Fortran record size
-        Debug.Log($"QUANTITY: {new string(reader.ReadChars(30))}");
-        reader.ReadInt32(); // Read the closing Fortran record size
+        readFortranRecord(reader); // Read the opening Fortran record size
+        reader.ReadChars(30);
+        readFortranRecord(reader); // Read the closing Fortran record size
 
         // Short Name
-        reader.ReadInt32(); // Fortran
-        Debug.Log($"SHORT:    {new string(reader.ReadChars(30))}");
-        reader.ReadInt32(); // Fortran
+        readFortranRecord(reader); // Fortran
+        reader.ReadChars(30);
+        readFortranRecord(reader); // Fortran
 
         // Units
-        reader.ReadInt32(); // Fortran
-        Debug.Log($"UNITS:    {new string(reader.ReadChars(30))}");
-        reader.ReadInt32(); // Fortran
+        readFortranRecord(reader); // Fortran
+        reader.ReadChars(30);
+        readFortranRecord(reader); // Fortran
 
         // Bounds of the SLCF file
-        reader.ReadInt32(); // Fortran
+        readFortranRecord(reader); // Fortran
 
         for (int i = 0; i < 6; i++)
         {
-            long bound = reader.ReadInt32();
-            bounds.Add(bound); // Read the bounds and add them to the bounds array
-            Debug.Log($"BOUND {i}: {bound}");
+            bounds.Add(reader.ReadInt32()); // Read the bounds and add them to the bounds array
         }
-        reader.ReadInt32(); // Fortran
+        readFortranRecord(reader); // Fortran
 
         // Time and Data
         // Read to the end of the file
         while (reader.BaseStream.Position != reader.BaseStream.Length)
         {
             // Time
-            reader.ReadInt32(); // Fortran
+            readFortranRecord(reader); // Fortran
 
             float time = reader.ReadSingle(); // Read the time
-            Debug.Log($"TIME:     {time}");
 
-            reader.ReadInt32(); // Fortran
+            readFortranRecord(reader); // Fortran
 
-            Debug.Log("i\tj\tk\tQQ");
             // Data
-            reader.ReadInt32(); // Fortran
+            readFortranRecord(reader); // Fortran
 
             for (long y = bounds[4]; y <= bounds[5]; y++)
             {
@@ -121,9 +114,8 @@ public class FireManager : MonoBehaviour
 
                         if (arrival_time > 0) // Fire reaches this point
                         {
-                            // Find the vector from the TerrainManager with x and z
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
-                            Vector3 point = TerrainManager.getVector3(x * 10, z * 10);
+                            Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
 
                             if (fire_TOA.ContainsKey(arrival_time))
                             {
@@ -138,7 +130,7 @@ public class FireManager : MonoBehaviour
                 }
             }
 
-            reader.ReadInt32(); // Fortran
+            readFortranRecord(reader); // Fortran
         }
 
         reader.Close();

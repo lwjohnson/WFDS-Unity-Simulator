@@ -19,9 +19,60 @@ public class TerrainManager : MonoBehaviour
     public int ymax = 0;
     public int zmax = 0;
 
+    public static List<GameObject> initial_fires;
+
+    [SerializeField]
+    [Tooltip("The prefab for the fire")]
+    private GameObject firePrefab;
+
+    void Start()
+    {
+        lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
+
+        setUsefulValues();
+
+        vertices = getVertices();
+        triangles = getTriangles();
+
+        generateTerrain();
+        setCameraPosition();
+
+        initial_fires = getInitialFires();
+    }
+
+    /// <summary>
+    /// Finds the vector3 with coordinates x and z
+    /// </summary>
+    /// <param name="x">The x coordinate</param>
+    /// <param name="z">The z coordinate</param>
+    /// <returns>The vector3 with coordinates x and z</returns>
     public static Vector3 getVector3(long x, long z)
     {
-        return vertices.Find(v => v.x == x && v.z == z);
+        return vertices.Find(v => (v.x == x && v.z == z));
+    }
+
+    /// <summary>
+    /// Finds the nearest Vector3 to x, z
+    /// </summary>
+    /// <param name="x">The x coordinate</param>
+    /// <param name="z">The z coordinate</param>
+    /// <returns>The nearest Vector3 to x, z</returns>
+    public static Vector3 getNearestVector3(float x, float z)
+    {
+        Vector3 nearest = new Vector3(0, 0, 0);
+        float minDistance = float.MaxValue;
+
+        foreach (Vector3 v in vertices)
+        {
+            float distance = Vector3.Distance(new Vector3(x, 0, z), v);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearest = v;
+            }
+        }
+
+        return nearest;
     }
 
     /// <summary>
@@ -38,25 +89,6 @@ public class TerrainManager : MonoBehaviour
         mesh.Optimize();
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshCollider>().sharedMesh = mesh;
-    }
-
-    void Start()
-    {
-        lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
-        Debug.Log("Loaded " + lines.Length + " lines.");
-
-        setUsefulValues();
-
-        vertices = getVertices();
-        triangles = getTriangles();
-
-        generateTerrain();
-        setCameraPosition();
-    }
-
-    void Update()
-    {
-
     }
 
     /// <summary>
@@ -76,7 +108,7 @@ public class TerrainManager : MonoBehaviour
     {
         GameObject XR_Origin = GameObject.Find("XR Origin");
 
-        Vector3 position = new Vector3(xmax / 2, ymax, zmax / 2); // TODO: Change this to the height at the center of the terrain
+        Vector3 position = getVector3(xmax / 2, zmax / 2);
         XR_Origin.transform.position = position;
     }
 
@@ -168,5 +200,23 @@ public class TerrainManager : MonoBehaviour
         }
 
         return triangles;
+    }
+
+    private List<GameObject> getInitialFires()
+    {
+        List<GameObject> fires = new List<GameObject>();
+
+        lines.Where(l => l.Contains("&OBST") && l.Contains("FIRE")).ToList().ForEach(l =>
+        {
+            string[] split = RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Replace("SURF_ID='FIRE'/", string.Empty).Split(',');
+
+            Vector3 point = getNearestVector3(float.Parse(split[1]), float.Parse(split[3]));
+
+            GameObject fire = Instantiate(firePrefab, point, Quaternion.identity);
+            fire.transform.localScale = new Vector3(cellsize, cellsize, cellsize);
+            fires.Add(fire);
+        });
+
+        return fires;
     }
 }
