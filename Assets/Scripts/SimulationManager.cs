@@ -72,12 +72,11 @@ public class SimulationManager : MonoBehaviour
 
                 line = Regex.Replace(line, "'.*'", "'GRASS'"); // Initially set the OBST to GRASS
 
-                foreach (GameObject fire in InteractionManager.initial_fires.ToList())
+                foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
                 {
                     if (fire.transform.position.x == float.Parse(split[1]) && fire.transform.position.z == float.Parse(split[3]))
                     {
                         line = Regex.Replace(line, "'.*'", "'FIRE'"); // Only if the user has set the cell to a fire do we set it to FIRE
-                        InteractionManager.initial_fires.Remove(fire);
                     }
                 }
             }

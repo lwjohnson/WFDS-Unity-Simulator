@@ -7,17 +7,13 @@ using System.Linq;
 public class FireManager : MonoBehaviour
 {
     public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
-    public static List<GameObject> fires = new List<GameObject>();
-    public static List<GameObject> stopped_fires = new List<GameObject>();
 
     [SerializeField]
     [Tooltip("The prefab for the fire")]
     private GameObject firePrefab;
 
     public static float wallclock_time = 0;
-    public static int fires_to_keep = 200;
 
-    // Update is called once per frame
     void Update()
     {
         if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run)
@@ -36,26 +32,11 @@ public class FireManager : MonoBehaviour
                     {
                         GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
                         new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
-                        fires.Add(new_fire);
-
                     }
                     // Remove the key from fire_TOA
                     fire_TOA.Remove(key);
                 }
             }
-        }
-
-        // If fires.Count > fires_to_keep, then stop the animation of the oldest fire
-        if (fires.Count > fires_to_keep)
-        {
-            GameObject oldest_fire = fires[0];
-            ParticleSystem ps = oldest_fire.GetComponent<ParticleSystem>(); // Get the oldest fire's ParticleSystem
-            var main = ps.main; // Get the main module
-
-            main.simulationSpeed = 0; // Pause the particle system
-
-            stopped_fires.Add(oldest_fire);
-            fires.Remove(oldest_fire);
         }
     }
 

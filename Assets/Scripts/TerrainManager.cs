@@ -37,7 +37,7 @@ public class TerrainManager : MonoBehaviour
         generateTerrain();
         setCameraPosition();
 
-        initial_fires = getInitialFires();
+        instantiateInitialFires();
     }
 
     /// <summary>
@@ -202,7 +202,7 @@ public class TerrainManager : MonoBehaviour
         return triangles;
     }
 
-    private List<GameObject> getInitialFires()
+    private void instantiateInitialFires()
     {
         List<GameObject> fires = new List<GameObject>();
 
@@ -214,9 +214,6 @@ public class TerrainManager : MonoBehaviour
 
             GameObject fire = Instantiate(firePrefab, point, Quaternion.identity);
             fire.transform.localScale = new Vector3(cellsize, cellsize, cellsize);
-            fires.Add(fire);
         });
-
-        return fires;
     }
 }
