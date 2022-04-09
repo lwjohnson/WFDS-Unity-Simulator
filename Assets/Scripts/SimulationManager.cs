@@ -69,22 +69,39 @@ public class SimulationManager : MonoBehaviour
             {
                 string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
 
+                List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
+                List<GameObject> trees = GameObject.FindGameObjectsWithTag("Tree").ToList();
+                List<GameObject> trenches = GameObject.FindGameObjectsWithTag("Trench").ToList();
 
-                foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
-                {
-                    if (fire.transform.position.x == float.Parse(split[1]) && fire.transform.position.z == float.Parse(split[3]))
-                    {
-                        line = Regex.Replace(line, "'.*'", "'FIRE'");
-                    }
-                    else
-                    {
-                        line = Regex.Replace(line, "'.*'", "'GRASS'");
-                    }
-                }
+                // Initially set each line to Grass
+                line = Regex.Replace(line, "'.*'", "'GRASS'");
+
+                int x = int.Parse(split[1]);
+                int y = int.Parse(split[3]);
+
+                line = setOBSTLine(line, "FIRE", fires, x, y);
+                line = setOBSTLine(line, "TREE", trees, x, y);
+                line = setOBSTLine(line, "TRENCH", trenches, x, y);
+
             }
 
             writer.WriteLine(line);
         }
+    }
+
+    private string setOBSTLine(string line, string type, List<GameObject> objects, float x, float z)
+    {
+        foreach (GameObject obj in objects.ToList())
+        {
+            Vector3 transform = obj.transform.position;
+            if (transform.x == x && transform.z == z)
+            {
+                objects.Remove(obj);
+                return line = Regex.Replace(line, "'.*'", $"'{type}'");
+            }
+        }
+
+        return line;
     }
 
     void OnApplicationQuit()

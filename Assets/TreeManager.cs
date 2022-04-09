@@ -22,7 +22,7 @@ public class TreeManager : MonoBehaviour
     public static void createTreeAt(Vector3 point)
     {
         GameObject new_tree = Instantiate(treePrefab, point, Quaternion.LookRotation(Vector3.up));
-        new_tree.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
+        new_tree.transform.localScale = Vector3.one * TerrainManager.cellsize;
     }
 
     public static void removeTreeAt(Vector3 point)

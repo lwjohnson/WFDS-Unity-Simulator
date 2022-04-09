@@ -16,11 +16,14 @@ public class InteractionManager : MonoBehaviour
     {
         if (interaction_done) { return; }
 
+        float x = XR_Origin.transform.position.x;
+        float z = XR_Origin.transform.position.z;
+
         // Instantiate fire
         if (Input.GetKey(KeyCode.F))
         {
-            Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
-            if (!FireManager.fireExistsAt(point) && !TreeManager.treeExistsAt(point))
+            Vector3 point = TerrainManager.getNearestVector3(x, z);
+            if (canInteractAt(point))
             {
                 FireManager.createFireAt(point);
             }
@@ -29,28 +32,31 @@ public class InteractionManager : MonoBehaviour
         // Instantiate Tree
         if (Input.GetKey(KeyCode.T))
         {
-            Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
-            if (!TreeManager.treeExistsAt(point) && !FireManager.fireExistsAt(point))
+            Vector3 point = TerrainManager.getNearestVector3(x, z);
+            if (canInteractAt(point))
             {
                 TreeManager.createTreeAt(point);
+            }
+        }
+
+        // Instantiate Trench
+        if (Input.GetKey(KeyCode.G))
+        {
+            Vector3 point = TerrainManager.getNearestVector3(x, z);
+            if (canInteractAt(point))
+            {
+                TrenchManager.createTrenchAt(point);
             }
         }
 
         // Delete GameObjects
         if (Input.GetKey(KeyCode.Backspace))
         {
-            Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
-            if (FireManager.fireExistsAt(point))
-            {
-                GameObject fire = FireManager.getFireAt(point);
-                Destroy(fire);
-            }
+            Vector3 point = TerrainManager.getNearestVector3(x, z);
 
-            if (TreeManager.treeExistsAt(point))
-            {
-                GameObject tree = TreeManager.getTreeAt(point);
-                Destroy(tree);
-            }
+            FireManager.removeFireAt(point);
+            TreeManager.removeTreeAt(point);
+            TrenchManager.removeTrenchAt(point);
         }
 
         // End Interaction (Calls WFDS After)
@@ -58,5 +64,14 @@ public class InteractionManager : MonoBehaviour
         {
             interaction_done = true;
         }
+    }
+
+    private bool canInteractAt(Vector3 point)
+    {
+        if (FireManager.fireExistsAt(point)) { return false; }
+        if (TreeManager.treeExistsAt(point)) { return false; }
+        if (TrenchManager.trenchExistsAt(point)) { return false; }
+
+        return true;
     }
 }

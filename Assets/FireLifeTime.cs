@@ -9,7 +9,7 @@ public class FireLifeTime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!InteractionManager.interaction_done) { return; }
+        if (FireManager.wallclock_time <= 0) { return; }
 
         if (lifetime > 0)
         {

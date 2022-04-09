@@ -21,10 +21,6 @@ public class TerrainManager : MonoBehaviour
     public static int xmin = 0;
     public static int ymin = 0;
     public static int zmin = 0;
-
-
-    public static List<GameObject> initial_fires;
-
     [SerializeField]
     [Tooltip("The prefab for the fire")]
     private GameObject firePrefab;
@@ -41,7 +37,7 @@ public class TerrainManager : MonoBehaviour
         generateTerrain();
         setCameraPosition();
 
-        instantiateInitialFires();
+        FireManager.instantiateInitialFires(lines);
     }
 
     /// <summary>
@@ -205,20 +201,5 @@ public class TerrainManager : MonoBehaviour
         }
 
         return triangles;
-    }
-
-    private void instantiateInitialFires()
-    {
-        List<GameObject> fires = new List<GameObject>();
-
-        lines.Where(l => l.Contains("&OBST") && l.Contains("FIRE")).ToList().ForEach(l =>
-        {
-            string[] split = RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Replace("SURF_ID='FIRE'/", string.Empty).Split(',');
-
-            Vector3 point = getNearestVector3(float.Parse(split[1]), float.Parse(split[3]));
-
-            GameObject fire = Instantiate(firePrefab, point, Quaternion.identity);
-            fire.transform.localScale = new Vector3(cellsize, cellsize, cellsize);
-        });
     }
 }

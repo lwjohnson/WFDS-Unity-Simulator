@@ -37,7 +37,6 @@ public class FireManager : MonoBehaviour
                     {
                         createFireAt(point);
                     }
-                    // Remove the key from fire_TOA
                     fire_TOA.Remove(key);
                 }
             }
@@ -47,7 +46,7 @@ public class FireManager : MonoBehaviour
     public static void createFireAt(Vector3 point)
     {
         GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
-        new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
+        new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
     }
 
     public static void removeFireAt(Vector3 point)
@@ -83,6 +82,20 @@ public class FireManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public static void instantiateInitialFires(string[] lines)
+    {
+        List<GameObject> fires = new List<GameObject>();
+
+        lines.Where(l => l.Contains("&OBST") && l.Contains("FIRE")).ToList().ForEach(l =>
+        {
+            string[] split = TerrainManager.RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Replace("SURF_ID='FIRE'/", string.Empty).Split(',');
+
+            Vector3 point = TerrainManager.getNearestVector3(float.Parse(split[1]), float.Parse(split[3]));
+
+            createFireAt(point);
+        });
     }
 
     public static void readFireData()

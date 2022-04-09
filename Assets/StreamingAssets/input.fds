@@ -17,6 +17,30 @@
       VEG_LSET_PHIDEPTH = 0.5
       RGB=122,117,48 /
 
+cThis will need to be replaced with values that model it accurately
+&SURF ID = 'TREE'
+      VEG_LEVEL_SET_SPREAD = .TRUE.
+      VEG_LSET_ELLIPSE=.TRUE.
+      VEG_LSET_SURFACE_FIRE_HEAD_ROS_MODEL= 'ROTHERMEL'
+      VEG_LSET_ROTH_ZEROWINDSLOPE_ROS = 0.045
+      VEG_LSET_BETA = 0.0012
+      VEG_LSET_SIGMA = 11400
+      VEG_LSET_SURF_HEIGHT = 0.509
+      VEG_LSET_PHIDEPTH = 0.5
+      RGB=122,117,48 /
+
+cThis will need to be replaced with values that model it accurately
+&SURF ID = 'TRENCH'
+      VEG_LEVEL_SET_SPREAD = .TRUE.
+      VEG_LSET_ELLIPSE=.TRUE.
+      VEG_LSET_SURFACE_FIRE_HEAD_ROS_MODEL= 'ROTHERMEL'
+      VEG_LSET_ROTH_ZEROWINDSLOPE_ROS = 0.045
+      VEG_LSET_BETA = 0.0012
+      VEG_LSET_SIGMA = 11400
+      VEG_LSET_SURF_HEIGHT = 0.509
+      VEG_LSET_PHIDEPTH = 0.5
+      RGB=122,117,48 /
+
 &SURF ID ='FIRE',VEG_LSET_IGNITE_TIME=0,COLOR = 'RED' /
 
 &DUMP DT_OUTPUT_LS=2.0 /

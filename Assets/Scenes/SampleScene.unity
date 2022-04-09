@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290f677e711aa1e4899d415638843a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time_to_run_inspector: 240
+  time_to_run_inspector: 120
 --- !u!4 &364919481
 Transform:
   m_ObjectHideFlags: 0
@@ -606,7 +606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b76c84061d2f34d9c7f3bd0562b4fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePrefab: {fileID: 1956197547661106, guid: f293a2dcc753a4a489fefe7f8f312d69, type: 3}
+  firePrefabEditor: {fileID: 1956197547661106, guid: f293a2dcc753a4a489fefe7f8f312d69,
+    type: 3}
 --- !u!114 &364919484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,7 +632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e52468b182bbc24da4440245a124d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePrefab: {fileID: 1956197547661106, guid: f293a2dcc753a4a489fefe7f8f312d69, type: 3}
 --- !u!114 &364919486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -644,7 +644,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f17ea60f57ba5439b4462f342a1e68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trenchPrefab: {fileID: 0}
+  trenchPrefabEditor: {fileID: 6325508289481555223, guid: 632ae4a69eadfee42a74ef5c9ab00f0e,
+    type: 3}
 --- !u!114 &364919487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,7 +658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a52810e76e71214dacf052d8f2d848c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treePrefabEditor: {fileID: 109402, guid: aae542b8a65f39b49b008fa689ce9804, type: 3}
+  treePrefabEditor: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 3}
 --- !u!1 &366087961
 GameObject:
   m_ObjectHideFlags: 0
