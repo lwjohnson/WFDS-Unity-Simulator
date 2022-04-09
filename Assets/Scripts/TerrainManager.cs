@@ -15,9 +15,13 @@ public class TerrainManager : MonoBehaviour
     private int tStart = 0; // Time Start
     private int tEnd = 0; // Time End
     private float tStep = 0; // Time Step
-    public int xmax = 0;
-    public int ymax = 0;
-    public int zmax = 0;
+    public static int xmax = 0;
+    public static int ymax = 0;
+    public static int zmax = 0;
+    public static int xmin = 0;
+    public static int ymin = 0;
+    public static int zmin = 0;
+
 
     public static List<GameObject> initial_fires;
 
@@ -145,11 +149,12 @@ public class TerrainManager : MonoBehaviour
                 int numx = int.Parse(mesh[0]);
                 int numy = int.Parse(mesh[1]);
                 int numz = int.Parse(mesh[2]);
-                int xmin = int.Parse(mesh[3]);
+
+                xmin = int.Parse(mesh[3]);
                 xmax = int.Parse(mesh[4]);
-                int ymin = int.Parse(mesh[7]);
+                ymin = int.Parse(mesh[7]);
                 ymax = int.Parse(mesh[8]);
-                int zmin = int.Parse(mesh[5]);
+                zmin = int.Parse(mesh[5]);
                 zmax = int.Parse(mesh[6]);
 
                 cellsize = (xmax - xmin) / numx;

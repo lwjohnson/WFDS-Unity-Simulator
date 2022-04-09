@@ -31,6 +31,7 @@ public class InteractionManager : MonoBehaviour
                 new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
             }
         }
+
         if (Input.GetKey(KeyCode.Backspace))
         {
             Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
@@ -40,6 +41,7 @@ public class InteractionManager : MonoBehaviour
                 Destroy(fire);
             }
         }
+
         if (Input.GetKey(KeyCode.R))
         {
             interaction_done = true;

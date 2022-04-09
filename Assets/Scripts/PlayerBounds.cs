@@ -9,6 +9,9 @@ public class PlayerBounds : MonoBehaviour
     private int xmax = 0;
     private int ymax = 0;
     private int zmax = 0;
+    private int xmin = 0;
+    private int ymin = 0;
+    private int zmin = 0;
     private int offset = 5; // The offset from the edge of the terrain.
 
     // Start is called before the first frame update
@@ -16,20 +19,19 @@ public class PlayerBounds : MonoBehaviour
     {
         terrain = GameObject.Find("Ground");
         XROrigin = GameObject.Find("XR Origin");
-        xmax = terrain.GetComponent<TerrainManager>().xmax;
-        ymax = terrain.GetComponent<TerrainManager>().ymax;
-        zmax = terrain.GetComponent<TerrainManager>().zmax;
+
+        xmax = TerrainManager.xmax - offset;
+        ymax = TerrainManager.ymax + offset;
+        zmax = TerrainManager.zmax - offset;
+        xmin = TerrainManager.xmin + (offset * 2) + offset; // Because we are missing the first row and column of the terrain.
+        ymin = TerrainManager.ymin - offset;
+        zmin = TerrainManager.zmin + (offset * 2) + offset; // Because we are missing the first row and column of the terrain.
     }
 
     // Update is called once per frame
     void Update()
     {
-        var transform = XROrigin.transform;
-
-        var xmax = this.xmax - offset;
-        var xmin = offset * 2;
-        var zmax = this.zmax - offset;
-        var zmin = offset * 2;
+        Transform transform = XROrigin.transform;
 
         if (transform.position.x >= xmax)
         {
@@ -49,9 +51,9 @@ public class PlayerBounds : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, zmin);
         }
 
-        if (transform.position.y <= 0)
+        if (transform.position.y <= ymin)
         {
-            transform.position = new Vector3(transform.position.x, ymax, transform.position.z);
+            transform.position = TerrainManager.getNearestVector3(transform.position.x, transform.position.z);
         }
     }
 }

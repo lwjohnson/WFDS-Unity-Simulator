@@ -8,9 +8,8 @@ public class FireManager : MonoBehaviour
 {
     public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
 
-    [SerializeField]
-    [Tooltip("The prefab for the fire")]
-    private GameObject firePrefab;
+    [Tooltip("The prefab for the fires")]
+    public GameObject firePrefab;
 
     public static float wallclock_time = 0;
 
