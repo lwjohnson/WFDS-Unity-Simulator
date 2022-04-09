@@ -12,7 +12,7 @@
   - [x] Read lstoa file
     - [x] Convert to game coordinates (spits out 127 instead of 1270)
     - [x] Split into slices
-- [ ] Add/Remove fires in game
+- [x] Add/Remove fires in game
 - [ ] Add/Remove trees in game
 - [ ] Add/Remove trenches in game
 - [x] Add in game time (wallclock time)

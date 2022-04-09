@@ -64,19 +64,21 @@ public class SimulationManager : MonoBehaviour
                 line = $"&DUMP DT_OUTPUT_LS={time_to_run}.0 /";
             }
 
-            // For each of the remaining lines we need to see if InteractionManager.initial_fires contains a fire
-            // at the same location as the line. If it does, then we need to add the fire to the input file.
+            // Handle the GameObjects set by the user
             else if (line.Contains("&OBST"))
             {
                 string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
 
-                line = Regex.Replace(line, "'.*'", "'GRASS'"); // Initially set the OBST to GRASS
 
                 foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
                 {
                     if (fire.transform.position.x == float.Parse(split[1]) && fire.transform.position.z == float.Parse(split[3]))
                     {
-                        line = Regex.Replace(line, "'.*'", "'FIRE'"); // Only if the user has set the cell to a fire do we set it to FIRE
+                        line = Regex.Replace(line, "'.*'", "'FIRE'");
+                    }
+                    else
+                    {
+                        line = Regex.Replace(line, "'.*'", "'GRASS'");
                     }
                 }
             }

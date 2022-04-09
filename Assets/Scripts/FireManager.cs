@@ -9,9 +9,15 @@ public class FireManager : MonoBehaviour
     public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
 
     [Tooltip("The prefab for the fires")]
-    public GameObject firePrefab;
+    public GameObject firePrefabEditor;
+    public static GameObject firePrefab;
 
     public static float wallclock_time = 0;
+
+    void Start()
+    {
+        firePrefab = firePrefabEditor;
+    }
 
     void Update()
     {
@@ -29,14 +35,54 @@ public class FireManager : MonoBehaviour
                 {
                     foreach (Vector3 point in fire_TOA[key])
                     {
-                        GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
-                        new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
+                        createFireAt(point);
                     }
                     // Remove the key from fire_TOA
                     fire_TOA.Remove(key);
                 }
             }
         }
+    }
+
+    public static void createFireAt(Vector3 point)
+    {
+        GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
+    }
+
+    public static void removeFireAt(Vector3 point)
+    {
+        foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
+        {
+            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            {
+                Destroy(fire);
+            }
+        }
+    }
+
+    public static bool fireExistsAt(Vector3 point)
+    {
+        foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
+        {
+            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static GameObject getFireAt(Vector3 point)
+    {
+        foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
+        {
+            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            {
+                return fire;
+            }
+        }
+        return null;
     }
 
     public static void readFireData()

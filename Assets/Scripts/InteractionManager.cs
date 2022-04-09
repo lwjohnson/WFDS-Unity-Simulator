@@ -7,68 +7,56 @@ public class InteractionManager : MonoBehaviour
     public static bool interaction_done = false;
     GameObject XR_Origin = null;
 
-    [SerializeField]
-    [Tooltip("The prefab for the fire")]
-    private GameObject firePrefab;
-
-    // Start is called before the first frame update
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (interaction_done) { return; }
 
-        if (Input.GetKey(KeyCode.Space))
+        // Instantiate fire
+        if (Input.GetKey(KeyCode.F))
         {
             Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
-            if (!fireExistsAt(point))
+            if (!FireManager.fireExistsAt(point) && !TreeManager.treeExistsAt(point))
             {
-                GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
-                new_fire.transform.localScale = new Vector3(TerrainManager.cellsize, TerrainManager.cellsize, TerrainManager.cellsize);
+                FireManager.createFireAt(point);
             }
         }
 
+        // Instantiate Tree
+        if (Input.GetKey(KeyCode.T))
+        {
+            Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
+            if (!TreeManager.treeExistsAt(point) && !FireManager.fireExistsAt(point))
+            {
+                TreeManager.createTreeAt(point);
+            }
+        }
+
+        // Delete GameObjects
         if (Input.GetKey(KeyCode.Backspace))
         {
             Vector3 point = TerrainManager.getNearestVector3(XR_Origin.transform.position.x, XR_Origin.transform.position.z);
-            if (fireExistsAt(point))
+            if (FireManager.fireExistsAt(point))
             {
-                GameObject fire = getFireAt(point);
+                GameObject fire = FireManager.getFireAt(point);
                 Destroy(fire);
+            }
+
+            if (TreeManager.treeExistsAt(point))
+            {
+                GameObject tree = TreeManager.getTreeAt(point);
+                Destroy(tree);
             }
         }
 
+        // End Interaction (Calls WFDS After)
         if (Input.GetKey(KeyCode.R))
         {
             interaction_done = true;
         }
-    }
-
-    bool fireExistsAt(Vector3 point)
-    {
-        foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
-        {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    GameObject getFireAt(Vector3 point)
-    {
-        foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
-        {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
-            {
-                return fire;
-            }
-        }
-        return null;
     }
 }
