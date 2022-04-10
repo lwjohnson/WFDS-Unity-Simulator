@@ -11,8 +11,12 @@
   - [x] Write to input file
   - [x] Read lstoa file
     - [x] Convert to game coordinates (spits out 127 instead of 1270)
-    - [x] Split into slices
 - [x] Add/Remove fires in game
 - [x] Add/Remove trees in game
 - [x] Add/Remove trenches in game
 - [x] Add in game time (wallclock time)
+- [x] Interactions before WFDS called
+- [ ] Interactions after WFDS called
+- [ ] Add a readme that explains the contents of all the files and directories
+- [ ] Upload proposal
+- [ ] Upload final report
