@@ -53,7 +53,9 @@ public class PlayerBounds : MonoBehaviour
 
         if (transform.position.y <= ymin)
         {
-            transform.position = TerrainManager.getNearestVector3(transform.position.x, transform.position.z);
+            Vector3 new_position = TerrainManager.getNearestVector3(transform.position.x, transform.position.z);
+            new_position.y += offset; // Move the player up a bit so that they are not clipping through the terrain. This happens on hills.
+            transform.position = new_position;
         }
     }
 }
