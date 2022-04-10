@@ -20,3 +20,10 @@
 - [ ] Add a readme that explains the contents of all the files and directories
 - [ ] Upload proposal
 - [ ] Upload final report
+
+
+- [ ] Enable the user to be able to run the code, including instruction
+  - [ ] for setting up any required third-party software to run the code
+  - [ ] to compile and run the code
+  - [ ] to create or access and set up data files
+  - [ ] to read/interpret the results of the code
