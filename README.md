@@ -17,9 +17,9 @@
 - [x] Add in game time (wallclock time)
 - [x] Interactions before WFDS called
 - [ ] Interactions after WFDS called
-- [ ] Add a readme that explains the contents of all the files and directories
-- [ ] Upload proposal
-- [ ] Upload final report
+- [x] Add a readme that explains the contents of all the files and directories
+- [x] Upload proposal
+- [x] Upload final report
 
 
 - [ ] Enable the user to be able to run the code, including instruction
