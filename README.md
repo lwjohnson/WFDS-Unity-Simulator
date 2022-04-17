@@ -6,25 +6,25 @@
 - Everything else is the Unity Project
 
 ### Running the code
-- Unity version 2020.3.26f1 is required
+- Unity version **2020.3.26f1** is required
 - Import the project
 - Select the sample scene
 - Hit play button
-- If on keyboard and mouse
-  - WASD to move
-  - QE to rotate
-  - Backspace to remove Fire, Tree, Trench
-  - F for Fire
-  - T for Tree
-  - G for Trench
-  - R to call WFDS
-- If on Oculus
-  - Movement is using the left joystick
-  - Backspace to remove Fire, Tree, Trench
-  - F for Fire
-  - T for Tree
-  - G for Trench
-  - R to call WFDS
+- If on **keyboard and mouse**
+  - **WASD** to move
+  - **QE** to rotate
+  - **Backspace** to remove Fire, Tree, Trench
+  - **F** for Fire
+  - **T** for Tree
+  - **G** for Trench
+  - **R** to call WFDS
+- If on **Oculus**
+  - Movement is using the **left joystick**
+  - **Backspace** to remove Fire, Tree, Trench
+  - **F** for Fire
+  - **T** for Tree
+  - **G** for Trench
+  - **R** to call WFDS
 
 ### TODOs
 - [x] Implement VR with continuous movement
