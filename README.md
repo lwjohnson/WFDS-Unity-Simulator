@@ -8,6 +8,7 @@
 ### Running the code
 - Unity version **2020.3.26f1** is required
 - Import the project
+- WFDS is included in the StreamingAssets folder as well as an example input
 - Select the sample scene
 - Hit play button
 - If on **keyboard and mouse**
