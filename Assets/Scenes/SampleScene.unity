@@ -608,6 +608,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePrefabEditor: {fileID: 1956197547661106, guid: f293a2dcc753a4a489fefe7f8f312d69,
     type: 3}
+  firePrefabStatic: {fileID: 2653448754183537507, guid: 487539c8aa82a7d4293de823df8cf236,
+    type: 3}
+  staticFire: 1
 --- !u!114 &364919484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2384,6 +2387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1000
   rotationSpeed: 100
+  gravity: 0
 --- !u!1 &2037596143
 GameObject:
   m_ObjectHideFlags: 0

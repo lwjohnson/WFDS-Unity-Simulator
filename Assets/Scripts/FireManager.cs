@@ -11,13 +11,19 @@ public class FireManager : MonoBehaviour
 
     [Tooltip("The prefab for the fires")]
     public GameObject firePrefabEditor;
+    public GameObject firePrefabStatic;
     public static GameObject firePrefab;
+    public bool staticFire;
 
     public static float wallclock_time = 0;
 
     void Start()
     {
-        firePrefab = firePrefabEditor;
+        if(staticFire) {
+          firePrefab = firePrefabStatic;
+        } else {
+          firePrefab = firePrefabEditor;
+        }
     }
 
     void Update()
@@ -36,6 +42,7 @@ public class FireManager : MonoBehaviour
                 {
                     foreach (Vector3 point in fire_TOA[key])
                     {
+                        Debug.Log("fire");
                         createFireAt(point);
                     }
                     fire_TOA.Remove(key);
@@ -47,6 +54,7 @@ public class FireManager : MonoBehaviour
     public static void createFireAt(Vector3 point)
     {
         GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
     }
 
