@@ -44,7 +44,7 @@ public class SimulationManager : MonoBehaviour
     {
         FileInfo map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
 
-        using StreamWriter writer = new StreamWriter(Application.persistentDataPath + @"\input.fds");
+        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
 
         while (!reader.EndOfStream)

@@ -9,7 +9,7 @@ public class Startup : MonoBehaviour
     void Start()
     {
         // Set up variables in other files
-        WFDSManager.persistentDataPath = Application.persistentDataPath;
+        WFDSManager.persistentDataPath = Application.dataPath + "/PersistentData";
         WFDSManager.streamingAssetsPath = Application.streamingAssetsPath;
         WFDSManager.dataPath = Application.dataPath;
 

@@ -192,7 +192,7 @@ public class FireManager : MonoBehaviour
 
     public static void setupInputFile()
     {
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", Application.persistentDataPath + @"\input_copy.fds");
+        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", WFDSManager.persistentDataPath + @"\input_copy.fds");
         FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
 
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
