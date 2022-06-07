@@ -22,7 +22,7 @@ public class FireManager : MonoBehaviour
 
     void Update()
     {
-        if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run)
+        if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run * WFDSManager.wfds_runs)
         {
             wallclock_time += Time.deltaTime;
         }
@@ -102,8 +102,10 @@ public class FireManager : MonoBehaviour
     public static void readFireData()
     {   
         //Copy output file so can begin another simulation
+        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         setupInputFile();
+        Debug.Log("Starting Reading Fires");
 
         //want to read from the output of fires
         FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
@@ -180,6 +182,7 @@ public class FireManager : MonoBehaviour
 
         reader.Close();
         SimulationManager.reading_fire = false;
+        Debug.Log("Done Reading Fires");
 
     }
 
@@ -192,16 +195,14 @@ public class FireManager : MonoBehaviour
 
     public static void setupInputFile()
     {
+        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", WFDSManager.persistentDataPath + @"\input_copy.fds");
         FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
 
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
-        UnityEngine.Debug.Log("here");
-        UnityEngine.Debug.Log(SimulationManager.time_to_run);
-        UnityEngine.Debug.Log(WFDSManager.wfds_runs);
-        UnityEngine.Debug.Log(SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1));
+        Debug.Log("Setting up input file");
         
         while (!reader.EndOfStream)
         {
@@ -214,6 +215,5 @@ public class FireManager : MonoBehaviour
 
             writer.WriteLine(line);
         }
-        writer.WriteLine("I was here");
     }
 }

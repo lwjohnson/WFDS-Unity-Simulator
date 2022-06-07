@@ -30,7 +30,7 @@ public class SimulationManager : MonoBehaviour
             WFDSManager.callWFDS();
         }
 
-        if (wfds_setup && !WFDSManager.wfds_running && !wfds_run_once && !reading_fire && ready_to_read)
+        if (wfds_setup && !WFDSManager.wfds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
             reading_fire = true;
