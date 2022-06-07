@@ -8,11 +8,14 @@ public class Startup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cleanPersistentDataPath();
-
         // Set up variables in other files
         WFDSManager.persistentDataPath = Application.persistentDataPath;
         WFDSManager.streamingAssetsPath = Application.streamingAssetsPath;
+        WFDSManager.dataPath = Application.dataPath;
+
+        Debug.Log(WFDSManager.dataPath);
+
+        cleanPersistentDataPath();
     }
 
     /// <summary>
@@ -21,7 +24,7 @@ public class Startup : MonoBehaviour
     /// </summary>
     private void cleanPersistentDataPath()
     {
-        DirectoryInfo persistentDataPath = new DirectoryInfo(Application.persistentDataPath);
+        DirectoryInfo persistentDataPath = new DirectoryInfo(WFDSManager.persistentDataPath);
         foreach (FileInfo file in persistentDataPath.GetFiles())
         {
             file.Delete();

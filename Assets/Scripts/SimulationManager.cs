@@ -11,6 +11,8 @@ public class SimulationManager : MonoBehaviour
     public static int time_to_run = 0;
     public static bool wfds_run_once = false;
     public static bool wfds_setup = false;
+    public static bool reading_fire = false;
+    public static bool ready_to_read = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,11 +30,13 @@ public class SimulationManager : MonoBehaviour
             WFDSManager.callWFDS();
         }
 
-        if (wfds_setup && !WFDSManager.wfds_running && !wfds_run_once)
+        if (wfds_setup && !WFDSManager.wfds_running && !wfds_run_once && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
+            reading_fire = true;
 
             FireManager.readFireData();
+            WFDSManager.callWFDS();
         }
     }
 

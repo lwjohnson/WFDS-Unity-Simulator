@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using System.IO;
 using System.Linq;
 
@@ -99,8 +100,13 @@ public class FireManager : MonoBehaviour
     }
 
     public static void readFireData()
-    {
-        FileInfo toa_file = new FileInfo(Application.persistentDataPath + @"\input_lstoa.sf");
+    {   
+        //Copy output file so can begin another simulation
+        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        setupInputFile();
+
+        //want to read from the output of fires
+        FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
 
         List<long> bounds = new List<long>();
@@ -173,6 +179,8 @@ public class FireManager : MonoBehaviour
         }
 
         reader.Close();
+        SimulationManager.reading_fire = false;
+
     }
 
     // I made this function so it was a bit clearer what was being read.
@@ -180,5 +188,32 @@ public class FireManager : MonoBehaviour
     private static void readFortranRecord(BinaryReader reader)
     {
         reader.ReadInt32();
+    }
+
+    public static void setupInputFile()
+    {
+        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", Application.persistentDataPath + @"\input_copy.fds");
+        FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
+
+        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
+        using StreamReader reader = new StreamReader(map.OpenRead());
+        
+        UnityEngine.Debug.Log("here");
+        UnityEngine.Debug.Log(SimulationManager.time_to_run);
+        UnityEngine.Debug.Log(WFDSManager.wfds_runs);
+        UnityEngine.Debug.Log(SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1));
+        
+        while (!reader.EndOfStream)
+        {
+            string line = reader.ReadLine();
+
+            if (line.Contains("&TIME T_END"))
+            {
+                line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+            }
+
+            writer.WriteLine(line);
+        }
+        writer.WriteLine("I was here");
     }
 }
