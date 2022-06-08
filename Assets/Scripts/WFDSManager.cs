@@ -11,6 +11,7 @@ public static class WFDSManager
 {
     public static string streamingAssetsPath = null;
     public static string persistentDataPath = null;
+    public static string dataCollectionPath = null;
     public static string dataPath = null;
     public static bool wfds_running = false;
     public static int wfds_runs = 0;
@@ -26,6 +27,9 @@ public static class WFDSManager
 
     public static void startWFDS()
     {
+
+        DateTime start = System.DateTime.Now;
+        
         Process wfds_process = new Process();
 
         //Choose reference input or re-written input from persistent data path
@@ -66,6 +70,13 @@ public static class WFDSManager
         wfds_running = false;
 
         SimulationManager.ready_to_read = true;
+
+        DateTime end = System.DateTime.Now;
+        TimeSpan duration = end - start;
+
+        string log = "Run time/Covered : " + duration.TotalSeconds.ToString() + "/" + SimulationManager.time_to_run.ToString();
+
+        File.AppendAllText(dataCollectionPath + @"/WFDS_Run_Logs.txt", log + Environment.NewLine);
     }
 
 

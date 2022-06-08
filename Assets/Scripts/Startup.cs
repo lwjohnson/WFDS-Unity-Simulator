@@ -11,9 +11,8 @@ public class Startup : MonoBehaviour
         // Set up variables in other files
         WFDSManager.persistentDataPath = Application.dataPath + "/PersistentData";
         WFDSManager.streamingAssetsPath = Application.streamingAssetsPath;
+        WFDSManager.dataCollectionPath = Application.dataPath + "/DataCollection";
         WFDSManager.dataPath = Application.dataPath;
-
-        Debug.Log(WFDSManager.dataPath);
 
         cleanPersistentDataPath();
     }

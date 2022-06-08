@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Linq;
+using System.Threading;
+
 
 public class FireManager : MonoBehaviour
 {
-    public static Dictionary<int, List<Vector3>> fire_TOA = new Dictionary<int, List<Vector3>>();
+    public static SortedDictionary<int, List<Vector3>> fire_TOA = new SortedDictionary<int, List<Vector3>>();
 
     [Tooltip("The prefab for the fires")]
     public GameObject firePrefabEditor;
@@ -15,6 +17,7 @@ public class FireManager : MonoBehaviour
     public static GameObject firePrefab;
     public bool staticFire;
 
+    private static int current_key = 0; 
     public static float wallclock_time = 0;
 
     void Start()
@@ -36,17 +39,15 @@ public class FireManager : MonoBehaviour
         if (fire_TOA.Count > 0)
         {
             // If fire_TOA contains a key less than wallclock_time, then Instantiate new fires
-            foreach (int key in fire_TOA.Keys.ToList())
+            current_key = fire_TOA.Keys.ToList()[0];
+
+            if (current_key <= wallclock_time)
             {
-                if (key <= wallclock_time)
+                foreach (Vector3 point in fire_TOA[current_key])
                 {
-                    foreach (Vector3 point in fire_TOA[key])
-                    {
-                        Debug.Log("fire");
-                        createFireAt(point);
-                    }
-                    fire_TOA.Remove(key);
+                    createFireAt(point);
                 }
+                fire_TOA.Remove(current_key);
             }
         }
     }
@@ -113,13 +114,21 @@ public class FireManager : MonoBehaviour
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         setupInputFile();
-        Debug.Log("Starting Reading Fires");
+
+        Thread read_fire_thread = new Thread(readFires);
+        read_fire_thread.Start();
+    }
+
+    private static void readFires(){
+        
+        Debug.Log("Reading fires");
 
         //want to read from the output of fires
         FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
 
         List<long> bounds = new List<long>();
+        SortedDictionary<int, List<Vector3>> fire_TOA_copy = new SortedDictionary<int, List<Vector3>>();
 
         // Quantity
         readFortranRecord(reader); // Read the opening Fortran record size
@@ -167,18 +176,18 @@ public class FireManager : MonoBehaviour
                     {
                         int arrival_time = (int)reader.ReadSingle(); // Read the arrival_time and convert to int instead of float
 
-                        if (arrival_time > 0) // Fire reaches this point
+                        if (arrival_time >= current_key) // Fire reaches this point
                         {
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
                             Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
 
-                            if (fire_TOA.ContainsKey(arrival_time))
-                            {
-                                fire_TOA[arrival_time].Add(point);
-                            }
-                            else
-                            {
-                                fire_TOA.Add(arrival_time, new List<Vector3>() { point });
+                            if (fire_TOA_copy.ContainsKey(arrival_time)) {
+                                if(fire_TOA_copy[arrival_time].Contains(point)) {
+                                 continue;
+                                }
+                                fire_TOA_copy[arrival_time].Add(point);
+                            } else {
+                                fire_TOA_copy.Add(arrival_time, new List<Vector3>() { point });
                             }
                         }
                     }
@@ -187,11 +196,11 @@ public class FireManager : MonoBehaviour
 
             readFortranRecord(reader); // Fortran
         }
-
+        fire_TOA = fire_TOA_copy;
         reader.Close();
         SimulationManager.reading_fire = false;
-        Debug.Log("Done Reading Fires");
 
+        Debug.Log("Finished reading fires");
     }
 
     // I made this function so it was a bit clearer what was being read.
@@ -210,7 +219,6 @@ public class FireManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
-        Debug.Log("Setting up input file");
         
         while (!reader.EndOfStream)
         {
