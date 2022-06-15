@@ -48,15 +48,15 @@ public static class WFDSManager
         wfds_process.StartInfo.CreateNoWindow = true;
 
         // Set up redirected output to be displayed in the Unity console
-        // wfds_process.OutputDataReceived += (sender, e) =>
-        // {
-        //     logMessage(e.Data);
-        // };
+        wfds_process.OutputDataReceived += (sender, e) =>
+        {
+            logMessage(e.Data);
+        };
 
-        // wfds_process.ErrorDataReceived += (sender, e) =>
-        // {
-        //     logMessage(e.Data);
-        // };
+        wfds_process.ErrorDataReceived += (sender, e) =>
+        {
+            logMessage(e.Data);
+        };
 
         // Start the process
         wfds_process.Start();
@@ -74,7 +74,7 @@ public static class WFDSManager
         DateTime end = System.DateTime.Now;
         TimeSpan duration = end - start;
 
-        string log = "Run time/Covered : " + SimulationManager.time_to_run + " : " + duration.TotalSeconds.ToString() + "|" + SimulationManager.time_to_run * (wfds_runs + 1);
+        string log = "Run time|Covered : " + SimulationManager.time_to_run + " : " + duration.TotalSeconds.ToString() + "|" + SimulationManager.time_to_run * (wfds_runs) + "|";
 
         File.AppendAllText(dataCollectionPath + @"/WFDS_Run_Logs.txt", log + Environment.NewLine);
     }

@@ -1,67 +1,239 @@
 20 SECOND INTERVAL RUNS:
 
 1ST RUN:
-Run time|Covered : 20 : 15.3384335|20 ///// 1ST STARTUP SEEMS TO BE OUTLIER
-Run time|Covered : 20 : 9.1322705|40
-Run time|Covered : 20 : 10.2970879|60
-Run time|Covered : 20 : 12.5106428|80
-Run time|Covered : 20 : 11.2754073|100
-Run time|Covered : 20 : 12.1848735|120
-Run time|Covered : 20 : 11.5222294|140
-Run time|Covered : 20 : 12.1653776|160
-Run time|Covered : 20 : 13.1524554|180
-Run time|Covered : 20 : 13.5671668|200
-Run time|Covered : 20 : 14.308825|220
-Run time|Covered : 20 : 15.0631486|240
-Run time|Covered : 20 : 16.2032744|260
-Run time|Covered : 20 : 16.4915139|280
-Run time|Covered : 20 : 17.6025418|300
-Run time|Covered : 20 : 18.5569171|320
-Run time|Covered : 20 : 19.9207399|340 ///// BREAKING POINT HERE
-Run time|Covered : 20 : 21.1299639|360
-Run time|Covered : 20 : 22.0377827|380
-Run time|Covered : 20 : 28.4802222|400
-Run time|Covered : 20 : 25.8490886|420
-Run time|Covered : 20 : 29.3548682|440
-Run time|Covered : 20 : 26.5944832|460
-Run time|Covered : 20 : 30.1392311|480
-Run time|Covered : 20 : 28.9320436|500
-Run time|Covered : 20 : 30.5845754|520
-Run time|Covered : 20 : 28.910899|540  ///// PAUSED HERE TO WAIT FOR READING FIRES FOR FIRST TIME
-Run time|Covered : 20 : 29.4683663|560 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 30.0568927|580 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 34.2954021|600 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 33.3277123|620 ///// STOPPED AT THIS POINT, TIME 600
-Run time|Covered : 20 : 26.7739014|640 ///// IGNORE, FROM PERSISTING THREAD AFTER STOPPING
-
-SUMMARY:
+Run time|Covered : 20 : 9.1322705|40|
+Run time|Covered : 20 : 10.2970879|60|
+Run time|Covered : 20 : 12.5106428|80|
+Run time|Covered : 20 : 11.2754073|100|
+Run time|Covered : 20 : 12.1848735|120|
+Run time|Covered : 20 : 11.5222294|140|
+Run time|Covered : 20 : 12.1653776|160|
+Run time|Covered : 20 : 13.1524554|180|
+Run time|Covered : 20 : 13.5671668|200|
+Run time|Covered : 20 : 14.308825|220|
+Run time|Covered : 20 : 15.0631486|240|
+Run time|Covered : 20 : 16.2032744|260|
+Run time|Covered : 20 : 16.4915139|280|
+Run time|Covered : 20 : 17.6025418|300|
+Run time|Covered : 20 : 18.5569171|320|
+Run time|Covered : 20 : 19.9207399|340| ///// BREAKING POINT HERE
+Run time|Covered : 20 : 21.1299639|360|
+Run time|Covered : 20 : 22.0377827|380|
+Run time|Covered : 20 : 28.4802222|400|
+Run time|Covered : 20 : 25.8490886|420|
+Run time|Covered : 20 : 29.3548682|440|
+Run time|Covered : 20 : 26.5944832|460|
+Run time|Covered : 20 : 30.1392311|480|
+Run time|Covered : 20 : 28.9320436|500|
+Run time|Covered : 20 : 30.5845754|520|
+Run time|Covered : 20 : 28.910899|540|  ///// PAUSED HERE TO WAIT FOR READING FIRES FOR FIRST TIME
+Run time|Covered : 20 : 29.4683663|560| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 30.0568927|580| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 34.2954021|600| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 33.3277123|620| ///// STOPPED AT THIS POINT, TIME 600
 
 2ND RUN:
-Run time|Covered : 20 : 12.3980147|40
-Run time|Covered : 20 : 11.2534649|60
-Run time|Covered : 20 : 10.6975051|80
-Run time|Covered : 20 : 11.3397803|100
-Run time|Covered : 20 : 12.4799073|120
-Run time|Covered : 20 : 12.7486088|140
-Run time|Covered : 20 : 13.5310032|160
-Run time|Covered : 20 : 14.5387982|180
-Run time|Covered : 20 : 19.0196047|200 ///// BREAKING POINT HERE
-Run time|Covered : 20 : 21.5884155|220
-Run time|Covered : 20 : 22.0173137|240
-Run time|Covered : 20 : 21.5728733|260
-Run time|Covered : 20 : 21.6249102|280
-Run time|Covered : 20 : 23.2336964|300
-Run time|Covered : 20 : 25.0855082|320
-Run time|Covered : 20 : 24.8918002|340
-Run time|Covered : 20 : 25.3535815|360
-Run time|Covered : 20 : 25.1860798|380
-Run time|Covered : 20 : 25.9031228|400
-Run time|Covered : 20 : 26.1445539|420 ///// PAUSED HERE FOR FIRST TIME
-Run time|Covered : 20 : 26.9460616|440 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 28.5469836|460 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 32.8094657|480 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 31.3288939|500 ///// PAUSED HERE TO WAIT FOR READING FIRES
-Run time|Covered : 20 : 32.1032567|520 ///// STOPPED AT THIS POINT, TIME 500
-Run time|Covered : 20 : 34.9411262|540 ///// IGNORE, FROM PERSISTING THREAD AFTER STOPPING
+Run time|Covered : 20 : 12.3980147|40|
+Run time|Covered : 20 : 11.2534649|60|
+Run time|Covered : 20 : 10.6975051|80|
+Run time|Covered : 20 : 11.3397803|100|
+Run time|Covered : 20 : 12.4799073|120|
+Run time|Covered : 20 : 12.7486088|140|
+Run time|Covered : 20 : 13.5310032|160|
+Run time|Covered : 20 : 14.5387982|180|
+Run time|Covered : 20 : 19.0196047|200| ///// BREAKING POINT HERE
+Run time|Covered : 20 : 21.5884155|220|
+Run time|Covered : 20 : 22.0173137|240|
+Run time|Covered : 20 : 21.5728733|260|
+Run time|Covered : 20 : 21.6249102|280|
+Run time|Covered : 20 : 23.2336964|300|
+Run time|Covered : 20 : 25.0855082|320|
+Run time|Covered : 20 : 24.8918002|340|
+Run time|Covered : 20 : 25.3535815|360|
+Run time|Covered : 20 : 25.1860798|380|
+Run time|Covered : 20 : 25.9031228|400|
+Run time|Covered : 20 : 26.1445539|420| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 20 : 26.9460616|440| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 28.5469836|460| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 32.8094657|480| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 31.3288939|500| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 32.1032567|520| ///// STOPPED AT THIS POINT, TIME 500
 
-SUMMARY:
+3RD RUN:
+Run time|Covered : 20 : 10.4430194|40|
+Run time|Covered : 20 : 10.4770011|60|
+Run time|Covered : 20 : 11.8525808|80|
+Run time|Covered : 20 : 11.1726811|100|
+Run time|Covered : 20 : 12.8920041|120|
+Run time|Covered : 20 : 12.8421305|140|
+Run time|Covered : 20 : 14.6999858|160|
+Run time|Covered : 20 : 16.3843739|180|
+Run time|Covered : 20 : 16.1145999|200|
+Run time|Covered : 20 : 18.3825753|220|
+Run time|Covered : 20 : 17.0532397|240|
+Run time|Covered : 20 : 18.7687674|260|
+Run time|Covered : 20 : 18.7933989|280| ///// BREAKING POINT HERE
+Run time|Covered : 20 : 20.639257|300|
+Run time|Covered : 20 : 24.0406162|320|
+Run time|Covered : 20 : 22.4604639|340|
+Run time|Covered : 20 : 23.4070549|360|
+Run time|Covered : 20 : 24.3597885|380|
+Run time|Covered : 20 : 25.8269722|400|
+Run time|Covered : 20 : 26.146097|420|
+Run time|Covered : 20 : 26.4275767|440|
+Run time|Covered : 20 : 27.2037634|460|
+Run time|Covered : 20 : 27.8660747|480|
+Run time|Covered : 20 : 28.0033271|500| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 20 : 30.8631968|520| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 31.266105|540|  ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 31.8965179|560| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 33.878353|580|  ///// STOPPED AT THIS POINT, TIME 560
+
+4TH RUN:
+Run time|Covered : 20 : 10.2401605|40|
+Run time|Covered : 20 : 11.0479388|60|
+Run time|Covered : 20 : 12.4294513|80|
+Run time|Covered : 20 : 11.924913|100|
+Run time|Covered : 20 : 11.8747518|120|
+Run time|Covered : 20 : 12.8955506|140|
+Run time|Covered : 20 : 13.1217769|160|
+Run time|Covered : 20 : 13.6924587|180|
+Run time|Covered : 20 : 15.3404236|200|
+Run time|Covered : 20 : 15.620408|220|
+Run time|Covered : 20 : 16.6567955|240|
+Run time|Covered : 20 : 19.1603477|260|
+Run time|Covered : 20 : 18.9464549|280|
+Run time|Covered : 20 : 19.9870509|300| ///// BREAKING POINT HERE
+Run time|Covered : 20 : 21.1920758|320|
+Run time|Covered : 20 : 21.7736266|340|
+Run time|Covered : 20 : 23.9227576|360|
+Run time|Covered : 20 : 25.1268992|380|
+Run time|Covered : 20 : 25.5322231|400|
+Run time|Covered : 20 : 27.0557631|420|
+Run time|Covered : 20 : 26.9684005|440|
+Run time|Covered : 20 : 27.6139615|460|
+Run time|Covered : 20 : 27.6201168|480|
+Run time|Covered : 20 : 31.1049528|500|
+Run time|Covered : 20 : 29.9920512|520| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 20 : 31.0216576|540| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 32.5712389|560| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 32.1994412|580| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 20 : 35.4089966|600| ///// STOPPED AT THIS POINT, TIME 580
+
+
+60 SECOND INTERVAL RUNS:
+
+1ST RUN:
+Run time|Covered : 60 : 10.3420858|60|
+Run time|Covered : 60 : 12.4886778|120|
+Run time|Covered : 60 : 15.4943384|180|
+Run time|Covered : 60 : 17.6055892|240|
+Run time|Covered : 60 : 17.7266571|300|
+Run time|Covered : 60 : 21.8177837|360|
+Run time|Covered : 60 : 22.286108|420|
+Run time|Covered : 60 : 26.3481703|480|
+Run time|Covered : 60 : 29.5884069|540|
+Run time|Covered : 60 : 31.7968888|600|
+Run time|Covered : 60 : 37.9558636|660|
+Run time|Covered : 60 : 45.9433864|720|
+Run time|Covered : 60 : 44.1675254|780|
+Run time|Covered : 60 : 46.3690921|840|
+Run time|Covered : 60 : 49.3047249|900|
+Run time|Covered : 60 : 50.5644349|960|
+Run time|Covered : 60 : 54.1217964|1020|
+Run time|Covered : 60 : 57.5563829|1080|
+Run time|Covered : 60 : 58.5989059|1140| ///// BREAKING POINT HERE
+Run time|Covered : 60 : 61.7604083|1200|
+Run time|Covered : 60 : 61.8246912|1260|
+Run time|Covered : 60 : 67.4355629|1320|
+Run time|Covered : 60 : 72.6902998|1380|
+Run time|Covered : 60 : 69.2786985|1440|
+Run time|Covered : 60 : 73.9224205|1500|
+Run time|Covered : 60 : 73.836124|1560|
+Run time|Covered : 60 : 75.3003701|1620|
+Run time|Covered : 60 : 80.37049|1680|
+Run time|Covered : 60 : 78.1497527|1740|
+Run time|Covered : 60 : 82.4073695|1800|
+Run time|Covered : 60 : 82.9449947|1860|
+Run time|Covered : 60 : 92.9189968|1920|
+Run time|Covered : 60 : 94.6517925|1980|
+Run time|Covered : 60 : 85.4039995|2040|
+Run time|Covered : 60 : 90.6953922|2100| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 60 : 95.3737599|2160| ///// PAUSED HERE TO WAIT FOR READING FIRES
+Run time|Covered : 60 : 89.9343743|2220| ///// STOPPED AT THIS POINT, TIME 2160
+
+2ND RUN: ///// THIS RUN SEEMED WEIRDLY LAGGY AFTER AROUND 1500 SECONDS
+Run time|Covered : 60 : 11.8148511|60|
+Run time|Covered : 60 : 12.0897346|120|
+Run time|Covered : 60 : 13.323259|180|
+Run time|Covered : 60 : 19.4037713|240|
+Run time|Covered : 60 : 19.6813198|300|
+Run time|Covered : 60 : 20.6386444|360|
+Run time|Covered : 60 : 22.2545703|420|
+Run time|Covered : 60 : 26.5839891|480|
+Run time|Covered : 60 : 27.6339446|540|
+Run time|Covered : 60 : 34.1824024|600|
+Run time|Covered : 60 : 37.4753373|660|
+Run time|Covered : 60 : 42.1434239|720|
+Run time|Covered : 60 : 45.6950928|780|
+Run time|Covered : 60 : 46.3496299|840|
+Run time|Covered : 60 : 52.3649265|900|
+Run time|Covered : 60 : 50.1574865|960|
+Run time|Covered : 60 : 53.4897373|1020|
+Run time|Covered : 60 : 53.7313224|1080|
+Run time|Covered : 60 : 55.9187903|1140| ///// BREAKING POINT HERE
+Run time|Covered : 60 : 61.7066936|1200|
+Run time|Covered : 60 : 63.6042928|1260|
+Run time|Covered : 60 : 64.9807635|1320|
+Run time|Covered : 60 : 67.713979|1380|
+Run time|Covered : 60 : 69.5844635|1440|
+Run time|Covered : 60 : 75.1566081|1500|
+Run time|Covered : 60 : 85.1006159|1560|
+Run time|Covered : 60 : 77.6651681|1620|
+Run time|Covered : 60 : 74.9411102|1680|
+Run time|Covered : 60 : 73.5027532|1740|
+Run time|Covered : 60 : 79.6762648|1800|
+Run time|Covered : 60 : 78.3947619|1860|
+Run time|Covered : 60 : 80.9137529|1920|
+Run time|Covered : 60 : 80.6178709|1980| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 60 : 76.5196643|2040| ///// STOPPED AT THIS POINT, TIME 1980
+
+3RD RUN:
+Run time|Covered : 60 : 11.5295396|60|
+Run time|Covered : 60 : 11.6458469|120|
+Run time|Covered : 60 : 13.5092755|180|
+Run time|Covered : 60 : 15.4951184|240|
+Run time|Covered : 60 : 16.8932326|300|
+Run time|Covered : 60 : 19.7958512|360|
+Run time|Covered : 60 : 21.3776473|420|
+Run time|Covered : 60 : 25.0533142|480|
+Run time|Covered : 60 : 28.1953436|540|
+Run time|Covered : 60 : 31.4960852|600|
+Run time|Covered : 60 : 35.5619246|660|
+Run time|Covered : 60 : 40.0265913|720|
+Run time|Covered : 60 : 42.7432615|780|
+Run time|Covered : 60 : 45.0318147|840|
+Run time|Covered : 60 : 48.8616065|900|
+Run time|Covered : 60 : 49.7289779|960|
+Run time|Covered : 60 : 52.7674405|1020|
+Run time|Covered : 60 : 53.1706172|1080|
+Run time|Covered : 60 : 55.7528033|1140|
+Run time|Covered : 60 : 58.3681364|1200| ///// BREAKING POINT HERE
+Run time|Covered : 60 : 61.2876459|1260|
+Run time|Covered : 60 : 63.4088013|1320|
+Run time|Covered : 60 : 66.6793827|1380|
+Run time|Covered : 60 : 68.5224934|1440|
+Run time|Covered : 60 : 72.5771936|1500|
+Run time|Covered : 60 : 72.2477346|1560|
+Run time|Covered : 60 : 75.615874|1620|
+Run time|Covered : 60 : 76.7135552|1680|
+Run time|Covered : 60 : 79.8400773|1740|
+Run time|Covered : 60 : 79.9579331|1800|
+Run time|Covered : 60 : 81.2083932|1860|
+Run time|Covered : 60 : 83.1144605|1920|
+Run time|Covered : 60 : 86.0449085|1980|
+Run time|Covered : 60 : 82.6824338|2040|
+Run time|Covered : 60 : 83.6709208|2100|
+Run time|Covered : 60 : 88.751485|2160|
+Run time|Covered : 60 : 87.6361891|2220| ///// PAUSED HERE FOR FIRST TIME
+Run time|Covered : 60 : 92.8466311|2280| ///// STOPPED AT THIS POINT, TIME 2220
