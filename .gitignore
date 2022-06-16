@@ -127,3 +127,5 @@ crashlytics-build.properties
 *.unity linguist-generated
 .vscode/settings.json
 Assets/TerrainManager.cs
+
+Assets/PersistentData/
