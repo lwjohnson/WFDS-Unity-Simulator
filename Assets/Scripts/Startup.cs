@@ -5,6 +5,8 @@ using System.IO;
 
 public class Startup : MonoBehaviour
 {
+    public bool data_collection_mode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +15,8 @@ public class Startup : MonoBehaviour
         WFDSManager.streamingAssetsPath = Application.streamingAssetsPath;
         WFDSManager.dataCollectionPath = Application.dataPath + "/DataCollection";
         WFDSManager.dataPath = Application.dataPath;
-
+        WFDSManager.data_collection_mode = data_collection_mode;
+        
         cleanPersistentDataPath();
     }
 

@@ -16,12 +16,15 @@ public class FireManager : MonoBehaviour
     public GameObject firePrefabStatic;
     public static GameObject firePrefab;
     public bool staticFire;
+    public float starting_time = 0;
+    public float time_multiplier = 1;
 
     private static int current_key = 0; 
     public static float wallclock_time = 0;
 
     void Start()
     {
+        wallclock_time = starting_time;
         if(staticFire) {
           firePrefab = firePrefabStatic;
         } else {
@@ -31,9 +34,13 @@ public class FireManager : MonoBehaviour
 
     void Update()
     {
+        if(!InteractionManager.interaction_done) {
+            return;
+        }
+
         if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run * WFDSManager.wfds_runs)
         {
-            wallclock_time += Time.deltaTime;
+            wallclock_time += Time.deltaTime * time_multiplier;
         }
 
         if (fire_TOA.Count > 0)
@@ -218,7 +225,6 @@ public class FireManager : MonoBehaviour
 
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
-        
         
         while (!reader.EndOfStream)
         {

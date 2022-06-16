@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 public class SimulationManager : MonoBehaviour
 {
     public int time_to_run_inspector = 60;
+    public bool data_collection_mode = false;
+
     public static int time_to_run = 0;
     public static bool wfds_run_once = false;
     public static bool wfds_setup = false;
@@ -23,7 +25,11 @@ public class SimulationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InteractionManager.interaction_done && !wfds_setup)
+        if(!InteractionManager.interaction_done) {
+            return;
+        }
+
+        if (!wfds_setup)
         {
             wfds_setup = true;
             setupInputFile();
@@ -34,6 +40,7 @@ public class SimulationManager : MonoBehaviour
         {
             wfds_run_once = true;
             reading_fire = true;
+            ready_to_read = false;
 
             FireManager.readFireData();
             WFDSManager.callWFDS();

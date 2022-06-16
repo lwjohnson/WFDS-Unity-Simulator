@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class InteractionManager : MonoBehaviour
 {
@@ -14,7 +15,14 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {
-        if (interaction_done) { return; }
+        if (interaction_done) { 
+            if (Input.GetKey(KeyCode.P)) {
+                interaction_done = false;
+                WFDSManager.stopWFDS();
+                WFDSManager.wfds_runs--;
+            }
+            return; 
+        }
 
         float x = XR_Origin.transform.position.x;
         float z = XR_Origin.transform.position.z;
@@ -62,7 +70,15 @@ public class InteractionManager : MonoBehaviour
         // End Interaction (Calls WFDS After)
         if (Input.GetKey(KeyCode.R))
         {
-            interaction_done = true;
+            File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop");
+            
+            if(SimulationManager.wfds_run_once) {
+                FireManager.readFireData();
+                FireManager.setupInputFile();
+                WFDSManager.runCatchup();
+            }
+            
+            interaction_done = true; //DO LAST
         }
     }
 
