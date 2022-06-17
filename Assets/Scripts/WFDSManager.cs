@@ -21,9 +21,6 @@ public static class WFDSManager
 
     public static void callWFDS()
     {
-        wfds_running = true;
-        SimulationManager.ready_to_read = false;
-
         Thread wfds_thread = new Thread(startWFDS);
         wfds_thread.Start();
     }
@@ -70,6 +67,7 @@ public static class WFDSManager
 
         wfds_process.WaitForExit();
         wfds_runs++;
+        logMessage("ADDING RUNS" + wfds_runs);
         wfds_running = false;
 
         SimulationManager.ready_to_read = true;
@@ -85,17 +83,21 @@ public static class WFDSManager
         }
     }
 
-    public static void runCatchup() {
+
+    //Called after a pause the start in the simulation, runs simulation to current
+    // wallclock chunk so we can continue from current time
+    public static void runCatchUp() {
+        wfds_running = true;
+        SimulationManager.ready_to_read = false;
+        logMessage("STARTING CATCH UP");
+
         Process wfds_process = new Process();
 
         //Choose reference input or re-written input from persistent data path
-        if(!SimulationManager.wfds_run_once) {
-            wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
-            wfds_process.StartInfo.Arguments = "input.fds";
-        } else {
-            wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
-            wfds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
-        }
+
+        wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
+        wfds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
+        
         
         wfds_process.StartInfo.WorkingDirectory = persistentDataPath;
         wfds_process.StartInfo.UseShellExecute = false;
@@ -124,6 +126,9 @@ public static class WFDSManager
         wfds_process.WaitForExit();
         wfds_runs++;
         wfds_running = false;
+        SimulationManager.ready_to_read = true;
+
+        InteractionManager.interaction_done = true;
     }
 
 

@@ -22,6 +22,8 @@ public class FireManager : MonoBehaviour
     private static int current_key = 0; 
     public static float wallclock_time = 0;
 
+    public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
+
     void Start()
     {
         wallclock_time = starting_time;
@@ -64,6 +66,16 @@ public class FireManager : MonoBehaviour
         GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
         
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
+
+        if(!InteractionManager.interaction_done) {
+            int id = new_fire.GetInstanceID();
+
+            if (fires.ContainsKey(wallclock_time)) {
+                fires[wallclock_time].Add(id);
+            } else {
+                fires.Add(wallclock_time, new List<int>() { id });
+            }
+        }
     }
 
     public static void removeFireAt(Vector3 point)
@@ -117,6 +129,7 @@ public class FireManager : MonoBehaviour
 
     public static void readFireData()
     {   
+        SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
@@ -217,6 +230,7 @@ public class FireManager : MonoBehaviour
         reader.ReadInt32();
     }
 
+    //gets input file ready with new end time
     public static void setupInputFile()
     {
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
@@ -226,6 +240,7 @@ public class FireManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
+
         while (!reader.EndOfStream)
         {
             string line = reader.ReadLine();
@@ -233,6 +248,10 @@ public class FireManager : MonoBehaviour
             if (line.Contains("&TIME T_END"))
             {
                 line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+            }
+            if (line.Contains("&TAIL")) 
+            {
+                //inserting the new fire surfacesz
             }
 
             writer.WriteLine(line);

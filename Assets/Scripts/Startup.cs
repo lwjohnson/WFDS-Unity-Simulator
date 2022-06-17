@@ -24,7 +24,7 @@ public class Startup : MonoBehaviour
     /// Clean the persistent data path.
     /// Deletes all folders and files in the persistent data path.
     /// </summary>
-    private void cleanPersistentDataPath()
+    public static void cleanPersistentDataPath()
     {
         DirectoryInfo persistentDataPath = new DirectoryInfo(WFDSManager.persistentDataPath);
         foreach (FileInfo file in persistentDataPath.GetFiles())

@@ -8,6 +8,9 @@ public class InteractionManager : MonoBehaviour
     public static bool interaction_done = false;
     GameObject XR_Origin = null;
 
+    public static float restart_safety_time = 10;
+    public static float restart_safety_tracker = 0;
+
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
@@ -15,11 +18,17 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {
+        if(restart_safety_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
+            restart_safety_tracker -= Time.deltaTime;
+        }
+
         if (interaction_done) { 
+            //Pause simulation
             if (Input.GetKey(KeyCode.P)) {
                 interaction_done = false;
                 WFDSManager.stopWFDS();
-                WFDSManager.wfds_runs--;
+                WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
+                restart_safety_tracker = restart_safety_time;
             }
             return; 
         }
@@ -68,17 +77,15 @@ public class InteractionManager : MonoBehaviour
         }
 
         // End Interaction (Calls WFDS After)
-        if (Input.GetKey(KeyCode.R))
-        {
-            File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop");
-            
-            if(SimulationManager.wfds_run_once) {
-                FireManager.readFireData();
+        if (Input.GetKey(KeyCode.R) && restart_safety_tracker <= 0)
+        {            
+            if(SimulationManager.wfds_run_once) { //restarting from 
+                File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 FireManager.setupInputFile();
-                WFDSManager.runCatchup();
-            }
-            
-            interaction_done = true; //DO LAST
+                WFDSManager.runCatchUp();
+            } else { // initial run
+                interaction_done = true;
+            }            
         }
     }
 

@@ -25,6 +25,7 @@ public class SimulationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if(!InteractionManager.interaction_done) {
             return;
         }
@@ -39,8 +40,8 @@ public class SimulationManager : MonoBehaviour
         if (wfds_setup && !WFDSManager.wfds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
-            reading_fire = true;
             ready_to_read = false;
+            WFDSManager.wfds_running = true;
 
             FireManager.readFireData();
             WFDSManager.callWFDS();
