@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
+using System.Text.RegularExpressions;
 
 public class FireManager : MonoBehaviour
 {
@@ -68,6 +68,8 @@ public class FireManager : MonoBehaviour
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
 
         if(!InteractionManager.interaction_done) {
+            new_fire.GetComponent<FireLifeTime>().ignite_time = wallclock_time;
+
             int id = new_fire.GetInstanceID();
 
             if (fires.ContainsKey(wallclock_time)) {
@@ -240,29 +242,64 @@ public class FireManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
-        bool end_of_file = false;
+        bool added_surfaces = false;
 
-        while (!reader.EndOfStream && !end_of_file)
+        List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
+        fires.RemoveAll(afterZero);
+
+        while (!reader.EndOfStream)
         {
             string line = reader.ReadLine();
 
             if (line.Contains("&TIME T_END")) {
 
                 line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
-            
-            } else if (line.Contains("&TAIL")) {
+            } else if (line.Contains("&OBST")) {
+                line = setupHelper(line, ref fires);
+            } else if (!added_surfaces && line.Contains("&SURF")) {
                 //inserting the new fire surfaces
                 foreach(float fire in FireManager.fires.Keys) {
                     Debug.Log(fire);
                     writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
                 }
-                writer.WriteLine("");
-                end_of_file = true;
+                added_surfaces = true;
             }
             
-            if(!line.Contains("INT_FIRE")) {
+            if(!line.Contains("INT_FIRE") || !line.Contains("&SURF")) {
                 writer.WriteLine(line);
             }
         }
+    }
+
+    private static string setupHelper(string line, ref List<GameObject> fires) {
+        string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
+
+        int x = int.Parse(split[1]);
+        int y = int.Parse(split[3]);
+
+        line = setOBSTLine(line, "FIRE", ref fires, x, y);
+
+        return line;
+    }
+
+    private static string setOBSTLine(string line, string type, ref List<GameObject> objects, int x, int z)
+    {
+        foreach (GameObject obj in objects.ToList())
+        {
+            Vector3 transform = obj.transform.position;
+            if (transform.x == x && transform.z == z)
+            {
+                float time = obj.GetComponent<FireLifeTime>().ignite_time;
+
+                objects.Remove(obj);
+                return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
+            }
+        }
+
+        return line;
+    }
+
+    private static bool afterZero(GameObject g) {
+        return g.GetComponent<FireLifeTime>().ignite_time <= 0;
     }
 }
