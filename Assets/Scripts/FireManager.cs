@@ -240,21 +240,29 @@ public class FireManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
+        bool end_of_file = false;
 
-        while (!reader.EndOfStream)
+        while (!reader.EndOfStream && !end_of_file)
         {
             string line = reader.ReadLine();
 
-            if (line.Contains("&TIME T_END"))
-            {
-                line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
-            }
-            if (line.Contains("&TAIL")) 
-            {
-                //inserting the new fire surfacesz
-            }
+            if (line.Contains("&TIME T_END")) {
 
-            writer.WriteLine(line);
+                line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+            
+            } else if (line.Contains("&TAIL")) {
+                //inserting the new fire surfaces
+                foreach(float fire in FireManager.fires.Keys) {
+                    Debug.Log(fire);
+                    writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
+                }
+                writer.WriteLine("");
+                end_of_file = true;
+            }
+            
+            if(!line.Contains("INT_FIRE")) {
+                writer.WriteLine(line);
+            }
         }
     }
 }
