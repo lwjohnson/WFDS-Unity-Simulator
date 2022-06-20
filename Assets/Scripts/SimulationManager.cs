@@ -40,11 +40,14 @@ public class SimulationManager : MonoBehaviour
         if (wfds_setup && !WFDSManager.wfds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
-            ready_to_read = false;
-            WFDSManager.wfds_running = true;
 
             FireManager.readFireData();
-            WFDSManager.callWFDS();
+
+            if(FireManager.read_fires_once) {
+                ready_to_read = false;
+                WFDSManager.wfds_running = true;
+                WFDSManager.callWFDS();
+            }
         }
     }
 
@@ -65,7 +68,7 @@ public class SimulationManager : MonoBehaviour
             }
             else if (line.Contains("&TIME T_END"))
             {
-                line = $"&TIME T_END= {time_to_run} /";
+                line = $"&TIME T_END= {FireManager.starting_time + time_to_run * (WFDSManager.wfds_runs + 1)} /";
             }
             else if (line.Contains("&TIME T_START"))
             {

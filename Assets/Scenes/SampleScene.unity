@@ -216,6 +216,7 @@ RectTransform:
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 1635175419}
+  - {fileID: 344123685}
   m_Father: {fileID: 1734010717}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
@@ -532,6 +533,99 @@ MonoBehaviour:
       m_Flags: 0
     m_Reference: {fileID: -8198699208435500284, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
+--- !u!1 &344123684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344123685}
+  - component: {fileID: 344123688}
+  - component: {fileID: 344123687}
+  - component: {fileID: 344123686}
+  m_Layer: 5
+  m_Name: PauseCooldown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &344123685
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344123684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3309519}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -65.6, y: 49.3}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &344123686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344123684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6afa5acbfe2b1494ebf7c28987e14dcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallclock_time: {fileID: 0}
+--- !u!114 &344123687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344123684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.583572, g: 0, b: 0.5943396, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 24
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: 'Pause Cooldown: 0.00s'
+--- !u!222 &344123688
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344123684}
+  m_CullTransparentMesh: 1
 --- !u!1 &364919479
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290f677e711aa1e4899d415638843a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time_to_run_inspector: 20
+  time_to_run_inspector: 60
   data_collection_mode: 0
 --- !u!4 &364919481
 Transform:
@@ -596,6 +690,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data_collection_mode: 0
+  starting_time: 0
+  time_multiplier: 1
 --- !u!114 &364919483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,9 +708,7 @@ MonoBehaviour:
     type: 3}
   firePrefabStatic: {fileID: 2653448754183537507, guid: 487539c8aa82a7d4293de823df8cf236,
     type: 3}
-  staticFire: 1
-  starting_time: 0
-  time_multiplier: 1
+  staticFire: 0
 --- !u!114 &364919484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -628,6 +722,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data_collection_mode: 0
+  starting_time: 0
+  time_multiplier: 1
 --- !u!114 &364919485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,7 +736,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e52468b182bbc24da4440245a124d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XR_Origin: {fileID: 0}
 --- !u!114 &364919486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2391,7 +2486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d0c126fe03156458d30b98c9c646da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1000
+  speed: 2000
   rotationSpeed: 100
   gravity: 0
 --- !u!1 &2037596143

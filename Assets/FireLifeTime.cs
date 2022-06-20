@@ -22,6 +22,7 @@ public class FireLifeTime : MonoBehaviour
             else
             {
                 Destroy(gameObject);
+                FireManager.createFireAt(transform.position, true);
             }
         }
     }

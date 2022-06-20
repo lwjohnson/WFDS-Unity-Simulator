@@ -15,12 +15,16 @@ public class FireManager : MonoBehaviour
     public GameObject firePrefabEditor;
     public GameObject firePrefabStatic;
     public static GameObject firePrefab;
+
     public bool staticFire;
-    public float starting_time = 0;
-    public float time_multiplier = 1;
+
 
     private static int current_key = 0; 
     public static float wallclock_time = 0;
+    public static float starting_time = 0;
+    public static float time_multiplier = 1;
+    public static bool read_fires_once = false;
+    public static GameObject staticFirePrefab;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
@@ -32,6 +36,7 @@ public class FireManager : MonoBehaviour
         } else {
           firePrefab = firePrefabEditor;
         }
+        staticFirePrefab = firePrefabStatic;
     }
 
     void Update()
@@ -40,7 +45,7 @@ public class FireManager : MonoBehaviour
             return;
         }
 
-        if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run * WFDSManager.wfds_runs)
+        if (SimulationManager.wfds_run_once && read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
         {
             wallclock_time += Time.deltaTime * time_multiplier;
         }
@@ -61,9 +66,14 @@ public class FireManager : MonoBehaviour
         }
     }
 
-    public static void createFireAt(Vector3 point)
+    public static void createFireAt(Vector3 point, bool stat = false)
     {
-        GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        GameObject new_fire;
+        if(stat) {
+          new_fire = Instantiate(staticFirePrefab, point, Quaternion.identity);
+        } else {
+          new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        }
         
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
 
@@ -197,8 +207,7 @@ public class FireManager : MonoBehaviour
                     for (long x = bounds[0]; x <= bounds[1]; x++)
                     {
                         int arrival_time = (int)reader.ReadSingle(); // Read the arrival_time and convert to int instead of float
-
-                        if (arrival_time >= current_key) // Fire reaches this point
+                        if (arrival_time >= current_key || (WFDSManager.wfds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
                         {
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
                             Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
@@ -221,6 +230,8 @@ public class FireManager : MonoBehaviour
         fire_TOA = fire_TOA_copy;
         reader.Close();
         SimulationManager.reading_fire = false;
+        
+        read_fires_once = true;
 
         Debug.Log("Finished reading fires");
     }
@@ -253,7 +264,7 @@ public class FireManager : MonoBehaviour
 
             if (line.Contains("&TIME T_END")) {
 
-                line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+                line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
             } else if (line.Contains("&OBST")) {
                 line = setupHelper(line, ref fires);
             } else if (!added_surfaces && line.Contains("&SURF")) {
