@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
+using System.Text.RegularExpressions;
 
 public class FireManager : MonoBehaviour
 {
@@ -15,25 +15,39 @@ public class FireManager : MonoBehaviour
     public GameObject firePrefabEditor;
     public GameObject firePrefabStatic;
     public static GameObject firePrefab;
+
     public bool staticFire;
+
 
     private static int current_key = 0; 
     public static float wallclock_time = 0;
+    public static float starting_time = 0;
+    public static float time_multiplier = 1;
+    public static bool read_fires_once = false;
+    public static GameObject staticFirePrefab;
+
+    public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
     void Start()
     {
+        wallclock_time = starting_time;
         if(staticFire) {
           firePrefab = firePrefabStatic;
         } else {
           firePrefab = firePrefabEditor;
         }
+        staticFirePrefab = firePrefabStatic;
     }
 
     void Update()
     {
-        if (SimulationManager.wfds_run_once && wallclock_time <= SimulationManager.time_to_run * WFDSManager.wfds_runs)
+        if(!InteractionManager.interaction_done) {
+            return;
+        }
+
+        if (SimulationManager.wfds_run_once && read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
         {
-            wallclock_time += Time.deltaTime;
+            wallclock_time += Time.deltaTime * time_multiplier;
         }
 
         if (fire_TOA.Count > 0)
@@ -52,11 +66,28 @@ public class FireManager : MonoBehaviour
         }
     }
 
-    public static void createFireAt(Vector3 point)
+    public static void createFireAt(Vector3 point, bool stat = false)
     {
-        GameObject new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        GameObject new_fire;
+        if(stat) {
+          new_fire = Instantiate(staticFirePrefab, point, Quaternion.identity);
+        } else {
+          new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+        }
         
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
+
+        if(!InteractionManager.interaction_done) {
+            new_fire.GetComponent<FireLifeTime>().ignite_time = wallclock_time;
+
+            int id = new_fire.GetInstanceID();
+
+            if (fires.ContainsKey(wallclock_time)) {
+                fires[wallclock_time].Add(id);
+            } else {
+                fires.Add(wallclock_time, new List<int>() { id });
+            }
+        }
     }
 
     public static void removeFireAt(Vector3 point)
@@ -110,6 +141,7 @@ public class FireManager : MonoBehaviour
 
     public static void readFireData()
     {   
+        SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
@@ -175,8 +207,7 @@ public class FireManager : MonoBehaviour
                     for (long x = bounds[0]; x <= bounds[1]; x++)
                     {
                         int arrival_time = (int)reader.ReadSingle(); // Read the arrival_time and convert to int instead of float
-
-                        if (arrival_time >= current_key) // Fire reaches this point
+                        if (arrival_time >= current_key || (WFDSManager.wfds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
                         {
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
                             Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
@@ -199,6 +230,8 @@ public class FireManager : MonoBehaviour
         fire_TOA = fire_TOA_copy;
         reader.Close();
         SimulationManager.reading_fire = false;
+        
+        read_fires_once = true;
 
         Debug.Log("Finished reading fires");
     }
@@ -210,6 +243,7 @@ public class FireManager : MonoBehaviour
         reader.ReadInt32();
     }
 
+    //gets input file ready with new end time
     public static void setupInputFile()
     {
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
@@ -219,17 +253,64 @@ public class FireManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
-        
+        bool added_surfaces = false;
+
+        List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
+        fires.RemoveAll(afterZero);
+
         while (!reader.EndOfStream)
         {
             string line = reader.ReadLine();
 
-            if (line.Contains("&TIME T_END"))
-            {
-                line = $"&TIME T_END= {SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
-            }
+            if (line.Contains("&TIME T_END")) {
 
-            writer.WriteLine(line);
+                line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+            } else if (line.Contains("&OBST")) {
+                line = setupHelper(line, ref fires);
+            } else if (!added_surfaces && line.Contains("&SURF")) {
+                //inserting the new fire surfaces
+                foreach(float fire in FireManager.fires.Keys) {
+                    Debug.Log(fire);
+                    writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
+                }
+                added_surfaces = true;
+            }
+            
+            if(!line.Contains("INT_FIRE") || !line.Contains("&SURF")) {
+                writer.WriteLine(line);
+            }
         }
+    }
+
+    private static string setupHelper(string line, ref List<GameObject> fires) {
+        string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
+
+        int x = int.Parse(split[1]);
+        int y = int.Parse(split[3]);
+
+        line = setOBSTLine(line, "FIRE", ref fires, x, y);
+
+        return line;
+    }
+
+    private static string setOBSTLine(string line, string type, ref List<GameObject> objects, int x, int z)
+    {
+        foreach (GameObject obj in objects.ToList())
+        {
+            Vector3 transform = obj.transform.position;
+            if (transform.x == x && transform.z == z)
+            {
+                float time = obj.GetComponent<FireLifeTime>().ignite_time;
+
+                objects.Remove(obj);
+                return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
+            }
+        }
+
+        return line;
+    }
+
+    private static bool afterZero(GameObject g) {
+        return g.GetComponent<FireLifeTime>().ignite_time <= 0;
     }
 }
