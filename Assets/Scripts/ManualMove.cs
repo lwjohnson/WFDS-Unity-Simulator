@@ -11,9 +11,7 @@ public class ManualMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(!gravity) {
-            Destroy(GetComponent<CharacterController>());
-        }
+        
     }
 
     // Update is called once per frame
