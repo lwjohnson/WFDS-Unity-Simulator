@@ -449,6 +449,7 @@ GameObject:
   - component: {fileID: 364919487}
   - component: {fileID: 364919486}
   - component: {fileID: 364919488}
+  - component: {fileID: 364919489}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -584,6 +585,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundPrefab: {fileID: 6305559306142253432, guid: 077108de52a17fd43b87ebff00347ce7,
     type: 3}
+--- !u!114 &364919489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364919479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5717b091ea8e2a0419b13d88b34a0400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &575051219
 GameObject:
   m_ObjectHideFlags: 0
@@ -1194,6 +1207,8 @@ GameObject:
   - component: {fileID: 2022426299}
   - component: {fileID: 2022426301}
   - component: {fileID: 2022426302}
+  - component: {fileID: 2022426303}
+  - component: {fileID: 2022426304}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -1246,7 +1261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d0c126fe03156458d30b98c9c646da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  speed: 5
   rotationSpeed: 100
   gravity: 1
 --- !u!54 &2022426302
@@ -1265,6 +1280,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &2022426303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022426298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29d47fc72bb4a6446b09e7cb1ce6d0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputSource: 4
+--- !u!143 &2022426304
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022426298}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.15
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2037596143
 GameObject:
   m_ObjectHideFlags: 0

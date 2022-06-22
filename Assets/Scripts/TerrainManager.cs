@@ -82,13 +82,17 @@ public class TerrainManager : MonoBehaviour
     {
         Vector3 point = new Vector3 (0,0,0);
 
-        for(int i = 0; i <= triangles.Count-3; i=i+3) {
+        for(int i = 0; i <= triangles.Count-255; i=i+255) {
             // if(i < 100) {
                 GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
                 Mesh mesh = new Mesh();
 
                 mesh.vertices = vertices.ToArray();
-                mesh.triangles = new int[]{triangles[i], triangles[i+1], triangles[i+2]};
+                List<int> local_triangles = new List<int>{};
+                for(int j = i; j < i+255; j++) {
+                    local_triangles.Add(triangles[j]);
+                }
+                mesh.triangles = local_triangles.ToArray();
                 
                 mesh.RecalculateNormals();
                 mesh.RecalculateBounds();
