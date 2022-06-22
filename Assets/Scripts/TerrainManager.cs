@@ -22,8 +22,8 @@ public class TerrainManager : MonoBehaviour
     public static int ymin = 0;
     public static int zmin = 0;
     [SerializeField]
-    [Tooltip("The prefab for the fire")]
-    private GameObject firePrefab;
+    [Tooltip("The prefab for the ground")]
+    private GameObject groundPrefab;
 
     void Start()
     {
@@ -80,15 +80,24 @@ public class TerrainManager : MonoBehaviour
     /// </summary>
     public void generateTerrain()
     {
-        Mesh mesh = new Mesh();
-        mesh.Clear();
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-        mesh.Optimize();
-        GetComponent<MeshFilter>().mesh = mesh;
-        GetComponent<MeshCollider>().sharedMesh = mesh;
+        Vector3 point = new Vector3 (0,0,0);
+
+        for(int i = 0; i <= triangles.Count-3; i=i+3) {
+            // if(i < 100) {
+                GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
+                Mesh mesh = new Mesh();
+
+                mesh.vertices = vertices.ToArray();
+                mesh.triangles = new int[]{triangles[i], triangles[i+1], triangles[i+2]};
+                
+                mesh.RecalculateNormals();
+                mesh.RecalculateBounds();
+                mesh.Optimize();
+
+                ground.GetComponent<MeshFilter>().mesh = mesh;
+                ground.GetComponent<MeshCollider>().sharedMesh = mesh;
+            // }
+        } 
     }
 
     /// <summary>

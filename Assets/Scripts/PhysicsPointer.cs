@@ -33,6 +33,7 @@ public class PhysicsPointer : MonoBehaviour
         if(hit.collider)
         {
             endPosition = hit.point;
+            Debug.Log("Hit:" + endPosition);
         }
 
         return endPosition;
