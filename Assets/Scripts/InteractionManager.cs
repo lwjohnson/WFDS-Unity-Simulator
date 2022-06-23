@@ -8,6 +8,9 @@ public class InteractionManager : MonoBehaviour
 {
     public static bool interaction_done = false;
     GameObject XR_Origin = null;
+    public GameObject rightHand;
+    public GameObject leftHand;
+
 
     public static float restart_safety_time = 10;
     public static float restart_safety_tracker = 0;
@@ -34,48 +37,41 @@ public class InteractionManager : MonoBehaviour
             return; 
         }
 
-        float x = XR_Origin.transform.position.x;
-        float z = XR_Origin.transform.position.z;
-
         // Instantiate fire
         if (Input.GetKey(KeyCode.F))
         {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                FireManager.createFireAt(point);
-            }
+            doInteraction(0);
         }
 
-        // Instantiate Tree
-        if (Input.GetKey(KeyCode.T))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                TreeManager.createTreeAt(point);
-            }
-        }
+        // // Instantiate Tree
+        // if (Input.GetKey(KeyCode.T))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
+        //     if (canInteractAt(point))
+        //     {
+        //         TreeManager.createTreeAt(point);
+        //     }
+        // }
 
-        // Instantiate Trench
-        if (Input.GetKey(KeyCode.G))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                TrenchManager.createTrenchAt(point);
-            }
-        }
+        // // Instantiate Trench
+        // if (Input.GetKey(KeyCode.G))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
+        //     if (canInteractAt(point))
+        //     {
+        //         TrenchManager.createTrenchAt(point);
+        //     }
+        // }
 
-        // Delete GameObjects
-        if (Input.GetKey(KeyCode.Backspace))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
+        // // Delete GameObjects
+        // if (Input.GetKey(KeyCode.Backspace))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
 
-            FireManager.removeFireAt(point);
-            TreeManager.removeTreeAt(point);
-            TrenchManager.removeTrenchAt(point);
-        }
+        //     FireManager.removeFireAt(point);
+        //     TreeManager.removeTreeAt(point);
+        //     TrenchManager.removeTrenchAt(point);
+        // }
 
         // End Interaction (Calls WFDS After)
         if (Input.GetKey(KeyCode.R) && restart_safety_tracker <= 0)
@@ -83,13 +79,34 @@ public class InteractionManager : MonoBehaviour
             if(SimulationManager.wfds_run_once) { //restarting from 
                 File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 FireManager.setupInputFile();
-                
+
                 Thread catchup = new Thread(catchUp);
                 catchup.Start();
             } else { // initial run
                 interaction_done = true;
             }            
         }
+    }
+
+    private void doInteraction(int interaction_type) {
+        PhysicsPointer right_pointer = rightHand.GetComponent<PhysicsPointer>();
+        PhysicsPointer left_pointer = leftHand.GetComponent<PhysicsPointer>();
+
+        Vector3 right = right_pointer.getEndPosition();
+        Vector3 left = left_pointer.getEndPosition();
+        float rx = right.x;
+        float rz = right.z;
+        float lx = left.x;
+        float lz = left.z;
+
+        Vector3 point = TerrainManager.getNearestVector3(lx, lz);
+
+        if (canInteractAt(point)) {
+            if(interaction_type == 0) {
+                FireManager.createFireAt(point);
+            }
+        }
+
     }
 
     private static void catchUp() {

@@ -5,7 +5,10 @@ using UnityEngine;
 public class PhysicsPointer : MonoBehaviour
 {
 
-    public float defaultLength = 3.0f;
+    public float defaultLength = 5.0f;
+    public bool rightHand; //true if right hand, false if left hand
+    
+    public static Vector3 endPosition = new Vector3(0, 0, 0);
 
     private LineRenderer lineRenderer = null;
 
@@ -22,18 +25,18 @@ public class PhysicsPointer : MonoBehaviour
     private void UpdateLength()
     {
         lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, CalculateEnd());
+        CalculateEnd();
+        lineRenderer.SetPosition(1, endPosition);
     }
 
     private Vector3 CalculateEnd()
     {
         RaycastHit hit = CreateForwardRaycast();
-        Vector3 endPosition = DefaultEnd(defaultLength);
+        endPosition = DefaultEnd(defaultLength);
 
         if(hit.collider)
         {
             endPosition = hit.point;
-            Debug.Log("Hit:" + endPosition);
         }
 
         return endPosition;
@@ -51,6 +54,11 @@ public class PhysicsPointer : MonoBehaviour
     private Vector3 DefaultEnd(float length)
     {
         return transform.position + (transform.forward * length);
+    }
+
+    public Vector3 getEndPosition()
+    {
+        return endPosition;
     }
 
 }
