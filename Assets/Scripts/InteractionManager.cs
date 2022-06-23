@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Threading;
 
 public class InteractionManager : MonoBehaviour
 {
@@ -82,11 +83,17 @@ public class InteractionManager : MonoBehaviour
             if(SimulationManager.wfds_run_once) { //restarting from 
                 File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 FireManager.setupInputFile();
-                WFDSManager.runCatchUp();
+                
+                Thread catchup = new Thread(catchUp);
+                catchup.Start();
             } else { // initial run
                 interaction_done = true;
             }            
         }
+    }
+
+    private static void catchUp() {
+        WFDSManager.runCatchUp();
     }
 
     private bool canInteractAt(Vector3 point)
