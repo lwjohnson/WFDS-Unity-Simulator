@@ -55,8 +55,8 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 0.01
+    height: 0.01
   near clip plane: 0.1
   far clip plane: 10
   field of view: 60
@@ -213,3 +213,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultLength: 100
+  rightHand: 0
+  placeMarker: {fileID: 0}
+  gameManager: {fileID: 0}

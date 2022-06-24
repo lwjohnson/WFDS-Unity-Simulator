@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Threading;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class InteractionManager : MonoBehaviour
 {
@@ -10,7 +12,8 @@ public class InteractionManager : MonoBehaviour
     GameObject XR_Origin = null;
     public GameObject rightHand;
     public GameObject leftHand;
-
+    // public InputDevice leftController;
+    // public InputDevice rightController;
 
     public static float restart_safety_time = 10;
     public static float restart_safety_tracker = 0;
@@ -18,6 +21,7 @@ public class InteractionManager : MonoBehaviour
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
+        // leftController = InputDevices.GetDeviceAtXRNode(leftHand);
     }
 
     void Update()
@@ -36,6 +40,10 @@ public class InteractionManager : MonoBehaviour
             }
             return; 
         }
+
+        // if (Input.GetButtonDown(1)){
+        //     Debug.Log("herere");
+        // }
 
         // Instantiate fire
         if (Input.GetKey(KeyCode.F))

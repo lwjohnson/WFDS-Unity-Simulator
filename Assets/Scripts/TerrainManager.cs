@@ -40,6 +40,14 @@ public class TerrainManager : MonoBehaviour
         FireManager.instantiateInitialFires(lines);
     }
 
+    public List<Vector3> passVertices() {
+        return vertices;
+    }
+
+    public int passCellsize() {
+        return cellsize;
+    }
+
     /// <summary>
     /// Finds the vector3 with coordinates x and z
     /// </summary>
@@ -59,20 +67,7 @@ public class TerrainManager : MonoBehaviour
     /// <returns>The nearest Vector3 to x, z</returns>
     public static Vector3 getNearestVector3(float x, float z)
     {
-        Vector3 nearest = new Vector3(0, 0, 0);
-        float minDistance = float.MaxValue;
-
-        foreach (Vector3 v in vertices)
-        {
-            float distance = Vector3.Distance(new Vector3(x, 0, z), v);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                nearest = v;
-            }
-        }
-
-        return nearest;
+        return vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
     }
 
     /// <summary>
@@ -83,24 +78,22 @@ public class TerrainManager : MonoBehaviour
         Vector3 point = new Vector3 (0,0,0);
 
         for(int i = 0; i <= triangles.Count-255; i=i+255) {
-            // if(i < 100) {
-                GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
-                Mesh mesh = new Mesh();
+            GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
+            Mesh mesh = new Mesh();
 
-                mesh.vertices = vertices.ToArray();
-                List<int> local_triangles = new List<int>{};
-                for(int j = i; j < i+255; j++) {
-                    local_triangles.Add(triangles[j]);
-                }
-                mesh.triangles = local_triangles.ToArray();
-                
-                mesh.RecalculateNormals();
-                mesh.RecalculateBounds();
-                mesh.Optimize();
+            mesh.vertices = vertices.ToArray();
+            List<int> local_triangles = new List<int>{};
+            for(int j = i; j < i+255; j++) {
+                local_triangles.Add(triangles[j]);
+            }
+            mesh.triangles = local_triangles.ToArray();
+            
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            mesh.Optimize();
 
-                ground.GetComponent<MeshFilter>().mesh = mesh;
-                ground.GetComponent<MeshCollider>().sharedMesh = mesh;
-            // }
+            ground.GetComponent<MeshFilter>().mesh = mesh;
+            ground.GetComponent<MeshCollider>().sharedMesh = mesh;
         } 
     }
 
