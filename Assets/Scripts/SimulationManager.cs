@@ -109,7 +109,7 @@ public class SimulationManager : MonoBehaviour
         foreach (GameObject obj in objects.ToList())
         {
             Vector3 transform = obj.transform.position;
-            if (transform.x == x && transform.z == z)
+            if (transform.x - FireManager.halfCellSize == x && transform.z - FireManager.halfCellSize == z)
             {
                 objects.Remove(obj);
                 return line = Regex.Replace(line, "'.*'", $"'{type}'");

@@ -70,8 +70,6 @@ public class FireManager : MonoBehaviour
     public static void createFireAt(Vector3 point, bool stat = false)
     {
         Vector3 newPoint = new Vector3(point.x + halfCellSize, point.y, point.z + halfCellSize);
-        Debug.Log(halfCellSize);
-        Debug.Log(newPoint);
         GameObject new_fire;
 
         if(stat) {
@@ -275,7 +273,6 @@ public class FireManager : MonoBehaviour
             } else if (!added_surfaces && line.Contains("&SURF")) {
                 //inserting the new fire surfaces
                 foreach(float fire in FireManager.fires.Keys) {
-                    Debug.Log(fire);
                     writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
                 }
                 added_surfaces = true;
@@ -306,7 +303,6 @@ public class FireManager : MonoBehaviour
             if (transform.x - halfCellSize == x && transform.z - halfCellSize == z)
             {
                 float time = obj.GetComponent<FireLifeTime>().ignite_time;
-
                 objects.Remove(obj);
                 return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
             }

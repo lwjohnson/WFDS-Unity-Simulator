@@ -48,7 +48,6 @@ public class InteractionManager : MonoBehaviour
         }
 
         // if (Input.GetButtonDown(1)){
-        //     Debug.Log("herere");
         // }
 
         // Instantiate fire
