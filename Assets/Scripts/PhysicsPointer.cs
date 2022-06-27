@@ -9,6 +9,7 @@ public class PhysicsPointer : MonoBehaviour
     public bool rightHand; //true if right hand, false if left hand
     public GameObject placeMarker;
     public GameObject gameManager;
+    public GameObject player;
 
     public static Vector3 endPosition = new Vector3(0, 0, 0);
     private static TerrainManager terrainManager;
@@ -23,40 +24,37 @@ public class PhysicsPointer : MonoBehaviour
 
     private void Update()
     {
-        if(skip > 0) {
-            skip--;
-        } else {
-            skip = 2;
-            UpdateLength();
-        }
+        UpdateLength();
     }
 
     private void UpdateLength()
     {
         lineRenderer.SetPosition(0, transform.position);
-        CalculateEnd();
+        endPosition = CalculateEnd();
         lineRenderer.SetPosition(1, endPosition);
 
-        Vector3 playerLocation = GameObject.Find("XR Origin").transform.position;
-        Vector3 place = new Vector3(0, 0, 0);
+        Vector3 playerLocation = player.transform.position;
+
         if(endPosition != DefaultEnd(defaultLength) && Mathf.Abs(endPosition.x - playerLocation.x) > 1 && Mathf.Abs(endPosition.z - playerLocation.z) > 1) {
-            place = getNearestVector3(endPosition.x, endPosition.z);
+            placeMarker.transform.position = getNearestVector3(endPosition.x, endPosition.z);
+            placeMarker.transform.rotation = Quaternion.identity;
+            placeMarker.SetActive(true);
+        } else {
+            placeMarker.SetActive(false);
         }
-        placeMarker.transform.position = place;
-        placeMarker.transform.rotation = Quaternion.identity;
     }
 
     private Vector3 CalculateEnd()
     {
         RaycastHit hit = CreateForwardRaycast();
-        endPosition = DefaultEnd(defaultLength);
+        Vector3 end = DefaultEnd(defaultLength);
 
         if(hit.collider && hit.collider.gameObject.tag == "Ground")
         {
-            endPosition = hit.point;
+            end = hit.point;
         }
 
-        return endPosition;
+        return end;
     }
 
     private RaycastHit CreateForwardRaycast()
@@ -82,7 +80,11 @@ public class PhysicsPointer : MonoBehaviour
     {
         List<Vector3> vertices = terrainManager.passVertices();
         int cellsize = terrainManager.passCellsize();
-        return vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
+        Vector3 place = vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
+        place.x += cellsize / 2;
+        place.y -= cellsize / 4;
+        place.z += cellsize / 2;
+        return place;
     }
 
 }

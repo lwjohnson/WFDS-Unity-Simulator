@@ -10,11 +10,13 @@ public class InteractionManager : MonoBehaviour
 {
     public static bool interaction_done = false;
     GameObject XR_Origin = null;
-    public GameObject rightHand;
-    public GameObject leftHand;
-    // public InputDevice leftController;
-    // public InputDevice rightController;
+    public GameObject rightPlaceMarker;
+    public GameObject leftPlaceMarker;
+    public InputDevice leftController;
+    public InputDevice rightController;
 
+    public static float placement_cooldown = 0.2f;
+    public static float placement_cooldown_tracker = 0;
     public static float restart_safety_time = 10;
     public static float restart_safety_tracker = 0;
 
@@ -28,6 +30,10 @@ public class InteractionManager : MonoBehaviour
     {
         if(restart_safety_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
             restart_safety_tracker -= Time.deltaTime;
+        }
+
+        if(placement_cooldown_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
+            placement_cooldown_tracker -= Time.deltaTime;
         }
 
         if (interaction_done) { 
@@ -97,24 +103,31 @@ public class InteractionManager : MonoBehaviour
     }
 
     private void doInteraction(int interaction_type) {
-        PhysicsPointer right_pointer = rightHand.GetComponent<PhysicsPointer>();
-        PhysicsPointer left_pointer = leftHand.GetComponent<PhysicsPointer>();
 
-        Vector3 right = right_pointer.getEndPosition();
-        Vector3 left = left_pointer.getEndPosition();
-        float rx = right.x;
-        float rz = right.z;
-        float lx = left.x;
-        float lz = left.z;
+        if(placement_cooldown_tracker > 0) {
+            return;
+        }
 
-        Vector3 point = TerrainManager.getNearestVector3(lx, lz);
+        float rx = rightPlaceMarker.transform.position.x;
+        float rz = rightPlaceMarker.transform.position.z;
+        float lx = leftPlaceMarker.transform.position.x;
+        float lz = leftPlaceMarker.transform.position.z;
+
+        Vector3 point = TerrainManager.getNearestVector3(rx, rz);
+
+        bool interaction_made = false;
 
         if (canInteractAt(point)) {
-            if(interaction_type == 0) {
+            if(interaction_type == 0 && rightPlaceMarker.active) {
                 FireManager.createFireAt(point);
+                placement_cooldown_tracker = placement_cooldown;
+                interaction_made = true;
             }
         }
 
+        if(interaction_made) {
+            placement_cooldown_tracker = placement_cooldown;
+        }
     }
 
     private static void catchUp() {

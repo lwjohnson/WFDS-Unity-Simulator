@@ -25,6 +25,7 @@ public class FireManager : MonoBehaviour
     public static float time_multiplier = 1;
     public static bool read_fires_once = false;
     public static GameObject staticFirePrefab;
+    public static float halfCellSize;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
@@ -68,11 +69,15 @@ public class FireManager : MonoBehaviour
 
     public static void createFireAt(Vector3 point, bool stat = false)
     {
+        Vector3 newPoint = new Vector3(point.x + halfCellSize, point.y, point.z + halfCellSize);
+        Debug.Log(halfCellSize);
+        Debug.Log(newPoint);
         GameObject new_fire;
+
         if(stat) {
-          new_fire = Instantiate(staticFirePrefab, point, Quaternion.identity);
+          new_fire = Instantiate(staticFirePrefab, newPoint, Quaternion.identity);
         } else {
-          new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+          new_fire = Instantiate(firePrefab, newPoint, Quaternion.identity);
         }
         
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
@@ -94,7 +99,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 Destroy(fire);
             }
@@ -105,7 +110,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 return true;
             }
@@ -117,7 +122,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 return fire;
             }
@@ -298,7 +303,7 @@ public class FireManager : MonoBehaviour
         foreach (GameObject obj in objects.ToList())
         {
             Vector3 transform = obj.transform.position;
-            if (transform.x == x && transform.z == z)
+            if (transform.x - halfCellSize == x && transform.z - halfCellSize == z)
             {
                 float time = obj.GetComponent<FireLifeTime>().ignite_time;
 

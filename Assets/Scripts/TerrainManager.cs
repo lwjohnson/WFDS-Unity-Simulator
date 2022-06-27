@@ -160,6 +160,7 @@ public class TerrainManager : MonoBehaviour
                 zmax = int.Parse(mesh[6]);
 
                 cellsize = (xmax - xmin) / numx;
+                FireManager.halfCellSize = cellsize / 2;
                 ncols = xmax / cellsize;
                 nrows = zmax / cellsize;
             }

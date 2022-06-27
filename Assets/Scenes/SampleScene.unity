@@ -544,8 +544,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e52468b182bbc24da4440245a124d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightHand: {fileID: 488605464}
-  leftHand: {fileID: 1165918309}
+  rightPlaceMarker: {fileID: 446508951}
+  leftPlaceMarker: {fileID: 680505914}
 --- !u!114 &364919486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,12 +604,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5650252170474175987, guid: 9cc840255bbe4254eae12a945a85b6cb,
     type: 3}
   m_PrefabInstance: {fileID: 1714569328}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &488605464 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8470360886778708201, guid: 8da1a8bae8526634d9b6631a7138d7c4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1443650213187430044}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &575051219
 GameObject:
@@ -1205,12 +1199,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!1 &1165918309 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8470360886778708201, guid: 8da1a8bae8526634d9b6631a7138d7c4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1394772385}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1270625418
 GameObject:
   m_ObjectHideFlags: 0
@@ -1399,21 +1387,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1109810393721080140, guid: 8da1a8bae8526634d9b6631a7138d7c4,
+    - target: {fileID: 1443650212338292603, guid: 8da1a8bae8526634d9b6631a7138d7c4,
         type: 3}
-      propertyPath: m_Depth
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1109810393721080140, guid: 8da1a8bae8526634d9b6631a7138d7c4,
-        type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1109810393721080140, guid: 8da1a8bae8526634d9b6631a7138d7c4,
-        type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2022426298}
     - target: {fileID: 1443650212338292603, guid: 8da1a8bae8526634d9b6631a7138d7c4,
         type: 3}
       propertyPath: gameManager
@@ -1424,11 +1402,6 @@ PrefabInstance:
       propertyPath: placeMarker
       value: 
       objectReference: {fileID: 680505914}
-    - target: {fileID: 4318235312331609581, guid: 8da1a8bae8526634d9b6631a7138d7c4,
-        type: 3}
-      propertyPath: m_MaxRayIntersections
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8470360886778708201, guid: 8da1a8bae8526634d9b6631a7138d7c4,
         type: 3}
       propertyPath: m_Name
@@ -1940,6 +1913,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1443650212338292603, guid: 8da1a8bae8526634d9b6631a7138d7c4,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2022426298}
     - target: {fileID: 1443650212338292603, guid: 8da1a8bae8526634d9b6631a7138d7c4,
         type: 3}
       propertyPath: rightHand

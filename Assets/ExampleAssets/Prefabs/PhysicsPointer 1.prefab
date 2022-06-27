@@ -92,7 +92,7 @@ MonoBehaviour:
   m_EventMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_MaxRayIntersections: 0
+  m_MaxRayIntersections: 1
 --- !u!120 &5344341366111829026
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -216,3 +216,4 @@ MonoBehaviour:
   rightHand: 0
   placeMarker: {fileID: 0}
   gameManager: {fileID: 0}
+  player: {fileID: 0}
