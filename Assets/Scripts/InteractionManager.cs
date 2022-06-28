@@ -107,21 +107,18 @@ public class InteractionManager : MonoBehaviour
             return;
         }
 
-        float rx = rightPlaceMarker.transform.position.x;
-        float rz = rightPlaceMarker.transform.position.z;
-        float lx = leftPlaceMarker.transform.position.x;
-        float lz = leftPlaceMarker.transform.position.z;
+        Vector3 right_bl = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices[0];
+        Vector3 rightPoint = TerrainManager.getNearestVector3(right_bl.x, right_bl.z);
 
-        Vector3 point = TerrainManager.getNearestVector3(rx, rz);
+        Vector3 left_bl = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices[0];
+        Vector3 leftPoint = TerrainManager.getNearestVector3(left_bl.x, left_bl.z);
 
         bool interaction_made = false;
 
-        if (canInteractAt(point)) {
-            if(interaction_type == 0 && rightPlaceMarker.active) {
-                FireManager.createFireAt(point);
-                placement_cooldown_tracker = placement_cooldown;
-                interaction_made = true;
-            }
+        if(interaction_type == 0 && rightPlaceMarker.active && canInteractAt(rightPoint)) {
+            FireManager.createFireAt(rightPoint);
+            placement_cooldown_tracker = placement_cooldown;
+            interaction_made = true;
         }
 
         if(interaction_made) {
