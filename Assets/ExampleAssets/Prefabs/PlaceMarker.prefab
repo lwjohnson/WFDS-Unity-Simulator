@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5811283529780284063}
   - component: {fileID: 6261403257195244197}
   - component: {fileID: 8241571726502475831}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlaceMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 1422861210346831784}
   - component: {fileID: 47972334355000103}
   - component: {fileID: 1709083933397714281}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlaceMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 7075164407542224660}
   - component: {fileID: 735433100124853989}
   - component: {fileID: 8293299651239883606}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlaceMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1259767535128527571}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlaceMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,7 +331,7 @@ GameObject:
   - component: {fileID: 7417408668565880981}
   - component: {fileID: 7399172215794580298}
   - component: {fileID: 1979708179769851019}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlaceMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}

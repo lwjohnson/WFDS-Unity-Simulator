@@ -34,8 +34,11 @@ public class PhysicsPointer : MonoBehaviour
         lineRenderer.SetPosition(1, endPosition);
 
         Vector3 playerLocation = player.transform.position;
+        float halfcellsize = terrainManager.passCellsize() / 2;
 
-        if(endPosition != DefaultEnd(defaultLength) && Mathf.Abs(endPosition.x - playerLocation.x) > 1 && Mathf.Abs(endPosition.z - playerLocation.z) > 1) {
+        if(endPosition != DefaultEnd(defaultLength)
+            && 
+            (Mathf.Abs(endPosition.x - playerLocation.x) > halfcellsize || Mathf.Abs(endPosition.z - playerLocation.z) > halfcellsize)) {
             placeMarker.transform.position = getNearestVector3(endPosition.x, endPosition.z);
             placeMarker.transform.rotation = Quaternion.identity;
             placeMarker.SetActive(true);
@@ -79,7 +82,7 @@ public class PhysicsPointer : MonoBehaviour
     private static Vector3 getNearestVector3(float x, float z)
     {
         List<Vector3> vertices = terrainManager.passVertices();
-        int cellsize = terrainManager.passCellsize();
+        float cellsize = terrainManager.passCellsize();
         Vector3 place = vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
         place.x += cellsize / 2;
         place.y -= cellsize / 4;
