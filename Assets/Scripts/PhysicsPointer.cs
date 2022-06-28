@@ -7,14 +7,13 @@ public class PhysicsPointer : MonoBehaviour
 
     public float defaultLength = 5.0f;
     public bool rightHand; //true if right hand, false if left hand
-    public GameObject placeMarker;
+    public GameObject betterPlaceMarker;
     public GameObject gameManager;
     public GameObject player;
 
     public static Vector3 endPosition = new Vector3(0, 0, 0);
     private static TerrainManager terrainManager;
     private LineRenderer lineRenderer = null;
-    private int skip = 2;
 
     private void Start()
     {
@@ -34,17 +33,30 @@ public class PhysicsPointer : MonoBehaviour
         lineRenderer.SetPosition(1, endPosition);
 
         Vector3 playerLocation = player.transform.position;
-        float halfcellsize = terrainManager.passCellsize() / 2;
-
+        float cellsize = terrainManager.passCellsize();
+    
         if(endPosition != DefaultEnd(defaultLength)
             && 
-            (Mathf.Abs(endPosition.x - playerLocation.x) > halfcellsize || Mathf.Abs(endPosition.z - playerLocation.z) > halfcellsize)) {
-            placeMarker.transform.position = getNearestVector3(endPosition.x, endPosition.z);
-            placeMarker.transform.rotation = Quaternion.identity;
-            placeMarker.SetActive(true);
+            (Mathf.Abs(endPosition.x - playerLocation.x) > cellsize / 2 || Mathf.Abs(endPosition.z - playerLocation.z) > cellsize / 2)) {
+            
+            List<Vector3> verticeList = new List<Vector3>();
+            
+            Vector3 bl = getNearestVector3(endPosition.x, endPosition.z);
+            verticeList.Add(bl);
+            verticeList.Add(new Vector3(bl.x, 0, bl.z + cellsize));
+            verticeList.Add(new Vector3(bl.x + cellsize, 0, bl.z));
+            verticeList.Add(new Vector3(bl.x + cellsize, 0, bl.z + cellsize));
+
+            getNearestVector3List(ref verticeList);
+            
+            betterPlaceMarker.GetComponent<MeshFilter>().mesh.vertices = verticeList.ToArray();
+            betterPlaceMarker.GetComponent<MeshFilter>().mesh.triangles = new int[] { 0, 1, 2, 2, 1, 3 };
+            betterPlaceMarker.GetComponent<MeshFilter>().mesh.RecalculateBounds();
+            betterPlaceMarker.SetActive(true);
         } else {
-            placeMarker.SetActive(false);
+            betterPlaceMarker.SetActive(false);
         }
+    
     }
 
     private Vector3 CalculateEnd()
@@ -79,15 +91,27 @@ public class PhysicsPointer : MonoBehaviour
         return endPosition;
     }
 
-    private static Vector3 getNearestVector3(float x, float z)
+    private static Vector3 getNearestVector3(float x, float z, bool adjust = false)
     {
         List<Vector3> vertices = terrainManager.passVertices();
         float cellsize = terrainManager.passCellsize();
         Vector3 place = vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
-        place.x += cellsize / 2;
-        place.y -= cellsize / 4;
-        place.z += cellsize / 2;
+
+        if(adjust) {               
+            place.x += cellsize / 2;
+            place.y -= cellsize / 4;
+            place.z += cellsize / 2;
+        }
+
         return place;
+    }
+
+    private static void getNearestVector3List(ref List<Vector3> vertices) {
+        List<Vector3> verticeList = new List<Vector3>();
+        foreach(Vector3 v in vertices) {
+            verticeList.Add(getNearestVector3(v.x, v.z));
+        }
+        vertices = verticeList;
     }
 
 }
