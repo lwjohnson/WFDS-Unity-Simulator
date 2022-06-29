@@ -35,9 +35,7 @@ public class PhysicsPointer : MonoBehaviour
         Vector3 playerLocation = player.transform.position;
         float cellsize = terrainManager.passCellsize();
     
-        if(endPosition != DefaultEnd(defaultLength)
-            && 
-            (Mathf.Abs(endPosition.x - playerLocation.x) > cellsize / 2 || Mathf.Abs(endPosition.z - playerLocation.z) > cellsize / 2)) {
+        if(endPosition != DefaultEnd(defaultLength) && getNearestVector3(endPosition.x, endPosition.z) != getNearestVector3(playerLocation.x, playerLocation.z)) {
             
             List<Vector3> verticeList = new List<Vector3>();
             

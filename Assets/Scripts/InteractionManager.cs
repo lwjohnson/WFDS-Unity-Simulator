@@ -103,14 +103,24 @@ public class InteractionManager : MonoBehaviour
 
     private void doInteraction(int interaction_type) {
 
+        Vector3[] rightMesh = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+        Vector3[] leftMesh = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+
         if(placement_cooldown_tracker > 0) {
             return;
         }
 
-        Vector3 right_bl = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices[0];
+        Vector3 right_bl = new Vector3(0, 0, 0);
+        Vector3 left_bl = new Vector3(0, 0, 0);
+
+        if(rightMesh.Length > 0) {
+            right_bl = rightMesh[0];
+        }
         Vector3 rightPoint = TerrainManager.getNearestVector3(right_bl.x, right_bl.z);
 
-        Vector3 left_bl = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices[0];
+        if(leftMesh.Length > 0) {
+            left_bl = leftMesh[0];
+        }
         Vector3 leftPoint = TerrainManager.getNearestVector3(left_bl.x, left_bl.z);
 
         bool interaction_made = false;
