@@ -444,7 +444,6 @@ GameObject:
   - component: {fileID: 364919482}
   - component: {fileID: 364919480}
   - component: {fileID: 364919483}
-  - component: {fileID: 364919484}
   - component: {fileID: 364919485}
   - component: {fileID: 364919487}
   - component: {fileID: 364919486}
@@ -517,21 +516,6 @@ MonoBehaviour:
   firePrefabStatic: {fileID: 2653448754183537507, guid: 487539c8aa82a7d4293de823df8cf236,
     type: 3}
   staticFire: 1
---- !u!114 &364919484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364919479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b039ebcc3c34ac34d846b32c51f8e109, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data_collection_mode: 0
-  starting_time: 0
-  time_multiplier: 1
 --- !u!114 &364919485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +530,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightPlaceMarker: {fileID: 1998582169}
   leftPlaceMarker: {fileID: 1656108755}
+  leftController: {fileID: 575051219}
+  rightController: {fileID: 1801903270}
 --- !u!114 &364919486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,6 +595,8 @@ GameObject:
   m_Component:
   - component: {fileID: 575051220}
   - component: {fileID: 575051221}
+  - component: {fileID: 575051223}
+  - component: {fileID: 575051222}
   m_Layer: 0
   m_Name: Left Hand
   m_TagString: Untagged
@@ -663,6 +651,36 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!114 &575051222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575051219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077cde48bf9e00e479bf7027db4e52bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  watcher: {fileID: 575051223}
+  IsPressed: 0
+--- !u!114 &575051223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575051219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de31cf76e2fa9874bad2242cdb733789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryButtonPress:
+    m_PersistentCalls:
+      m_Calls: []
+  rightHand: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1439,6 +1457,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1801903271}
   - component: {fileID: 1801903272}
+  - component: {fileID: 1801903274}
+  - component: {fileID: 1801903273}
   m_Layer: 0
   m_Name: Right Hand
   m_TagString: Untagged
@@ -1493,6 +1513,36 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!114 &1801903273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801903270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077cde48bf9e00e479bf7027db4e52bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  watcher: {fileID: 1801903274}
+  IsPressed: 0
+--- !u!114 &1801903274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801903270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de31cf76e2fa9874bad2242cdb733789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryButtonPress:
+    m_PersistentCalls:
+      m_Calls: []
+  rightHand: 1
 --- !u!1 &1859072078
 GameObject:
   m_ObjectHideFlags: 0

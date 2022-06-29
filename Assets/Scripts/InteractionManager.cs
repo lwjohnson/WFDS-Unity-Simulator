@@ -12,8 +12,8 @@ public class InteractionManager : MonoBehaviour
     GameObject XR_Origin = null;
     public GameObject rightPlaceMarker;
     public GameObject leftPlaceMarker;
-    public InputDevice leftController;
-    public InputDevice rightController;
+    public GameObject leftController;
+    public GameObject rightController;
 
     public static float placement_cooldown = 0.2f;
     public static float placement_cooldown_tracker = 0;
@@ -23,7 +23,7 @@ public class InteractionManager : MonoBehaviour
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
-        // leftController = InputDevices.GetDeviceAtXRNode(leftHand);
+        InputDevice leftHand = InputDevices.GetDeviceAtXRNode(leftController.controllerNode);
     }
 
     void Update()
