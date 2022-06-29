@@ -12,6 +12,9 @@ public class InteractionManager : MonoBehaviour
     GameObject XR_Origin = null;
     public GameObject rightPlaceMarker;
     public GameObject leftPlaceMarker;
+    public XRNode rightHand;
+    public XRNode leftHand;
+
     public InputDevice leftController;
     public InputDevice rightController;
 
@@ -20,14 +23,25 @@ public class InteractionManager : MonoBehaviour
     public static float restart_safety_time = 10;
     public static float restart_safety_tracker = 0;
 
+    public static bool leftTriggerPressed = false;
+    public static bool rightTriggerPressed = false;
+    public static bool leftGripPressed = false;
+    public static bool rightGripPressed = false;
+
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
-        // leftController = InputDevices.GetDeviceAtXRNode(leftHand);
+        leftController = InputDevices.GetDeviceAtXRNode(leftHand);
+        rightController = InputDevices.GetDeviceAtXRNode(rightHand);
     }
 
     void Update()
-    {
+    {        
+        leftController.TryGetFeatureValue( CommonUsages.triggerButton, out leftTriggerPressed);
+        rightController.TryGetFeatureValue( CommonUsages.triggerButton, out rightTriggerPressed);
+        leftController.TryGetFeatureValue( CommonUsages.gripButton, out leftGripPressed);
+        rightController.TryGetFeatureValue( CommonUsages.gripButton, out rightGripPressed);
+
         if(restart_safety_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
             restart_safety_tracker -= Time.deltaTime;
         }
@@ -51,9 +65,10 @@ public class InteractionManager : MonoBehaviour
         // }
 
         // Instantiate fire
-        if (Input.GetKey(KeyCode.F))
-        {
-            doInteraction(0);
+        if (Input.GetKey(KeyCode.F) || bothPressed(true)) {
+            doInteraction(0, true);
+        } else if(bothPressed(false)) { 
+            doInteraction(0, false);
         }
 
         // // Instantiate Tree
@@ -101,32 +116,33 @@ public class InteractionManager : MonoBehaviour
         }
     }
 
-    private void doInteraction(int interaction_type) {
+    // right = true for right hand, false for left
+    private void doInteraction(int interaction_type, bool right) {
 
-        Vector3[] rightMesh = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
-        Vector3[] leftMesh = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+        Vector3[] mesh;
+        GameObject placeMarker;
+
+        if(right) {
+            mesh = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+            placeMarker = rightPlaceMarker;
+        } else {
+            mesh = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+            placeMarker = leftPlaceMarker;
+        }
 
         if(placement_cooldown_tracker > 0) {
             return;
         }
 
-        Vector3 right_bl = new Vector3(0, 0, 0);
-        Vector3 left_bl = new Vector3(0, 0, 0);
-
-        if(rightMesh.Length > 0) {
-            right_bl = rightMesh[0];
+        Vector3 bl = new Vector3(0, 0, 0);
+        if(mesh.Length > 0) {
+            bl = mesh[0];
         }
-        Vector3 rightPoint = TerrainManager.getNearestVector3(right_bl.x, right_bl.z);
-
-        if(leftMesh.Length > 0) {
-            left_bl = leftMesh[0];
-        }
-        Vector3 leftPoint = TerrainManager.getNearestVector3(left_bl.x, left_bl.z);
+        Vector3 point = TerrainManager.getNearestVector3(bl.x, bl.z);
 
         bool interaction_made = false;
-
-        if(interaction_type == 0 && rightPlaceMarker.active && canInteractAt(rightPoint)) {
-            FireManager.createFireAt(rightPoint);
+        if(interaction_type == 0 && placeMarker.active && canInteractAt(point)) {
+            FireManager.createFireAt(point);
             placement_cooldown_tracker = placement_cooldown;
             interaction_made = true;
         }
@@ -147,5 +163,12 @@ public class InteractionManager : MonoBehaviour
         if (TrenchManager.trenchExistsAt(point)) { return false; }
 
         return true;
+    }
+
+    public bool bothPressed(bool right) { //true for right, false left
+        if(right) {
+            return rightGripPressed && rightTriggerPressed;
+        }
+        return leftGripPressed && leftTriggerPressed;
     }
 }

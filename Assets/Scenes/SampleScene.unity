@@ -546,6 +546,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightPlaceMarker: {fileID: 1998582169}
   leftPlaceMarker: {fileID: 1656108755}
+  rightHand: 5
+  leftHand: 4
 --- !u!114 &364919486
 MonoBehaviour:
   m_ObjectHideFlags: 0
