@@ -22,8 +22,8 @@ public class TerrainManager : MonoBehaviour
     public static int ymin = 0;
     public static int zmin = 0;
     [SerializeField]
-    [Tooltip("The prefab for the fire")]
-    private GameObject firePrefab;
+    [Tooltip("The prefab for the ground")]
+    private GameObject groundPrefab;
 
     void Start()
     {
@@ -38,6 +38,14 @@ public class TerrainManager : MonoBehaviour
         setCameraPosition();
 
         FireManager.instantiateInitialFires(lines);
+    }
+
+    public List<Vector3> passVertices() {
+        return vertices;
+    }
+
+    public int passCellsize() {
+        return cellsize;
     }
 
     /// <summary>
@@ -59,20 +67,7 @@ public class TerrainManager : MonoBehaviour
     /// <returns>The nearest Vector3 to x, z</returns>
     public static Vector3 getNearestVector3(float x, float z)
     {
-        Vector3 nearest = new Vector3(0, 0, 0);
-        float minDistance = float.MaxValue;
-
-        foreach (Vector3 v in vertices)
-        {
-            float distance = Vector3.Distance(new Vector3(x, 0, z), v);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                nearest = v;
-            }
-        }
-
-        return nearest;
+        return vertices.Find( v => (v.x == (x - (x % cellsize)) && v.z == (z - (z % cellsize))) );
     }
 
     /// <summary>
@@ -80,15 +75,26 @@ public class TerrainManager : MonoBehaviour
     /// </summary>
     public void generateTerrain()
     {
-        Mesh mesh = new Mesh();
-        mesh.Clear();
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-        mesh.Optimize();
-        GetComponent<MeshFilter>().mesh = mesh;
-        GetComponent<MeshCollider>().sharedMesh = mesh;
+        Vector3 point = new Vector3 (0,0,0);
+
+        for(int i = 0; i <= triangles.Count-255; i=i+255) {
+            GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
+            Mesh mesh = new Mesh();
+
+            mesh.vertices = vertices.ToArray();
+            List<int> local_triangles = new List<int>{};
+            for(int j = i; j < i+255; j++) {
+                local_triangles.Add(triangles[j]);
+            }
+            mesh.triangles = local_triangles.ToArray();
+            
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            mesh.Optimize();
+
+            ground.GetComponent<MeshFilter>().mesh = mesh;
+            ground.GetComponent<MeshCollider>().sharedMesh = mesh;
+        } 
     }
 
     /// <summary>
@@ -154,6 +160,7 @@ public class TerrainManager : MonoBehaviour
                 zmax = int.Parse(mesh[6]);
 
                 cellsize = (xmax - xmin) / numx;
+                FireManager.halfCellSize = cellsize / 2;
                 ncols = xmax / cellsize;
                 nrows = zmax / cellsize;
             }

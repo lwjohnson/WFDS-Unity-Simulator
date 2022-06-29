@@ -25,6 +25,7 @@ public class FireManager : MonoBehaviour
     public static float time_multiplier = 1;
     public static bool read_fires_once = false;
     public static GameObject staticFirePrefab;
+    public static float halfCellSize;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
@@ -68,11 +69,13 @@ public class FireManager : MonoBehaviour
 
     public static void createFireAt(Vector3 point, bool stat = false)
     {
+        Vector3 newPoint = new Vector3(point.x + halfCellSize, point.y, point.z + halfCellSize);
         GameObject new_fire;
+
         if(stat) {
-          new_fire = Instantiate(staticFirePrefab, point, Quaternion.identity);
+          new_fire = Instantiate(staticFirePrefab, newPoint, Quaternion.identity);
         } else {
-          new_fire = Instantiate(firePrefab, point, Quaternion.identity);
+          new_fire = Instantiate(firePrefab, newPoint, Quaternion.identity);
         }
         
         new_fire.transform.localScale = Vector3.one * TerrainManager.cellsize;
@@ -94,7 +97,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 Destroy(fire);
             }
@@ -105,7 +108,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 return true;
             }
@@ -117,7 +120,7 @@ public class FireManager : MonoBehaviour
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
         {
-            if (fire.transform.position.x == point.x && fire.transform.position.z == point.z)
+            if (fire.transform.position.x - halfCellSize == point.x && fire.transform.position.z - halfCellSize == point.z)
             {
                 return fire;
             }
@@ -270,7 +273,6 @@ public class FireManager : MonoBehaviour
             } else if (!added_surfaces && line.Contains("&SURF")) {
                 //inserting the new fire surfaces
                 foreach(float fire in FireManager.fires.Keys) {
-                    Debug.Log(fire);
                     writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
                 }
                 added_surfaces = true;
@@ -298,10 +300,9 @@ public class FireManager : MonoBehaviour
         foreach (GameObject obj in objects.ToList())
         {
             Vector3 transform = obj.transform.position;
-            if (transform.x == x && transform.z == z)
+            if (transform.x - halfCellSize == x && transform.z - halfCellSize == z)
             {
                 float time = obj.GetComponent<FireLifeTime>().ignite_time;
-
                 objects.Remove(obj);
                 return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
             }

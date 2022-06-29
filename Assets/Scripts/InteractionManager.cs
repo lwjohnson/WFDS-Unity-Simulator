@@ -2,24 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Threading;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class InteractionManager : MonoBehaviour
 {
     public static bool interaction_done = false;
     GameObject XR_Origin = null;
+    public GameObject rightPlaceMarker;
+    public GameObject leftPlaceMarker;
+    public InputDevice leftController;
+    public InputDevice rightController;
 
+    public static float placement_cooldown = 0.2f;
+    public static float placement_cooldown_tracker = 0;
     public static float restart_safety_time = 10;
     public static float restart_safety_tracker = 0;
 
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
+        // leftController = InputDevices.GetDeviceAtXRNode(leftHand);
     }
 
     void Update()
     {
         if(restart_safety_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
             restart_safety_tracker -= Time.deltaTime;
+        }
+
+        if(placement_cooldown_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
+            placement_cooldown_tracker -= Time.deltaTime;
         }
 
         if (interaction_done) { 
@@ -33,48 +47,44 @@ public class InteractionManager : MonoBehaviour
             return; 
         }
 
-        float x = XR_Origin.transform.position.x;
-        float z = XR_Origin.transform.position.z;
+        // if (Input.GetButtonDown(1)){
+        // }
 
         // Instantiate fire
         if (Input.GetKey(KeyCode.F))
         {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                FireManager.createFireAt(point);
-            }
+            doInteraction(0);
         }
 
-        // Instantiate Tree
-        if (Input.GetKey(KeyCode.T))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                TreeManager.createTreeAt(point);
-            }
-        }
+        // // Instantiate Tree
+        // if (Input.GetKey(KeyCode.T))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
+        //     if (canInteractAt(point))
+        //     {
+        //         TreeManager.createTreeAt(point);
+        //     }
+        // }
 
-        // Instantiate Trench
-        if (Input.GetKey(KeyCode.G))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
-            if (canInteractAt(point))
-            {
-                TrenchManager.createTrenchAt(point);
-            }
-        }
+        // // Instantiate Trench
+        // if (Input.GetKey(KeyCode.G))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
+        //     if (canInteractAt(point))
+        //     {
+        //         TrenchManager.createTrenchAt(point);
+        //     }
+        // }
 
-        // Delete GameObjects
-        if (Input.GetKey(KeyCode.Backspace))
-        {
-            Vector3 point = TerrainManager.getNearestVector3(x, z);
+        // // Delete GameObjects
+        // if (Input.GetKey(KeyCode.Backspace))
+        // {
+        //     Vector3 point = TerrainManager.getNearestVector3(x, z);
 
-            FireManager.removeFireAt(point);
-            TreeManager.removeTreeAt(point);
-            TrenchManager.removeTrenchAt(point);
-        }
+        //     FireManager.removeFireAt(point);
+        //     TreeManager.removeTreeAt(point);
+        //     TrenchManager.removeTrenchAt(point);
+        // }
 
         // End Interaction (Calls WFDS After)
         if (Input.GetKey(KeyCode.R) && restart_safety_tracker <= 0)
@@ -82,11 +92,52 @@ public class InteractionManager : MonoBehaviour
             if(SimulationManager.wfds_run_once) { //restarting from 
                 File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 FireManager.setupInputFile();
-                WFDSManager.runCatchUp();
+
+                Thread catchup = new Thread(catchUp);
+                catchup.Start();
             } else { // initial run
                 interaction_done = true;
             }            
         }
+    }
+
+    private void doInteraction(int interaction_type) {
+
+        Vector3[] rightMesh = rightPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+        Vector3[] leftMesh = leftPlaceMarker.GetComponent<MeshFilter>().mesh.vertices;
+
+        if(placement_cooldown_tracker > 0) {
+            return;
+        }
+
+        Vector3 right_bl = new Vector3(0, 0, 0);
+        Vector3 left_bl = new Vector3(0, 0, 0);
+
+        if(rightMesh.Length > 0) {
+            right_bl = rightMesh[0];
+        }
+        Vector3 rightPoint = TerrainManager.getNearestVector3(right_bl.x, right_bl.z);
+
+        if(leftMesh.Length > 0) {
+            left_bl = leftMesh[0];
+        }
+        Vector3 leftPoint = TerrainManager.getNearestVector3(left_bl.x, left_bl.z);
+
+        bool interaction_made = false;
+
+        if(interaction_type == 0 && rightPlaceMarker.active && canInteractAt(rightPoint)) {
+            FireManager.createFireAt(rightPoint);
+            placement_cooldown_tracker = placement_cooldown;
+            interaction_made = true;
+        }
+
+        if(interaction_made) {
+            placement_cooldown_tracker = placement_cooldown;
+        }
+    }
+
+    private static void catchUp() {
+        WFDSManager.runCatchUp();
     }
 
     private bool canInteractAt(Vector3 point)
