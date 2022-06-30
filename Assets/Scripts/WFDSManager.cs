@@ -27,7 +27,6 @@ public static class WFDSManager
 
     public static void startWFDS()
     {
-
         DateTime start = System.DateTime.Now;
         
         Process wfds_process = new Process();
@@ -71,6 +70,8 @@ public static class WFDSManager
         wfds_running = false;
 
         SimulationManager.ready_to_read = true;
+        InteractionManager.restart_guard = false;
+        InteractionManager.pause_guard = false;
 
         DateTime end = System.DateTime.Now;
 
@@ -127,6 +128,7 @@ public static class WFDSManager
         wfds_runs++;
         wfds_running = false;
         SimulationManager.ready_to_read = true;
+        InteractionManager.pause_guard = false;
     }
 
 

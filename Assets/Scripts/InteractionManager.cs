@@ -15,8 +15,9 @@ public class InteractionManager : MonoBehaviour
     public static float placement_cooldown_tracker = 0;
     public static float restart_safety_time = 10; // time until can restart simulation
     public static float restart_safety_tracker = 0;
-    public static float pause_safety_time = 2; // time until can pause simulation
-    public static float pause_safety_tracker = 0;
+
+    public static bool restart_guard = false;
+    public static bool pause_guard = false;
     public static bool catch_up_guard = false;
 
     void Start()
@@ -25,35 +26,35 @@ public class InteractionManager : MonoBehaviour
     }
 
     void Update()
-    {        
-        if(restart_safety_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
-            restart_safety_tracker -= Time.deltaTime;
-        }
+    {   
+        Debug.Log("Restart guard: " + restart_guard);     
+        Debug.Log("Pause guard: " + pause_guard);
 
-        if(placement_cooldown_tracker > 0) { //Tracker to avoid W/FDS opening files still in use
+
+        if(placement_cooldown_tracker > 0) { //Tracker to avoid instant placing a million items
             placement_cooldown_tracker -= Time.deltaTime;
-        }
-
-        if(pause_safety_tracker > 0) { //Tracker to avoid pausing directly after restarting
-            pause_safety_tracker -= Time.deltaTime;
-            return;
         }
 
         if (interaction_done) { 
             //Pause simulation
-            if (Input.GetKey(KeyCode.P) || ControllerManager.menuPressed() && pause_safety_tracker <= 0) { //pause the simulation
+            if (Input.GetKey(KeyCode.P) || ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
                 interaction_done = false;
                 WFDSManager.stopWFDS();
                 WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
-                restart_safety_tracker = restart_safety_time;
+                restart_guard = true;
+
+                if(!WFDSManager.wfds_running) {
+                    pause_guard = false;
+                    restart_guard = false;
+                }
             }
             return; 
         }
 
         // End Interaction (Calls WFDS After)
-        if ((Input.GetKey(KeyCode.R) || ControllerManager.menuPressed()) && restart_safety_tracker <= 0 && pause_safety_tracker <= 0)
+        if ((Input.GetKey(KeyCode.R) || ControllerManager.menuPressed()) && !restart_guard && !pause_guard)
         {            
-            pause_safety_tracker = pause_safety_time;
+            pause_guard = true;
 
             if(SimulationManager.wfds_run_once && !catch_up_guard) { //restarting from 
                 catch_up_guard = true;
