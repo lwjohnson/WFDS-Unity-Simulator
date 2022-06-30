@@ -17,6 +17,7 @@ public class InteractionManager : MonoBehaviour
     public static float restart_safety_tracker = 0;
     public static float pause_safety_time = 2; // time until can pause simulation
     public static float pause_safety_tracker = 0;
+    public static bool catch_up_guard = false;
 
     void Start()
     {
@@ -54,12 +55,15 @@ public class InteractionManager : MonoBehaviour
         {            
             pause_safety_tracker = pause_safety_time;
 
-            if(SimulationManager.wfds_run_once) { //restarting from 
+            if(SimulationManager.wfds_run_once && !catch_up_guard) { //restarting from 
+                catch_up_guard = true;
                 File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 FireManager.setupInputFile();
 
                 Thread catchup = new Thread(catchUp);
                 catchup.Start();
+            } else {
+                interaction_done = true;
             }
         }
 
@@ -154,6 +158,7 @@ public class InteractionManager : MonoBehaviour
     //calls catch up function for when we restart after pause
     private static void catchUp() {
         WFDSManager.runCatchUp();
+        catch_up_guard = false;
         interaction_done = true;            
     }
 
