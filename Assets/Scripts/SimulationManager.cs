@@ -30,13 +30,6 @@ public class SimulationManager : MonoBehaviour
             return;
         }
 
-        if (!wfds_setup)
-        {
-            wfds_setup = true;
-            setupInputFile();
-            WFDSManager.callWFDS();
-        }
-
         if (wfds_setup && !WFDSManager.wfds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
@@ -48,6 +41,15 @@ public class SimulationManager : MonoBehaviour
                 WFDSManager.wfds_running = true;
                 WFDSManager.callWFDS();
             }
+
+            return;
+        }
+
+        if (!wfds_setup)
+        {
+            wfds_setup = true;
+            setupInputFile();
+            WFDSManager.callWFDS();
         }
     }
 

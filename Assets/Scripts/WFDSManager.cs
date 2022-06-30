@@ -88,7 +88,7 @@ public static class WFDSManager
     // wallclock chunk so we can continue from current time
     public static void runCatchUp() {
         wfds_running = true;
-        SimulationManager.ready_to_read = false;
+        
         logMessage("STARTING CATCH UP");
 
         Process wfds_process = new Process();
@@ -127,8 +127,6 @@ public static class WFDSManager
         wfds_runs++;
         wfds_running = false;
         SimulationManager.ready_to_read = true;
-
-        InteractionManager.interaction_done = true;
     }
 
 
