@@ -37,7 +37,7 @@ public class InteractionManager : MonoBehaviour
 
         if (interaction_done) { 
             //Pause simulation
-            if (Input.GetKey(KeyCode.P) || ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
+            if (ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
                 interaction_done = false;
                 WFDSManager.stopWFDS();
                 WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
@@ -52,7 +52,7 @@ public class InteractionManager : MonoBehaviour
         }
 
         // End Interaction (Calls WFDS After)
-        if ((Input.GetKey(KeyCode.R) || ControllerManager.menuPressed()) && !restart_guard && !pause_guard)
+        if (ControllerManager.menuPressed() && !restart_guard && !pause_guard)
         {            
             pause_guard = true;
 
@@ -71,7 +71,7 @@ public class InteractionManager : MonoBehaviour
         if(placement_cooldown_tracker <= 0) { //can make a place/remove interaction
 
             // Instantiate fire
-            if (Input.GetKey(KeyCode.F) || ControllerManager.gripTriggerPressed(true)) { //right hand
+            if (ControllerManager.gripTriggerPressed(true)) { //right hand
                 doInteraction(0, true);
             } else if(ControllerManager.gripTriggerPressed(false)) { //left hand
                 doInteraction(0, false);

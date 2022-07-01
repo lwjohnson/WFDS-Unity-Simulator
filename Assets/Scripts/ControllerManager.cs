@@ -65,7 +65,7 @@ public class ControllerManager : MonoBehaviour
 
     // returns true if both menu button is pressed
     public static bool menuPressed() {
-        return leftMenuPressed;
+        return leftMenuPressed || Input.GetKey(KeyCode.R);
     }
 
     // returns true if grip is pressed for desired hand
