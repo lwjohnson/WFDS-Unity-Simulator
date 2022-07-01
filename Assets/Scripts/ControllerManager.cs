@@ -63,7 +63,17 @@ public class ControllerManager : MonoBehaviour
         return leftGripPressed && leftTriggerPressed;
     }
 
+    // returns true if both menu button is pressed
     public static bool menuPressed() {
         return leftMenuPressed;
+    }
+
+    // returns true if grip is pressed for desired hand
+    // bool right -> true for right, false for left
+    public bool gripPressed(bool right) {
+        if(right) {
+            return rightGripPressed;
+        }
+        return leftGripPressed;
     }
 }

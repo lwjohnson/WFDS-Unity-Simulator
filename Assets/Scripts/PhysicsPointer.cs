@@ -13,17 +13,23 @@ public class PhysicsPointer : MonoBehaviour
 
     public static Vector3 endPosition = new Vector3(0, 0, 0);
     private static TerrainManager terrainManager;
+    private static ControllerManager controllerManager;
     private LineRenderer lineRenderer = null;
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         terrainManager = gameManager.GetComponent<TerrainManager>();
+        controllerManager = gameManager.GetComponent<ControllerManager>();
     }
 
     private void Update()
     {
-        UpdateLength();
+        if(controllerManager.gripPressed(rightHand == true)){
+            UpdateLength();
+        } else {
+            ClearLength();
+        }
     }
 
     private void UpdateLength()
@@ -48,13 +54,19 @@ public class PhysicsPointer : MonoBehaviour
             getNearestVector3List(ref verticeList);
             
             betterPlaceMarker.GetComponent<MeshFilter>().mesh.vertices = verticeList.ToArray();
-            betterPlaceMarker.GetComponent<MeshFilter>().mesh.triangles = new int[] { 0, 1, 2, 2, 1, 3 };
+            betterPlaceMarker.GetComponent<MeshFilter>().mesh.triangles = new int[] { 0, 1, 3, 2, 0, 3 };
             betterPlaceMarker.GetComponent<MeshFilter>().mesh.RecalculateBounds();
             betterPlaceMarker.SetActive(true);
         } else {
             betterPlaceMarker.SetActive(false);
         }
     
+    }
+
+    private void ClearLength() {
+        betterPlaceMarker.SetActive(false);
+        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(1, Vector3.zero);
     }
 
     private Vector3 CalculateEnd()
