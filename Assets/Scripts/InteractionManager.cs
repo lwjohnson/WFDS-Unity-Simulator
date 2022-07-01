@@ -66,7 +66,7 @@ public class InteractionManager : MonoBehaviour
             }
         }
 
-        if(placement_cooldown_tracker <= 0) { //can make a place/remove interaction
+        if(placement_cooldown_tracker <= 0 && !pause_guard) { //can make a place/remove interaction
 
             // Instantiate fire
             if (ControllerManager.gripTriggerPressed(true)) { //right hand
