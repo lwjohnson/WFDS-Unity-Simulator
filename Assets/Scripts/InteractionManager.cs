@@ -13,8 +13,6 @@ public class InteractionManager : MonoBehaviour
 
     public static float placement_cooldown = 0.2f;
     public static float placement_cooldown_tracker = 0;
-    public static float restart_safety_time = 10; // time until can restart simulation
-    public static float restart_safety_tracker = 0;
 
     public static bool restart_guard = false;
     public static bool pause_guard = false;
