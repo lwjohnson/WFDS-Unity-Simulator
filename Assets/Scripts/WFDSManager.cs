@@ -27,7 +27,6 @@ public static class WFDSManager
 
     public static void startWFDS()
     {
-
         DateTime start = System.DateTime.Now;
         
         Process wfds_process = new Process();
@@ -71,6 +70,8 @@ public static class WFDSManager
         wfds_running = false;
 
         SimulationManager.ready_to_read = true;
+        InteractionManager.restart_guard = false;
+        InteractionManager.pause_guard = false;
 
         DateTime end = System.DateTime.Now;
 
@@ -88,7 +89,7 @@ public static class WFDSManager
     // wallclock chunk so we can continue from current time
     public static void runCatchUp() {
         wfds_running = true;
-        SimulationManager.ready_to_read = false;
+        
         logMessage("STARTING CATCH UP");
 
         Process wfds_process = new Process();
@@ -127,8 +128,7 @@ public static class WFDSManager
         wfds_runs++;
         wfds_running = false;
         SimulationManager.ready_to_read = true;
-
-        InteractionManager.interaction_done = true;
+        InteractionManager.pause_guard = false;
     }
 
 

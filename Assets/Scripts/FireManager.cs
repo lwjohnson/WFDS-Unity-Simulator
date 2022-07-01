@@ -67,6 +67,8 @@ public class FireManager : MonoBehaviour
         }
     }
 
+    // Creates a fire at the given point
+    // Vector3 point: The bottom left corner of the square where the fire will be placed
     public static void createFireAt(Vector3 point, bool stat = false)
     {
         Vector3 newPoint = new Vector3(point.x + halfCellSize, point.y, point.z + halfCellSize);
@@ -93,6 +95,8 @@ public class FireManager : MonoBehaviour
         }
     }
 
+    // Removes a fire if exists at point
+    // Vector3 point: The bottom left corner of the square where the fire will be removed
     public static void removeFireAt(Vector3 point)
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
@@ -104,6 +108,8 @@ public class FireManager : MonoBehaviour
         }
     }
 
+    // Determines if a fire exists at point
+    // Vector3 point: The bottom left corner of the square where to check for fire
     public static bool fireExistsAt(Vector3 point)
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
@@ -116,6 +122,8 @@ public class FireManager : MonoBehaviour
         return false;
     }
 
+    // Return fire gamboject at point
+    // Vector3 point: The bottom left corner of the square where to get the fire
     public static GameObject getFireAt(Vector3 point)
     {
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Fire"))
@@ -128,6 +136,7 @@ public class FireManager : MonoBehaviour
         return null;
     }
 
+    // Creates new fires from the initial input file
     public static void instantiateInitialFires(string[] lines)
     {
         List<GameObject> fires = new List<GameObject>();
@@ -142,6 +151,7 @@ public class FireManager : MonoBehaviour
         });
     }
 
+    // Starts thread to read fires from the lstoa file
     public static void readFireData()
     {   
         SimulationManager.reading_fire = true;
@@ -154,6 +164,7 @@ public class FireManager : MonoBehaviour
         read_fire_thread.Start();
     }
 
+    //reads fire data from the lstoa file
     private static void readFires(){
         
         Debug.Log("Reading fires");
@@ -246,7 +257,7 @@ public class FireManager : MonoBehaviour
         reader.ReadInt32();
     }
 
-    //gets input file ready with new end time
+    //gets input file ready with new end time and new fire surfaces
     public static void setupInputFile()
     {
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
