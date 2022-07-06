@@ -37,7 +37,16 @@ public class ControllerManager : MonoBehaviour
         //up here if need its input even when paused
         leftController.TryGetFeatureValue( CommonUsages.menuButton, out leftMenuPressed); 
 
-        if (InteractionManager.interaction_done) { 
+        if (InteractionManager.interaction_done || InteractionManager.pause_guard) { 
+            leftTriggerPressed = false;
+            leftGripPressed = false;
+            leftPrimaryPressed = false;
+            leftSecondaryPressed = false;
+
+            rightTriggerPressed = false;
+            rightGripPressed = false;
+            rightPrimaryPressed = false;
+            rightSecondaryPressed = false;
             return; 
         }
 

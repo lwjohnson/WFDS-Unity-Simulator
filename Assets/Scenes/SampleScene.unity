@@ -1227,7 +1227,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Pause Cooldown: 0.00s'
+  m_Text: Running Available
 --- !u!222 &1270625422
 CanvasRenderer:
   m_ObjectHideFlags: 0
