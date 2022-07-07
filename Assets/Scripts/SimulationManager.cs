@@ -9,6 +9,7 @@ public class SimulationManager : MonoBehaviour
 {
     public int time_to_run_inspector = 60;
     public bool data_collection_mode = false;
+    public bool fds = true; //true for fds, false for wfds
 
     public static int time_to_run = 0;
     public static bool wfds_run_once = false;
@@ -55,7 +56,12 @@ public class SimulationManager : MonoBehaviour
 
     void setupInputFile()
     {
-        FileInfo map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
+        FileInfo map;
+        if(fds) {
+            map = new DirectoryInfo(Application.streamingAssetsPath + "/fds").GetFiles("*.fds").FirstOrDefault();
+        } else {
+            map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
+        }
 
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
@@ -123,6 +129,6 @@ public class SimulationManager : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        WFDSManager.stopWFDS();
+        WFDSManager.stopFDS();
     }
 }

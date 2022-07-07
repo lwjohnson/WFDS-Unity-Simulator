@@ -143,7 +143,7 @@ public class FireManager : MonoBehaviour
 
         lines.Where(l => l.Contains("&OBST") && l.Contains("FIRE")).ToList().ForEach(l =>
         {
-            string[] split = TerrainManager.RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Replace("SURF_ID='FIRE'/", string.Empty).Split(',');
+            string[] split = TerrainManager.RemoveWhitespace(l).Replace("&OBSTXB=", string.Empty).Split(',');
 
             Vector3 point = TerrainManager.getNearestVector3(float.Parse(split[1]), float.Parse(split[3]));
 
@@ -157,7 +157,12 @@ public class FireManager : MonoBehaviour
         SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        if(SimulationManager.fds){
+            FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        } else {
+            FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        }
+        
         setupInputFile();
 
         Thread read_fire_thread = new Thread(readFires);

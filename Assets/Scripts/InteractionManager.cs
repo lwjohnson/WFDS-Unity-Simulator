@@ -37,7 +37,7 @@ public class InteractionManager : MonoBehaviour
             //Pause simulation
             if (ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
                 interaction_done = false;
-                WFDSManager.stopWFDS();
+                WFDSManager.stopFDS();
                 WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
                 restart_guard = true;
 

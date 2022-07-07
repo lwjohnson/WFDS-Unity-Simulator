@@ -472,6 +472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   time_to_run_inspector: 60
   data_collection_mode: 0
+  fds: 1
 --- !u!4 &364919481
 Transform:
   m_ObjectHideFlags: 0
@@ -1193,7 +1194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6afa5acbfe2b1494ebf7c28987e14dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallclock_time: {fileID: 0}
+  status: {fileID: 0}
 --- !u!114 &1270625421
 MonoBehaviour:
   m_ObjectHideFlags: 0

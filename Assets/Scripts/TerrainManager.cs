@@ -12,7 +12,7 @@ public class TerrainManager : MonoBehaviour
     private int ncols = 0; // The number of columns in the terrain.
     private int nrows = 0; // The number of rows in the terrain.
     private string chid = string.Empty; // The CHID of the terrain.
-    private int tStart = 0; // Time Start
+    // private int tStart = 0; // Time Start
     private int tEnd = 0; // Time End
     private float tStep = 0; // Time Step
     public static int xmax = 0;
@@ -21,15 +21,22 @@ public class TerrainManager : MonoBehaviour
     public static int xmin = 0;
     public static int ymin = 0;
     public static int zmin = 0;
+
+    public static int slice_number;
+
     [SerializeField]
     [Tooltip("The prefab for the ground")]
     private GameObject groundPrefab;
 
     void Start()
     {
-        lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
-
-        setUsefulValues();
+        if(GetComponent<SimulationManager>().fds){
+            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/fds/fds_input.fds");
+            setUsefulFDSValues();
+        } else {
+            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/input.fds");
+            setUsefulWFDSValues();
+        }
 
         vertices = getVertices();
         triangles = getTriangles();
@@ -121,7 +128,7 @@ public class TerrainManager : MonoBehaviour
     /// <summary>
     /// Sets the useful values for the simulation.
     /// </summary>
-    private void setUsefulValues()
+    private void setUsefulWFDSValues()
     {
         foreach (string line in lines)
         {
@@ -136,13 +143,72 @@ public class TerrainManager : MonoBehaviour
             {
                 tEnd = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
             }
-            else if (clean.Contains("&TIMET_BEGIN"))
-            {
-                tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
-            }
+            // else if (clean.Contains("&TIMET_BEGIN"))
+            // {
+            //     tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            // }
             else if (clean.Contains("DT_OUTPUT_LS"))
             {
                 tStep = float.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            else if (clean.Contains("&MESH"))
+            {
+                string[] mesh = clean.Replace("&MESHIJK=", string.Empty).Replace("XB=", string.Empty).Replace("/", string.Empty).Split(',');
+
+                int numx = int.Parse(mesh[0]);
+                int numy = int.Parse(mesh[1]);
+                int numz = int.Parse(mesh[2]);
+
+                xmin = int.Parse(mesh[3]);
+                xmax = int.Parse(mesh[4]);
+                ymin = int.Parse(mesh[7]);
+                ymax = int.Parse(mesh[8]);
+                zmin = int.Parse(mesh[5]);
+                zmax = int.Parse(mesh[6]);
+
+                cellsize = (xmax - xmin) / numx;
+                FireManager.halfCellSize = cellsize / 2;
+                ncols = xmax / cellsize;
+                nrows = zmax / cellsize;
+            }
+        }
+    }
+
+        /// <summary>
+    /// Sets the useful values for the simulation.
+    /// </summary>
+    private void setUsefulFDSValues()
+    {
+        int slice_count = 0;
+
+        foreach (string line in lines)
+        {
+            string clean = RemoveWhitespace(line);
+
+            if (clean.Contains("&OBST")) { break; } // Past the useful information. Breaks to save time.
+            if (clean.Contains("&HEAD"))
+            {
+                chid = clean.Substring(clean.IndexOf('\'') + 1, clean.LastIndexOf('\'') - (1 + clean.IndexOf('\'')));
+            }
+            else if (clean.Contains("&TIMET_END"))
+            {
+                tEnd = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            // else if (clean.Contains("&TIMET_BEGIN"))
+            // {
+            //     tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            // }
+            else if (clean.Contains("DT_OUTPUT_LS"))
+            {
+                tStep = float.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            else if (clean.Contains("&SLCF"))
+            {
+                slice_count++;
+                if (clean.Contains("QUANTITY='TIME OF ARRIVAL'")) 
+                {
+                    slice_number = slice_count;
+                }
             }
             else if (clean.Contains("&MESH"))
             {
