@@ -16,11 +16,14 @@ public class SimulationManager : MonoBehaviour
     public static bool wfds_setup = false;
     public static bool reading_fire = false;
     public static bool ready_to_read = false;
+    public static bool FDS;
+    private static string fireSURF;
 
     // Start is called before the first frame update
     void Start()
     {
         time_to_run = time_to_run_inspector;
+        FDS = fds;
     }
 
     // Update is called once per frame
@@ -57,7 +60,7 @@ public class SimulationManager : MonoBehaviour
     void setupInputFile()
     {
         FileInfo map;
-        if(fds) {
+        if(FDS) {
             map = new DirectoryInfo(Application.streamingAssetsPath + "/fds").GetFiles("*.fds").FirstOrDefault();
         } else {
             map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
@@ -72,7 +75,7 @@ public class SimulationManager : MonoBehaviour
 
             if (line.Contains("&HEAD"))
             {
-                line = "&HEAD CHID='input' /";
+                line = setupHeaderAndMisc(line);
             }
             else if (line.Contains("&TIME T_END"))
             {
@@ -84,9 +87,14 @@ public class SimulationManager : MonoBehaviour
             }
             else if (line.Contains("&DUMP"))
             {
-                line = $"&DUMP DT_OUTPUT_LS={time_to_run}.0 /";
+                line = setupDump(line);
             }
+            else if (line.Contains("&SURF") && line.Contains("FIRE")) {
 
+                fireSURF = TerrainManager.RemoveWhitespace(line).Replace("&SURFID='", string.Empty).Split('\'')[0];
+                Debug.Log(fireSURF);
+                line = $"&SURF " + TerrainManager.RemoveWhitespace(line).Replace("&SURF", string.Empty);
+            }
             // Handle the GameObjects set by the user
             else if (line.Contains("&OBST"))
             {
@@ -102,14 +110,38 @@ public class SimulationManager : MonoBehaviour
                 int x = int.Parse(split[1]);
                 int y = int.Parse(split[3]);
 
-                line = setOBSTLine(line, "FIRE", fires, x, y);
+                line = setOBSTLine(line, fireSURF, fires, x, y);
                 line = setOBSTLine(line, "TREE", trees, x, y);
                 line = setOBSTLine(line, "TRENCH", trenches, x, y);
-
+            }
+            else if (line.Contains("MISC"))
+            {
+                line = "";
             }
 
             writer.WriteLine(line);
         }
+        Debug.Log("Input file setup");
+    }
+
+    private string setupHeaderAndMisc(string line)
+    {
+        line = "&HEAD CHID='input' /@";
+        if(FDS) {
+            line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + " /";
+        }
+        line = line.Replace("@", System.Environment.NewLine);
+        return line;
+    }
+
+    private string setupDump(string line)
+    {
+        if(FDS) {
+            line = $"&DUMP DT_SLCF=1, DT_RESTART=20.0 /";
+        } else {
+            line = $"&DUMP DT_OUTPUT_LS={time_to_run}.0 /";
+        }
+        return line;
     }
 
     private string setOBSTLine(string line, string type, List<GameObject> objects, float x, float z)
@@ -130,5 +162,9 @@ public class SimulationManager : MonoBehaviour
     void OnApplicationQuit()
     {
         WFDSManager.stopFDS();
+    }
+
+    public static bool getFDS() {
+        return FDS;
     }
 }

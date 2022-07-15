@@ -20,10 +20,10 @@ public static class WFDSManager
     public static int wfds_runs = 0;
 
     //bool fds = true for fds, false for wfds
-    public static void callWFDS(bool fds = false)
+    public static void callWFDS()
     {
         Thread fds_thread;
-        if(fds){
+        if(SimulationManager.getFDS()){
             fds_thread = new Thread(startFDS);
         } else {
             fds_thread = new Thread(startWFDS);
@@ -40,11 +40,7 @@ public static class WFDSManager
 
         //Choose reference input or re-written input from persistent data path
         wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds_run.exe";
-        // if(!SimulationManager.wfds_run_once) {
-            wfds_process.StartInfo.Arguments = "input.fds";
-        // } else {
-        //     wfds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
-        // }
+        wfds_process.StartInfo.Arguments = "input.fds";
         
         wfds_process.StartInfo.WorkingDirectory = persistentDataPath;
         wfds_process.StartInfo.UseShellExecute = false;
@@ -99,11 +95,8 @@ public static class WFDSManager
 
         //Choose reference input or re-written input from persistent data path
         fds_process.StartInfo.FileName = streamingAssetsPath + @"/fds/fds_run.exe";
-        if(!SimulationManager.wfds_run_once) {
-            fds_process.StartInfo.Arguments = "/fds/input.fds";
-        } else {
-            fds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
-        }
+
+        fds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
         
         fds_process.StartInfo.WorkingDirectory = persistentDataPath;
         fds_process.StartInfo.UseShellExecute = false;

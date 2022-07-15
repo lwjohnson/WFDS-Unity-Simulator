@@ -11,8 +11,8 @@ public class TerrainManager : MonoBehaviour
     public static int cellsize = 0; // The size of each cell.
     private int ncols = 0; // The number of columns in the terrain.
     private int nrows = 0; // The number of rows in the terrain.
-    private string chid = string.Empty; // The CHID of the terrain.
-    // private int tStart = 0; // Time Start
+    private static string chid = string.Empty; // The CHID of the terrain.
+    private int tStart = 0; // Time Start
     private int tEnd = 0; // Time End
     private float tStep = 0; // Time Step
     public static int xmax = 0;
@@ -21,8 +21,9 @@ public class TerrainManager : MonoBehaviour
     public static int xmin = 0;
     public static int ymin = 0;
     public static int zmin = 0;
-
     public static int slice_number;
+    public static int level_set_mode = 1;
+
 
     [SerializeField]
     [Tooltip("The prefab for the ground")]
@@ -32,6 +33,7 @@ public class TerrainManager : MonoBehaviour
     {
         if(GetComponent<SimulationManager>().fds){
             lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/fds/fds_input.fds");
+            Debug.Log(lines.Length);
             setUsefulFDSValues();
         } else {
             lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/input.fds");
@@ -143,10 +145,10 @@ public class TerrainManager : MonoBehaviour
             {
                 tEnd = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
             }
-            // else if (clean.Contains("&TIMET_BEGIN"))
-            // {
-            //     tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
-            // }
+            else if (clean.Contains("&TIMET_BEGIN"))
+            {
+                tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
             else if (clean.Contains("DT_OUTPUT_LS"))
             {
                 tStep = float.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
@@ -194,10 +196,10 @@ public class TerrainManager : MonoBehaviour
             {
                 tEnd = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
             }
-            // else if (clean.Contains("&TIMET_BEGIN"))
-            // {
-            //     tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
-            // }
+            else if (clean.Contains("&TIMET_BEGIN"))
+            {
+                tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
             else if (clean.Contains("DT_OUTPUT_LS"))
             {
                 tStep = float.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
@@ -205,10 +207,14 @@ public class TerrainManager : MonoBehaviour
             else if (clean.Contains("&SLCF"))
             {
                 slice_count++;
-                if (clean.Contains("QUANTITY='TIME OF ARRIVAL'")) 
+                if (clean.Contains("QUANTITY='TIMEOFARRIVAL'")) 
                 {
                     slice_number = slice_count;
                 }
+            }
+            else if(clean.Contains("&MISC"))
+            {   
+                getMiscValues(clean);
             }
             else if (clean.Contains("&MESH"))
             {
@@ -230,6 +236,16 @@ public class TerrainManager : MonoBehaviour
                 ncols = xmax / cellsize;
                 nrows = zmax / cellsize;
             }
+        }
+    }
+
+    private void getMiscValues(string clean)
+    {
+        if(clean.Contains("LEVEL_SET_MODE="))
+        {
+            int index = clean.IndexOf("LEVEL_SET_MODE=") + "LEVEL_SET_MODE=".Length;
+            int.TryParse(clean.Substring(index, 1), out level_set_mode);
+            Debug.Log(level_set_mode);
         }
     }
 
@@ -274,5 +290,9 @@ public class TerrainManager : MonoBehaviour
         }
 
         return triangles;
+    }
+
+    public static string getCHID() {
+        return chid;
     }
 }

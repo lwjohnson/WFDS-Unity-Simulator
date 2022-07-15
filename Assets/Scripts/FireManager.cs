@@ -18,7 +18,6 @@ public class FireManager : MonoBehaviour
 
     public bool staticFire;
 
-
     private static int current_key = 0; 
     public static float wallclock_time = 0;
     public static float starting_time = 0;
@@ -157,8 +156,9 @@ public class FireManager : MonoBehaviour
         SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        if(SimulationManager.fds){
-            FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        if(SimulationManager.getFDS()){
+            Debug.Log(WFDSManager.persistentDataPath + @"\input_1_" + TerrainManager.slice_number + ".lstoa");
+            FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_1_" + TerrainManager.slice_number + ".lstoa", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         } else {
             FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         }
