@@ -171,7 +171,10 @@ public class FireManager : MonoBehaviour
 
     //reads fire data from the lstoa file
     private static void readFires(){
-        
+        SimulationManager.reading_fire = false;
+        read_fires_once = true;
+        return;
+
         Debug.Log("Reading fires");
 
         //want to read from the output of fires
@@ -284,6 +287,10 @@ public class FireManager : MonoBehaviour
             if (line.Contains("&TIME T_END")) {
 
                 line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+            } else if (line.Contains("&HEAD")) {
+                line = setupHeaderAndMisc(line);
+            } else if (line.Contains("&MISC")) {
+                line = "";
             } else if (line.Contains("&OBST")) {
                 line = setupHelper(line, ref fires);
             } else if (!added_surfaces && line.Contains("&SURF")) {
@@ -298,6 +305,20 @@ public class FireManager : MonoBehaviour
                 writer.WriteLine(line);
             }
         }
+    }
+
+    private static string setupHeaderAndMisc(string line)
+    {
+        line = "&HEAD CHID='input' /@";
+        if(SimulationManager.FDS) {
+            if(SimulationManager.wfds_run_once){
+                line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + ",RESTART=T /";
+            } else {
+                line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + " /";
+            }
+        }
+        line = line.Replace("@", System.Environment.NewLine);
+        return line;
     }
 
     private static string setupHelper(string line, ref List<GameObject> fires) {

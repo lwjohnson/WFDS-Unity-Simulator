@@ -128,7 +128,11 @@ public class SimulationManager : MonoBehaviour
     {
         line = "&HEAD CHID='input' /@";
         if(FDS) {
-            line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + " /";
+            if(wfds_run_once){
+                line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + ",RESTART=T /";
+            } else {
+                line += "&MISC LEVEL_SET_MODE=" + TerrainManager.level_set_mode + " /";
+            }
         }
         line = line.Replace("@", System.Environment.NewLine);
         return line;
