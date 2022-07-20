@@ -157,7 +157,6 @@ public class FireManager : MonoBehaviour
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         if(SimulationManager.getFDS()){
-            Debug.Log(WFDSManager.persistentDataPath + @"\input_1_" + TerrainManager.slice_number + ".lstoa");
             FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_1_" + TerrainManager.slice_number + ".lstoa", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         } else {
             FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
@@ -285,7 +284,6 @@ public class FireManager : MonoBehaviour
             string line = reader.ReadLine();
 
             if (line.Contains("&TIME T_END")) {
-
                 line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
             } else if (line.Contains("&HEAD")) {
                 line = setupHeaderAndMisc(line);

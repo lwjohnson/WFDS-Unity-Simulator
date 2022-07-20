@@ -117,6 +117,16 @@ public class TerrainManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns a string with all quotes removed.
+    /// </summary>
+    /// <param name="input">The string to remove quotes from.</param>
+    /// <returns>The string with all quotes removed.</returns>
+    public static string RemoveQuotes(string input)
+    {
+        return new string(input.ToCharArray().Where(c => !(c == '"' || c == '\'')).ToArray());
+    }
+
+    /// <summary>
     /// Sets the camera to the center of the terrain.
     /// </summary>
     private void setCameraPosition()
