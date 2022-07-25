@@ -1,0 +1,49 @@
+&HEAD CHID='flat_GR6_LS1', TITLE='Level Set, LS1, Simple Hill case' /
+&MISC LEVEL_SET_MODE=1 / 
+&WIND U0=5 /
+&TIME T_END=60 / 
+
+&DUMP DT_SLCF=1, DT_RESTART=60. /  
+&SLCF QUANTITY='LEVEL SET VALUE',AGL_SLICE=0.1 /
+&SLCF AGL_SLICE=1, QUANTITY='TIME OF ARRIVAL' /
+
+- 1 mesh
+&MESH IJK=50,50,5, XB=0,50,-25,25,0,5 /
+
+- 4 meshes equal checkerboards
+cMULT ID='lower',DX=25,DY=25,DZ=5,I_LOWER=0,I_UPPER=1,J_LOWER=0,J_UPPER=1,K_LOWER=0,K_UPPER=0 /
+cMESH IJK=25,25,5, XB=0,25,-25,0,0,5,MULT_ID='lower' / 
+
+-- Ignition
+&SURF ID = 'IGN FIRE',VEG_LSET_IGNITE_TIME =0,COLOR = 'RED' /
+&VENT XB=5,6,-15,15,0,0,SURF_ID='IGN FIRE' /
+
+- Assign head ROS. 
+- Use elliptical fireline assumption to get ROS along fire perimeter
+cSURF ID = 'GRASS'
+      DEFAULT            = T
+      VEG_LSET_ROS_HEAD  = 0.30
+      RGB=122,117,48 /
+
+- Define no slope, no wind, ROS for use in Rothermel model to get head ROS. 
+- Use elliptical fireline assumption to get ROS along fire perimeter
+&SURF ID = 'GR6 GRASS'
+      DEFAULT            = T
+      VEG_LSET_ROS_00    = 0.013
+      VEG_LSET_HT        = 0.46
+      VEG_LSET_SIGMA     = 6582.
+      VEG_LSET_BETA      = 0.003 
+      RGB                = 122,117,48 /
+
+- Assign head, flank, back fire ROS.
+- Use cosine-based approximation to get ROS at all other fire perimeter
+- locations
+cSURF ID = 'GRASS'
+      DEFAULT            = T
+      VEG_LSET_ROS_HEAD  = 0.30
+      VEG_LSET_ROS_FLANK = 0.1
+      VEG_LSET_ROS_BACK  = 0.05
+      VEG_LSET_WIND_EXP = 1.0
+      RGB=122,117,48 /
+
+&TAIL /

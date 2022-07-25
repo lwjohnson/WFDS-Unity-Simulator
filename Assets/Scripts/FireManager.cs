@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System;
 
 public class FireManager : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class FireManager : MonoBehaviour
     public static bool read_fires_once = false;
     public static GameObject staticFirePrefab;
     public static float halfCellSize;
+    public static int fds_lstoa_count = 0;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
@@ -170,12 +172,29 @@ public class FireManager : MonoBehaviour
 
     //reads fire data from the lstoa file
     private static void readFires(){
-        SimulationManager.reading_fire = false;
         read_fires_once = true;
-        return;
-
         Debug.Log("Reading fires");
 
+        if(SimulationManager.getFDS()){
+            readFDSFires();
+        } else {
+            readWFDSFires();
+        }
+
+        SimulationManager.reading_fire = false;
+        read_fires_once = true;
+        Debug.Log("Finished reading fires");
+    }
+
+    // I made this function so it was a bit clearer what was being read.
+    // Fortran is weird
+    private static void readFortranRecord(BinaryReader reader)
+    {
+        reader.ReadInt32();
+    }
+
+    private static void readWFDSFires()
+    {
         //want to read from the output of fires
         FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
@@ -250,18 +269,50 @@ public class FireManager : MonoBehaviour
         }
         fire_TOA = fire_TOA_copy;
         reader.Close();
-        SimulationManager.reading_fire = false;
-        
-        read_fires_once = true;
-
-        Debug.Log("Finished reading fires");
     }
 
-    // I made this function so it was a bit clearer what was being read.
-    // Fortran is weird
-    private static void readFortranRecord(BinaryReader reader)
+    private static void readFDSFires()
     {
-        reader.ReadInt32();
+        //want to read from the output of fires
+        FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        using StreamReader reader = new StreamReader(toa_file.OpenRead());
+        List<long> bounds = new List<long>();
+        SortedDictionary<int, List<Vector3>> fire_TOA_copy = new SortedDictionary<int, List<Vector3>>();
+
+        int count = 0;
+        int time = -1;
+        while (!reader.EndOfStream)
+        {
+            count++;
+            if(count < fds_lstoa_count) {
+                continue;
+            }
+            string line = reader.ReadLine();
+            string[] line_values = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            time = -1;
+            time = (int) float.Parse(line_values[4]); 
+
+            if(time > 0) {
+                float x = (float) Convert.ToDouble(line_values[1]);
+                float z = (float) Convert.ToDouble(line_values[2]);
+                Debug.Log(x + " " + z + " " + time);
+                Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
+                if (fire_TOA_copy.ContainsKey(time)) {
+                    Debug.Log(fire_TOA_copy[time].Contains(point));
+                    if(fire_TOA_copy[time].Contains(point)) {
+                        fire_TOA_copy[time].Remove(point);
+                    }   
+                    fire_TOA_copy[time].Add(point);
+                } else {
+                    fire_TOA_copy.Add(time, new List<Vector3>() { point });
+                }
+            }
+            Debug.Log(time + " /// " + fire_TOA_copy.Count + " /// " + line_values[4]);
+        }
+        fds_lstoa_count = count;
+        fire_TOA = fire_TOA_copy;
+        reader.Close();
+        return;
     }
 
     //gets input file ready with new end time and new fire surfaces

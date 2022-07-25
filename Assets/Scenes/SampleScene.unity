@@ -518,7 +518,7 @@ MonoBehaviour:
     type: 3}
   firePrefabStatic: {fileID: 2653448754183537507, guid: 487539c8aa82a7d4293de823df8cf236,
     type: 3}
-  staticFire: 0
+  staticFire: 1
 --- !u!114 &364919484
 MonoBehaviour:
   m_ObjectHideFlags: 0
