@@ -32,11 +32,11 @@ public static class WFDSManager
         Process wfds_process = new Process();
 
         //Choose reference input or re-written input from persistent data path
+        wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds_run.exe";
+
         if(!SimulationManager.wfds_run_once) {
-            wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
             wfds_process.StartInfo.Arguments = "input.fds";
         } else {
-            wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
             wfds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
         }
         
@@ -96,7 +96,7 @@ public static class WFDSManager
 
         //Choose reference input or re-written input from persistent data path
 
-        wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds9977_win_64.exe";
+        wfds_process.StartInfo.FileName = streamingAssetsPath + @"/wfds_run.exe";
         wfds_process.StartInfo.Arguments = persistentDataPath + @"/input.fds";
         
         

@@ -29,7 +29,7 @@ public class TerrainManager : MonoBehaviour
     {
         lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
 
-        setUsefulValues();
+        setUsefulWFDSValues();
 
         vertices = getVertices();
         triangles = getTriangles();
@@ -108,6 +108,16 @@ public class TerrainManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns a string with all quotes removed.
+    /// </summary>
+    /// <param name="input">The string to remove quotes from.</param>
+    /// <returns>The string with all quotes removed.</returns>
+    public static string RemoveQuotes(string input)
+    {
+        return new string(input.ToCharArray().Where(c => !(c == '"' || c == '\'')).ToArray());
+    }
+
+    /// <summary>
     /// Sets the camera to the center of the terrain.
     /// </summary>
     private void setCameraPosition()
@@ -121,7 +131,7 @@ public class TerrainManager : MonoBehaviour
     /// <summary>
     /// Sets the useful values for the simulation.
     /// </summary>
-    private void setUsefulValues()
+    private void setUsefulWFDSValues()
     {
         foreach (string line in lines)
         {

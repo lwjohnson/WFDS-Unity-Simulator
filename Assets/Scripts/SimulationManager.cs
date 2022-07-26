@@ -16,6 +16,12 @@ public class SimulationManager : MonoBehaviour
     public static bool reading_fire = false;
     public static bool ready_to_read = false;
 
+    public static SortedDictionary<string, string> fireSURF = new SortedDictionary<string, string>();
+    public static List<GameObject> fires;
+    public static List<GameObject> trees;
+    public static List<GameObject> trenches;
+    public static List<GameObject> objects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +66,11 @@ public class SimulationManager : MonoBehaviour
         using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
 
+        fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
+        trees = GameObject.FindGameObjectsWithTag("Tree").ToList();
+        trenches = GameObject.FindGameObjectsWithTag("Trench").ToList();
+        objects = fires.Concat(trees).Concat(trenches).ToList();
+
         while (!reader.EndOfStream)
         {
             string line = reader.ReadLine();
@@ -80,15 +91,13 @@ public class SimulationManager : MonoBehaviour
             {
                 line = $"&DUMP DT_OUTPUT_LS={time_to_run}.0 /";
             }
-
+            else if (line.Contains("&SURF") && line.Contains("VEG_LSET_IGNITE_TIME")) {
+                line = setupFireSurface(line);
+            }
             // Handle the GameObjects set by the user
             else if (line.Contains("&OBST"))
             {
                 string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
-
-                List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
-                List<GameObject> trees = GameObject.FindGameObjectsWithTag("Tree").ToList();
-                List<GameObject> trenches = GameObject.FindGameObjectsWithTag("Trench").ToList();
 
                 // Initially set each line to Grass
                 line = Regex.Replace(line, "'.*'", "'GRASS'");
@@ -96,24 +105,40 @@ public class SimulationManager : MonoBehaviour
                 int x = int.Parse(split[1]);
                 int y = int.Parse(split[3]);
 
-                line = setOBSTLine(line, "FIRE", fires, x, y);
-                line = setOBSTLine(line, "TREE", trees, x, y);
-                line = setOBSTLine(line, "TRENCH", trenches, x, y);
-
+                line = setOBSTLine(line, x, y);
             }
 
             writer.WriteLine(line);
         }
     }
 
-    private string setOBSTLine(string line, string type, List<GameObject> objects, float x, float z)
+    private string setupFireSurface(string line) 
     {
+        line = TerrainManager.RemoveQuotes(TerrainManager.RemoveWhitespace(line));
+        string fireID = line.Substring(line.IndexOf("ID=") + 3).Split(',', '/')[0];
+        string fireIgnite = line.Substring(line.IndexOf("VEG_LSET_IGNITE_TIME=") + 21).Split(',', '/')[0];
+        fireSURF[fireID] = fireIgnite;
+        
+        if(fireSURF.Count == 1) {
+            return "&SURF ID='INT_FIRE0', VEG_LSET_IGNITE_TIME=0, COLOR='RED' /";
+        } else {
+            return "";
+        }
+    }
+
+    private string setOBSTLine(string line, float x, float z)
+    {
+        
         foreach (GameObject obj in objects.ToList())
         {
+            string type = obj.tag;
             Vector3 transform = obj.transform.position;
             if (transform.x - FireManager.halfCellSize == x && transform.z - FireManager.halfCellSize == z)
             {
                 objects.Remove(obj);
+                if(type == "Fire"){
+                    type = "INT_FIRE0";
+                }
                 return line = Regex.Replace(line, "'.*'", $"'{type}'");
             }
         }

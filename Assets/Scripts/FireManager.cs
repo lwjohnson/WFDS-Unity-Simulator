@@ -18,7 +18,6 @@ public class FireManager : MonoBehaviour
 
     public bool staticFire;
 
-
     private static int current_key = 0; 
     public static float wallclock_time = 0;
     public static float starting_time = 0;
@@ -164,11 +163,21 @@ public class FireManager : MonoBehaviour
         read_fire_thread.Start();
     }
 
-    //reads fire data from the lstoa file
+        //reads fire data from the lstoa file
     private static void readFires(){
-        
+        read_fires_once = true;
         Debug.Log("Reading fires");
 
+        readWFDSFires();
+        
+        SimulationManager.reading_fire = false;
+        read_fires_once = true;
+        Debug.Log("Finished reading fires");
+    }
+
+    //reads fire data from the lstoa file
+    private static void readWFDSFires(){
+        
         //want to read from the output of fires
         FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
@@ -243,11 +252,6 @@ public class FireManager : MonoBehaviour
         }
         fire_TOA = fire_TOA_copy;
         reader.Close();
-        SimulationManager.reading_fire = false;
-        
-        read_fires_once = true;
-
-        Debug.Log("Finished reading fires");
     }
 
     // I made this function so it was a bit clearer what was being read.
