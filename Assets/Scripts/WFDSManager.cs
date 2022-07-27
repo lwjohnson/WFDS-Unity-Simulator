@@ -27,6 +27,7 @@ public static class WFDSManager
 
     public static void startWFDS()
     {
+        wfds_running = true;
         DateTime start = System.DateTime.Now;
         
         Process wfds_process = new Process();

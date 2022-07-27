@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WallclockManager : MonoBehaviour
 {
-    public Text wallclock_time;
+    public static Text wallclock_time;
 
     // Start is called before the first frame update
     void Start()
