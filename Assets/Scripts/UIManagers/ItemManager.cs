@@ -16,7 +16,7 @@ public class ItemManager : MonoBehaviour
     public static int currently_selected_item = 0;
 
     private static string[] items = new string[] { "Fire", "Trees", "Trenches" };
-
+    private static float cooldown = 0.5f;
 
     void Start()
     {
@@ -32,9 +32,11 @@ public class ItemManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        current_text.text = "Current: ";
-        next_text.text = "Next: ";
-        prev_text.text = "Prev: ";
+        current_text.text = items[currently_selected_item];
+        next_text.text = items[ItemManager.NextItem()];
+        prev_text.text = items[ItemManager.PrevItem()];
+
+        cooldown -= Time.deltaTime;
     }
 
     public static int GetCurrentlySelectedItem()
@@ -54,19 +56,28 @@ public class ItemManager : MonoBehaviour
 
     public static int NextItem() {
         if(currently_selected_item == items.Length - 1) {
-            currently_selected_item = 0;
+            return 0;
         } else {
-            currently_selected_item++;
+            return currently_selected_item + 1;
         }
-        return currently_selected_item;
     }
 
     public static int PrevItem() {
         if(currently_selected_item == 0) {
-            currently_selected_item = items.Length - 1;
+            return items.Length - 1;
         } else {
-            currently_selected_item--;
+            return currently_selected_item - 1;
         }
-        return currently_selected_item;
+    }
+
+    public static void SwitchItem(bool next) {
+        if(cooldown <= 0) {
+            if(next) {
+                currently_selected_item = NextItem();
+            } else {
+                currently_selected_item = PrevItem();
+            }
+            cooldown = 0.5f;
+        }
     }
 }

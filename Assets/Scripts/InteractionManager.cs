@@ -75,35 +75,11 @@ public class InteractionManager : MonoBehaviour
                 doInteraction(0, false);
             }
 
-            // // Instantiate Tree
-            // if (Input.GetKey(KeyCode.T))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-            //     if (canInteractAt(point))
-            //     {
-            //         TreeManager.createTreeAt(point);
-            //     }
-            // }
-
-            // // Instantiate Trench
-            // if (Input.GetKey(KeyCode.G))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-            //     if (canInteractAt(point))
-            //     {
-            //         TrenchManager.createTrenchAt(point);
-            //     }
-            // }
-
-            // // Delete GameObjects
-            // if (Input.GetKey(KeyCode.Backspace))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-
-            //     FireManager.removeFireAt(point);
-            //     TreeManager.removeTreeAt(point);
-            //     TrenchManager.removeTrenchAt(point);
-            // }
+            if(ControllerManager.primaryPressed(true)) { //right hand
+                ItemManager.SwitchItem(true);
+            } else if(ControllerManager.secondaryPressed(true)) { //right hand
+                ItemManager.SwitchItem(false);
+            } 
         }
     }
 
@@ -117,13 +93,26 @@ public class InteractionManager : MonoBehaviour
 
         getInteractionPoint(right, out point, out placeMarker);
 
-        switch(interaction_type) {
+        switch(ItemManager.currently_selected_item) { //match cases with ItemManager.items array index
             case 0: //Place Fire
                 if(placeMarker.active && canInteractAt(point)) {
                     FireManager.createFireAt(point);
                     interaction_made = true;
                 }
                 break;
+            // case 1: //Place Tree
+            //     if(placeMarker.active && canInteractAt(point)) {
+            //         FireManager.createFireAt(point);
+            //         interaction_made = true;
+            //     }
+            //     break;
+            // case 2: //Place Trench
+            //     if(placeMarker.active && canInteractAt(point)) {
+            //         FireManager.createFireAt(point);
+            //         interaction_made = true;
+            //     }
+            //     break;
+            
         }
 
         if(interaction_made) {
