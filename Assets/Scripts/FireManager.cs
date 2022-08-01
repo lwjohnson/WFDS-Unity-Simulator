@@ -5,7 +5,6 @@ using UnityEditor;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Text.RegularExpressions;
 
 public class FireManager : MonoBehaviour
 {
@@ -157,7 +156,7 @@ public class FireManager : MonoBehaviour
         //Copy output file so can begin another simulation
         FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
         FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        setupInputFile();
+        SetupFileManager.readFireDataFileSetup();
 
         Thread read_fire_thread = new Thread(readFires);
         read_fire_thread.Start();
@@ -261,72 +260,4 @@ public class FireManager : MonoBehaviour
         reader.ReadInt32();
     }
 
-    //gets input file ready with new end time and new fire surfaces
-    public static void setupInputFile()
-    {
-        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
-
-        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
-        using StreamReader reader = new StreamReader(map.OpenRead());
-        
-        bool added_surfaces = false;
-
-        List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
-        fires.RemoveAll(afterZero);
-
-        while (!reader.EndOfStream)
-        {
-            string line = reader.ReadLine();
-
-            if (line.Contains("&TIME T_END")) {
-
-                line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
-            } else if (line.Contains("&OBST")) {
-                line = setupHelper(line, ref fires);
-            } else if (!added_surfaces && line.Contains("&SURF")) {
-                //inserting the new fire surfaces
-                foreach(float fire in FireManager.fires.Keys) {
-                    writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
-                }
-                added_surfaces = true;
-            }
-            
-            if(!line.Contains("INT_FIRE") || !line.Contains("&SURF")) {
-                writer.WriteLine(line);
-            }
-        }
-    }
-
-    private static string setupHelper(string line, ref List<GameObject> fires) {
-        string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
-
-        int x = int.Parse(split[1]);
-        int y = int.Parse(split[3]);
-
-        line = setOBSTLine(line, "FIRE", ref fires, x, y);
-
-        return line;
-    }
-
-    private static string setOBSTLine(string line, string type, ref List<GameObject> objects, int x, int z)
-    {
-        foreach (GameObject obj in objects.ToList())
-        {
-            Vector3 transform = obj.transform.position;
-            if (transform.x - halfCellSize == x && transform.z - halfCellSize == z)
-            {
-                float time = obj.GetComponent<FireLifeTime>().ignite_time;
-                objects.Remove(obj);
-                return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
-            }
-        }
-
-        return line;
-    }
-
-    private static bool afterZero(GameObject g) {
-        return g.GetComponent<FireLifeTime>().ignite_time <= 0;
-    }
 }

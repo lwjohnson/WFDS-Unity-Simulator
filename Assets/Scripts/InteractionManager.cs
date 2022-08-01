@@ -57,7 +57,7 @@ public class InteractionManager : MonoBehaviour
             if(SimulationManager.wfds_run_once && !catch_up_guard) { //restarting from 
                 catch_up_guard = true;
                 File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
-                FireManager.setupInputFile();
+                SetupFileManager.readFireDataFileSetup();
 
                 Thread catchup = new Thread(catchUp);
                 catchup.Start();
@@ -95,7 +95,7 @@ public class InteractionManager : MonoBehaviour
 
         switch(ItemManager.currently_selected_item) { //match cases with ItemManager.items array index
             case 0: //Place Fire
-                if(placeMarker.active && canInteractAt(point)) {
+                if(canInteractAt(point)) {
                     FireManager.createFireAt(point);
                     interaction_made = true;
                 }
