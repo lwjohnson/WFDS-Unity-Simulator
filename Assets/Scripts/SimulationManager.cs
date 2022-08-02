@@ -9,6 +9,7 @@ public class SimulationManager : MonoBehaviour
 {
     public int time_to_run_inspector = 60;
     public bool data_collection_mode = false;
+    public bool uiOn = true;
 
     public static int time_to_run = 0;
     public static bool wfds_run_once = false;

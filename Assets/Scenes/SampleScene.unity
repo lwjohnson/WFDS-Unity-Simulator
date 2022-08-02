@@ -722,6 +722,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   time_to_run_inspector: 60
   data_collection_mode: 0
+  uiOn: 0
 --- !u!4 &364919481
 Transform:
   m_ObjectHideFlags: 0
@@ -1655,6 +1656,7 @@ MonoBehaviour:
   current: {fileID: 1093151155}
   next: {fileID: 154360156}
   prev: {fileID: 161570869}
+  gameManager: {fileID: 364919479}
 --- !u!222 &1649619537
 CanvasRenderer:
   m_ObjectHideFlags: 0

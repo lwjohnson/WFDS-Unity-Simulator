@@ -9,12 +9,13 @@ public class ItemManager : MonoBehaviour
     public GameObject current;
     public GameObject next;
     public GameObject prev;
+    public GameObject gameManager;
 
     public static Text current_text;
     public static Text next_text;
     public static Text prev_text;
+    public static bool uiOn = true;
     public static int currently_selected_item = 0;
-
     private static string[] items = new string[] { "Fire", "Trees", "Trenches" };
     private static float cooldown = 0.5f;
 
@@ -23,20 +24,29 @@ public class ItemManager : MonoBehaviour
         current_text = current.GetComponent<Text>();
         next_text = next.GetComponent<Text>();
         prev_text = prev.GetComponent<Text>();
-        
-        current_text.text = items[currently_selected_item];
-        next_text.text = items[ItemManager.NextItem()];
-        prev_text.text = items[ItemManager.PrevItem()];
+
+        if(gameManager.GetComponent<SimulationManager>().uiOn) {
+            Debug.Log("UI ON");
+            current_text.text = items[currently_selected_item];
+            next_text.text = items[ItemManager.NextItem()];
+            prev_text.text = items[ItemManager.PrevItem()];
+        } else {
+            uiOn = false;
+            current_text.text = "";
+            next_text.text = prev_text.text = "";
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        current_text.text = items[currently_selected_item];
-        next_text.text = items[ItemManager.NextItem()];
-        prev_text.text = items[ItemManager.PrevItem()];
+        if(uiOn) {
+            current_text.text = items[currently_selected_item];
+            next_text.text = items[ItemManager.NextItem()];
+            prev_text.text = items[ItemManager.PrevItem()];
 
-        cooldown -= Time.deltaTime;
+            cooldown -= Time.deltaTime;
+        }
     }
 
     public static int GetCurrentlySelectedItem()
