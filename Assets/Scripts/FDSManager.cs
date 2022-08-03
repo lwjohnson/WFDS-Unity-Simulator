@@ -7,20 +7,20 @@ using System.Diagnostics;
 using System.Linq;
 using System;
 
-public static class WFDSManager
+public static class FDSManager
 {
     public static bool wfds_running = false;
     public static int wfds_runs = 0;
 
-    public static void callWFDS()
+    public static void callFDS()
     {
         Thread wfds_thread = new Thread(startWFDS);
-        wfds_running = true;
         wfds_thread.Start();
     }
 
     public static void startWFDS()
     {
+        wfds_running = true;
         DateTime start = System.DateTime.Now;
         
         Process wfds_process = new Process();

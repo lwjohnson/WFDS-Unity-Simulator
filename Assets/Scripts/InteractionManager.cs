@@ -14,8 +14,6 @@ public class InteractionManager : MonoBehaviour
     public static float placement_cooldown = 0.2f;
     public static float placement_cooldown_tracker = 0;
 
-    public static bool restart_guard = false;
-    public static bool pause_guard = false;
     public static bool catch_up_guard = false;
 
     void Start()
@@ -25,8 +23,8 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {   
-        Debug.Log("Restart guard: " + restart_guard);     
-        Debug.Log("Pause guard: " + pause_guard);
+        Debug.Log("Restart guard: " + SimulationManager.restart_guard);     
+        Debug.Log("Pause guard: " + SimulationManager.pause_guard);
 
 
         if(placement_cooldown_tracker > 0) { //Tracker to avoid instant placing a million items
@@ -35,28 +33,28 @@ public class InteractionManager : MonoBehaviour
 
         if (interaction_done) { 
             //Pause simulation
-            if (ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
+            if (ControllerManager.menuPressed() && !SimulationManager.pause_guard) { //pause the simulation
                 interaction_done = false;
                 WFDSManager.stopWFDS();
                 WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
-                restart_guard = true;
+                SimulationManager.restart_guard = true;
 
                 if(!WFDSManager.wfds_running) {
-                    pause_guard = false;
-                    restart_guard = false;
+                    SimulationManager.pause_guard = false;
+                    SimulationManager.restart_guard = false;
                 }
             }
             return; 
         }
 
         // End Interaction (Calls WFDS After)
-        if (ControllerManager.menuPressed() && !restart_guard && !pause_guard)
+        if (ControllerManager.menuPressed() && !SimulationManager.restart_guard && !SimulationManager.pause_guard)
         {            
-            pause_guard = true;
+            SimulationManager.pause_guard = true;
 
             if(SimulationManager.wfds_run_once && !catch_up_guard) { //restarting from 
                 catch_up_guard = true;
-                File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
+                File.Delete(SimulationManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
                 SetupFileManager.readFireDataFileSetup();
 
                 Thread catchup = new Thread(catchUp);
@@ -66,7 +64,7 @@ public class InteractionManager : MonoBehaviour
             }
         }
 
-        if(placement_cooldown_tracker <= 0 && !pause_guard) { //can make a place/remove interaction
+        if(placement_cooldown_tracker <= 0 && !SimulationManager.pause_guard) { //can make a place/remove interaction
 
             // Instantiate fire
             if (ControllerManager.gripTriggerPressed(true)) { //right hand

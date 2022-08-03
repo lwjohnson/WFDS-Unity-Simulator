@@ -18,9 +18,9 @@ public class SetupFileManager : MonoBehaviour
 
     public static void setupInitialInputFile()
     {
-        FileInfo map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
+        FileInfo map = new DirectoryInfo(SimulationManager.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
 
-        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
+        using StreamWriter writer = new StreamWriter(SimulationManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
 
         fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
@@ -109,11 +109,11 @@ public class SetupFileManager : MonoBehaviour
 
     //gets input file ready with new end time and new fire surfaces
     public static void readFireDataFileSetup(){
-        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
+        FileUtil.DeleteFileOrDirectory(SimulationManager.persistentDataPath + @"\input_copy.fds");
+        FileUtil.CopyFileOrDirectory(SimulationManager.persistentDataPath + @"\input.fds", SimulationManager.persistentDataPath + @"\input_copy.fds");
+        FileInfo map = new DirectoryInfo(SimulationManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
 
-        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
+        using StreamWriter writer = new StreamWriter(SimulationManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
         
         bool added_surfaces = false;

@@ -13,7 +13,6 @@ public class FireManager : MonoBehaviour
     [Tooltip("The prefab for the fires")]
     public GameObject firePrefabEditor;
     public GameObject firePrefabStatic;
-    public static GameObject firePrefab;
 
     public bool staticFire;
 
@@ -21,9 +20,9 @@ public class FireManager : MonoBehaviour
     public static float wallclock_time = 0;
     public static float starting_time = 0;
     public static float time_multiplier = 1;
-    public static bool read_fires_once = false;
-    public static GameObject staticFirePrefab;
     public static float halfCellSize;
+    public static GameObject staticFirePrefab;
+    public static GameObject firePrefab;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
 
@@ -44,7 +43,7 @@ public class FireManager : MonoBehaviour
             return;
         }
 
-        if (SimulationManager.wfds_run_once && read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
+        if (SimulationManager.wfds_run_once && SimulationManager.read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
         {
             wallclock_time += Time.deltaTime * time_multiplier;
         }
@@ -154,8 +153,8 @@ public class FireManager : MonoBehaviour
     {   
         SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
-        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        FileUtil.DeleteFileOrDirectory(SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        FileUtil.CopyFileOrDirectory(SimulationManager.persistentDataPath + @"\input_lstoa.sf", SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
         SetupFileManager.readFireDataFileSetup();
 
         Thread read_fire_thread = new Thread(readFires);
@@ -164,13 +163,13 @@ public class FireManager : MonoBehaviour
 
         //reads fire data from the lstoa file
     private static void readFires(){
-        read_fires_once = true;
+        SimulationManager.read_fires_once = true;
         Debug.Log("Reading fires");
 
         readWFDSFires();
         
         SimulationManager.reading_fire = false;
-        read_fires_once = true;
+        SimulationManager.read_fires_once = true;
         Debug.Log("Finished reading fires");
     }
 
@@ -178,7 +177,7 @@ public class FireManager : MonoBehaviour
     private static void readWFDSFires(){
         
         //want to read from the output of fires
-        FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        FileInfo toa_file = new FileInfo(SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
 
         List<long> bounds = new List<long>();

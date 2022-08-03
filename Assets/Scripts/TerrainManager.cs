@@ -27,7 +27,7 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/" + "input.fds");
+        lines = System.IO.File.ReadAllLines(SimulationManager.streamingAssetsPath + "/" + "input.fds");
 
         setUsefulWFDSValues();
 

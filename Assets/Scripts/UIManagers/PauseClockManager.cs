@@ -25,13 +25,13 @@ public class PauseClockManager : MonoBehaviour
             } 
         } else if(SimulationManager.wfds_run_once){
             if(InteractionManager.interaction_done) {
-                if(InteractionManager.pause_guard) {
+                if(SimulationManager.pause_guard) {
                     status.text = "Pause blocked while FDS loads...";
                 } else {
                     status.text = "Pause Available";
                 }
             } else {
-                if(InteractionManager.restart_guard) {
+                if(SimulationManager.restart_guard) {
                     status.text = "Restart blocked while FDS loads...";
                 } else {
                     status.text = "Restart Available";

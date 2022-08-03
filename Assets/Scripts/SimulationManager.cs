@@ -7,27 +7,30 @@ using System.Text.RegularExpressions;
 
 public class SimulationManager : MonoBehaviour
 {
-    public int time_to_run_inspector = 60;
-    public bool data_collection_mode = false;
-    public bool uiOn = true;
+    //change from unity Startup.cs
+    public static bool data_collection_mode = false;
+    public static bool uiOn = true;
+    public static bool fds = false;
+
+    public static string streamingAssetsPath = null;
+    public static string persistentDataPath = null;
+    public static string dataCollectionPath = null;
+    public static string dataPath = null;
 
     public static int time_to_run = 0;
     public static bool wfds_run_once = false;
     public static bool wfds_setup = false;
     public static bool reading_fire = false;
     public static bool ready_to_read = false;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        time_to_run = time_to_run_inspector;
-    }
+    public static bool read_fires_once = false;
+    public static bool restart_guard = false;
+    public static bool pause_guard = false;
 
     // Update is called once per frame
     void Update()
     {
 
+        Debug.Log(WFDSManager.wfds_running);
         if(!InteractionManager.interaction_done) {
             return;
         }
@@ -35,10 +38,10 @@ public class SimulationManager : MonoBehaviour
         if (wfds_setup && !WFDSManager.wfds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
-
+            Debug.Log(WFDSManager.wfds_running);
             FireManager.readFireData();
 
-            if(FireManager.read_fires_once) {
+            if(read_fires_once) {
                 ready_to_read = false;
                 WFDSManager.wfds_running = true;
                 WFDSManager.callWFDS();
