@@ -43,7 +43,7 @@ public class FireManager : MonoBehaviour
             return;
         }
 
-        if (SimulationManager.wfds_run_once && SimulationManager.read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
+        if (SimulationManager.wfds_run_once && SimulationManager.read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * VersionSwitcher.fds_runs)
         {
             wallclock_time += Time.deltaTime * time_multiplier;
         }
@@ -228,7 +228,7 @@ public class FireManager : MonoBehaviour
                     for (long x = bounds[0]; x <= bounds[1]; x++)
                     {
                         int arrival_time = (int)reader.ReadSingle(); // Read the arrival_time and convert to int instead of float
-                        if (arrival_time >= current_key || (WFDSManager.wfds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
+                        if (arrival_time >= current_key || (VersionSwitcher.fds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
                         {
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
                             Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);

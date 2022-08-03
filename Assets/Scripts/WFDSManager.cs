@@ -9,15 +9,6 @@ using System;
 
 public static class WFDSManager
 {
-    public static bool wfds_running = false;
-    public static int wfds_runs = 0;
-
-    public static void callWFDS()
-    {
-        Thread wfds_thread = new Thread(startWFDS);
-        wfds_running = true;
-        wfds_thread.Start();
-    }
 
     public static void startWFDS()
     {
@@ -59,9 +50,9 @@ public static class WFDSManager
         wfds_process.BeginErrorReadLine();
 
         wfds_process.WaitForExit();
-        wfds_runs++;
-        logMessage("ADDING RUNS" + wfds_runs);
-        wfds_running = false;
+        VersionSwitcher.fds_runs++;
+        logMessage("ADDING RUNS" + VersionSwitcher.fds_runs);
+        VersionSwitcher.fds_running = false;
 
         SimulationManager.ready_to_read = true;
         SimulationManager.restart_guard = false;
@@ -72,7 +63,7 @@ public static class WFDSManager
         if(SimulationManager.data_collection_mode) {
             TimeSpan duration = end - start;
 
-            string log = "Run time|Covered : " + SimulationManager.time_to_run + " : " + duration.TotalSeconds.ToString() + "|" + SimulationManager.time_to_run * (wfds_runs) + "|";
+            string log = "Run time|Covered : " + SimulationManager.time_to_run + " : " + duration.TotalSeconds.ToString() + "|" + SimulationManager.time_to_run * (VersionSwitcher.fds_runs) + "|";
 
             File.AppendAllText(SimulationManager.dataCollectionPath + @"/WFDS_Run_Logs.txt", log + Environment.NewLine);
         }
@@ -82,7 +73,7 @@ public static class WFDSManager
     //Called after a pause the start in the simulation, runs simulation to current
     // wallclock chunk so we can continue from current time
     public static void runCatchUp() {
-        wfds_running = true;
+        VersionSwitcher.fds_running = true;
         
         logMessage("STARTING CATCH UP");
 
@@ -119,8 +110,8 @@ public static class WFDSManager
         wfds_process.BeginErrorReadLine();
 
         wfds_process.WaitForExit();
-        wfds_runs++;
-        wfds_running = false;
+        VersionSwitcher.fds_runs++;
+        VersionSwitcher.fds_running = false;
         SimulationManager.ready_to_read = true;
         SimulationManager.pause_guard = false;
     }
@@ -134,8 +125,4 @@ public static class WFDSManager
         }
     }
 
-    public static void stopWFDS()
-    {
-        using (StreamWriter writer = new StreamWriter(SimulationManager.persistentDataPath + @"\" + "input" + ".stop")) { }
-    }
 }

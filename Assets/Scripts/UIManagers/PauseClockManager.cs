@@ -18,7 +18,7 @@ public class PauseClockManager : MonoBehaviour
     void Update()
     {
         if(!SimulationManager.wfds_run_once){
-            if(WFDSManager.wfds_running) {
+            if(VersionSwitcher.fds_running) {
                 status.text = "Starting Simulation...";
             } else {
                 status.text = "Start Simulation";

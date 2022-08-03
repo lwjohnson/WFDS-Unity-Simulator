@@ -38,7 +38,7 @@ public class SetupFileManager : MonoBehaviour
             }
             else if (line.Contains("&TIME T_END"))
             {
-                line = $"&TIME T_END= {FireManager.starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+                line = $"&TIME T_END= {FireManager.starting_time + SimulationManager.time_to_run * (VersionSwitcher.fds_runs + 1)} /";
             }
             else if (line.Contains("&TIME T_START"))
             {
@@ -127,7 +127,7 @@ public class SetupFileManager : MonoBehaviour
 
             if (line.Contains("&TIME T_END")) {
 
-                line = $"&TIME T_END= {FireManager.starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
+                line = $"&TIME T_END= {FireManager.starting_time + SimulationManager.time_to_run * (VersionSwitcher.fds_runs + 1)} /";
             } else if (line.Contains("&OBST")) {
                 line = readFireSetupHelper(line, ref fires);
             } else if (!added_surfaces && line.Contains("&SURF")) {

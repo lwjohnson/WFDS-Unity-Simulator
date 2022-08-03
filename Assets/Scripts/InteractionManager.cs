@@ -35,11 +35,11 @@ public class InteractionManager : MonoBehaviour
             //Pause simulation
             if (ControllerManager.menuPressed() && !SimulationManager.pause_guard) { //pause the simulation
                 interaction_done = false;
-                WFDSManager.stopWFDS();
-                WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
+                VersionSwitcher.stopFDS();
+                VersionSwitcher.fds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
                 SimulationManager.restart_guard = true;
 
-                if(!WFDSManager.wfds_running) {
+                if(!VersionSwitcher.fds_running) {
                     SimulationManager.pause_guard = false;
                     SimulationManager.restart_guard = false;
                 }
@@ -143,7 +143,7 @@ public class InteractionManager : MonoBehaviour
 
     //calls catch up function for when we restart after pause
     private static void catchUp() {
-        WFDSManager.runCatchUp();
+        VersionSwitcher.runCatchUp();
         catch_up_guard = false;
         interaction_done = true;            
     }
