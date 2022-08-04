@@ -17,11 +17,13 @@ public static class VersionSwitcher
         fds_running = true;
         Thread thread;
         if(SimulationManager.fds) {
+            UnityEngine.Debug.Log("HERERER");
+
             thread = new Thread(FDSManager.startFDS);
         } else {
             thread = new Thread(WFDSManager.startWFDS);
         }
-        
+
         thread.Start();
     }
 

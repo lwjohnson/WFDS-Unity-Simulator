@@ -9,47 +9,40 @@ using System;
 
 public static class FDSManager
 {
-    public static void startFDS()
+ public static void startFDS()
     {
-        VersionSwitcher.fds_running = true;
         DateTime start = System.DateTime.Now;
         
-        Process wfds_process = new Process();
+        Process fds_process = new Process();
 
-        //Choose reference input or re-written input from persistent data path
-        wfds_process.StartInfo.FileName = SimulationManager.streamingAssetsPath + @"/wfds_run.exe";
-
-        if(!SimulationManager.wfds_run_once) {
-            wfds_process.StartInfo.Arguments = "input.fds";
-        } else {
-            wfds_process.StartInfo.Arguments = SimulationManager.persistentDataPath + @"/input.fds";
-        }
+        fds_process.StartInfo.FileName = SimulationManager.streamingAssetsPath + @"/fds/fds_run.exe";
+        fds_process.StartInfo.Arguments = SimulationManager.persistentDataPath + @"/input.fds";
         
-        wfds_process.StartInfo.WorkingDirectory = SimulationManager.persistentDataPath;
-        wfds_process.StartInfo.UseShellExecute = false;
-        wfds_process.StartInfo.RedirectStandardOutput = true;
-        wfds_process.StartInfo.RedirectStandardError = true;
-        wfds_process.StartInfo.CreateNoWindow = true;
+        fds_process.StartInfo.WorkingDirectory = SimulationManager.persistentDataPath;
+        fds_process.StartInfo.UseShellExecute = false;
+        fds_process.StartInfo.RedirectStandardOutput = true;
+        fds_process.StartInfo.RedirectStandardError = true;
+        fds_process.StartInfo.CreateNoWindow = true;
 
         // Set up redirected output to be displayed in the Unity console
-        wfds_process.OutputDataReceived += (sender, e) =>
+        fds_process.OutputDataReceived += (sender, e) =>
         {
             logMessage(e.Data);
         };
 
-        wfds_process.ErrorDataReceived += (sender, e) =>
+        fds_process.ErrorDataReceived += (sender, e) =>
         {
             logMessage(e.Data);
         };
 
         // Start the process
-        wfds_process.Start();
+        fds_process.Start();
 
         // Start the asynchronous read of the streams
-        wfds_process.BeginOutputReadLine();
-        wfds_process.BeginErrorReadLine();
+        fds_process.BeginOutputReadLine();
+        fds_process.BeginErrorReadLine();
+        fds_process.WaitForExit();
 
-        wfds_process.WaitForExit();
         VersionSwitcher.fds_runs++;
         logMessage("ADDING RUNS" + VersionSwitcher.fds_runs);
         VersionSwitcher.fds_running = false;
@@ -65,7 +58,7 @@ public static class FDSManager
 
             string log = "Run time|Covered : " + SimulationManager.time_to_run + " : " + duration.TotalSeconds.ToString() + "|" + SimulationManager.time_to_run * (VersionSwitcher.fds_runs) + "|";
 
-            File.AppendAllText(SimulationManager.dataCollectionPath + @"/WFDS_Run_Logs.txt", log + Environment.NewLine);
+            File.AppendAllText(SimulationManager.dataCollectionPath + @"/FDS_Run_Logs.txt", log + Environment.NewLine);
         }
     }
 
@@ -77,39 +70,36 @@ public static class FDSManager
         
         logMessage("STARTING CATCH UP");
 
-        Process wfds_process = new Process();
+        Process fds_process = new Process();
 
-        //Choose reference input or re-written input from persistent data path
-
-        wfds_process.StartInfo.FileName = SimulationManager.streamingAssetsPath + @"/wfds_run.exe";
-        wfds_process.StartInfo.Arguments = SimulationManager.persistentDataPath + @"/input.fds";
+        fds_process.StartInfo.FileName = SimulationManager.streamingAssetsPath + @"/fds/fds_run.exe";
+        fds_process.StartInfo.Arguments = SimulationManager.persistentDataPath + @"/input.fds";
         
-        
-        wfds_process.StartInfo.WorkingDirectory = SimulationManager.persistentDataPath;
-        wfds_process.StartInfo.UseShellExecute = false;
-        wfds_process.StartInfo.RedirectStandardOutput = true;
-        wfds_process.StartInfo.RedirectStandardError = true;
-        wfds_process.StartInfo.CreateNoWindow = true;
+        fds_process.StartInfo.WorkingDirectory = SimulationManager.persistentDataPath;
+        fds_process.StartInfo.UseShellExecute = false;
+        fds_process.StartInfo.RedirectStandardOutput = true;
+        fds_process.StartInfo.RedirectStandardError = true;
+        fds_process.StartInfo.CreateNoWindow = true;
 
         // Set up redirected output to be displayed in the Unity console
-        wfds_process.OutputDataReceived += (sender, e) =>
+        fds_process.OutputDataReceived += (sender, e) =>
         {
             logMessage(e.Data);
         };
 
-        wfds_process.ErrorDataReceived += (sender, e) =>
+        fds_process.ErrorDataReceived += (sender, e) =>
         {
             logMessage(e.Data);
         };
 
         // Start the process
-        wfds_process.Start();
+        fds_process.Start();
 
         // Start the asynchronous read of the streams
-        wfds_process.BeginOutputReadLine();
-        wfds_process.BeginErrorReadLine();
+        fds_process.BeginOutputReadLine();
+        fds_process.BeginErrorReadLine();
 
-        wfds_process.WaitForExit();
+        fds_process.WaitForExit();
         VersionSwitcher.fds_runs++;
         VersionSwitcher.fds_running = false;
         SimulationManager.ready_to_read = true;
@@ -121,7 +111,7 @@ public static class FDSManager
     {
         if (!String.IsNullOrEmpty(message))
         {
-            UnityEngine.Debug.Log("WFDS: " + message);
+            UnityEngine.Debug.Log("FDS: " + message);
         }
     }
 

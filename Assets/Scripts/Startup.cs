@@ -25,6 +25,7 @@ public class Startup : MonoBehaviour
         SimulationManager.data_collection_mode = data_collection_mode;
         SimulationManager.uiOn = uiOn;
         SimulationManager.fds = fds;
+        Debug.Log(fds);
 
         ItemManager.uiOn = uiOn;
 

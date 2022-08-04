@@ -25,7 +25,8 @@ public class SimulationManager : MonoBehaviour
     public static bool read_fires_once = false;
     public static bool restart_guard = false;
     public static bool pause_guard = false;
-
+    public static int slice_number;
+    public static int level_set_mode = 1;
     // Update is called once per frame
     void Update()
     {

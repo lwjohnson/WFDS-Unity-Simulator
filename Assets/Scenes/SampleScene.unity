@@ -720,9 +720,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290f677e711aa1e4899d415638843a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time_to_run_inspector: 60
-  data_collection_mode: 0
-  uiOn: 0
 --- !u!4 &364919481
 Transform:
   m_ObjectHideFlags: 0
@@ -752,6 +749,9 @@ MonoBehaviour:
   data_collection_mode: 0
   starting_time: 0
   time_multiplier: 1
+  time_to_run_inspector: 60
+  uiOn: 1
+  fds: 1
 --- !u!114 &364919483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -784,6 +784,9 @@ MonoBehaviour:
   data_collection_mode: 0
   starting_time: 0
   time_multiplier: 1
+  time_to_run_inspector: 60
+  uiOn: 1
+  fds: 1
 --- !u!114 &364919485
 MonoBehaviour:
   m_ObjectHideFlags: 0

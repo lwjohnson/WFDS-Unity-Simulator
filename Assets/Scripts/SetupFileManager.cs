@@ -18,7 +18,12 @@ public class SetupFileManager : MonoBehaviour
 
     public static void setupInitialInputFile()
     {
-        FileInfo map = new DirectoryInfo(SimulationManager.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
+        FileInfo map;
+        if(SimulationManager.fds) {
+            map = new DirectoryInfo(Application.streamingAssetsPath + "/fds").GetFiles("*.fds").FirstOrDefault();
+        } else {
+            map = new DirectoryInfo(Application.streamingAssetsPath).GetFiles("*.fds").FirstOrDefault();
+        }
 
         using StreamWriter writer = new StreamWriter(SimulationManager.persistentDataPath + @"\input.fds");
         using StreamReader reader = new StreamReader(map.OpenRead());
@@ -34,7 +39,7 @@ public class SetupFileManager : MonoBehaviour
 
             if (line.Contains("&HEAD"))
             {
-                line = "&HEAD CHID='input' /";
+                line = setupHeaderAndMisc(line);            
             }
             else if (line.Contains("&TIME T_END"))
             {
@@ -46,7 +51,7 @@ public class SetupFileManager : MonoBehaviour
             }
             else if (line.Contains("&DUMP"))
             {
-                line = $"&DUMP DT_OUTPUT_LS={SimulationManager.time_to_run}.0 /";
+                line = setupDump(line);            
             }
             else if (line.Contains("&SURF") && line.Contains("VEG_LSET_IGNITE_TIME")) {
                 line = setupFireSurface(line);
@@ -63,6 +68,10 @@ public class SetupFileManager : MonoBehaviour
                 int y = int.Parse(split[3]);
 
                 line = setInitialOBSTLine(line, x, y);
+            }
+            else if (line.Contains("MISC") && SimulationManager.fds)
+            {
+                line = "";
             }
 
             writer.WriteLine(line);
@@ -81,6 +90,30 @@ public class SetupFileManager : MonoBehaviour
         } else {
             return "";
         }
+    }
+
+    private static string setupHeaderAndMisc(string line)
+    {
+        line = "&HEAD CHID='input' /@";
+        if(SimulationManager.fds) {
+            if(SimulationManager.wfds_run_once){
+                line += "&MISC LEVEL_SET_MODE=" + SimulationManager.level_set_mode + ",RESTART=T /";
+            } else {
+                line += "&MISC LEVEL_SET_MODE=" + SimulationManager.level_set_mode + " /";
+            }
+        }
+        line = line.Replace("@", System.Environment.NewLine);
+        return line;
+    }
+
+    private static string setupDump(string line)
+    {
+        if(SimulationManager.fds) {
+            line = $"&DUMP DT_SLCF=1, DT_RESTART={SimulationManager.time_to_run}.0 /";
+        } else {
+            line = $"&DUMP DT_OUTPUT_LS={SimulationManager.time_to_run}.0 /";
+        }
+        return line;
     }
 
     private static string setInitialOBSTLine(string line, float x, float z)

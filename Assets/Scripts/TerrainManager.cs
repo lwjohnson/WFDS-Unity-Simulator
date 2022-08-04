@@ -27,9 +27,14 @@ public class TerrainManager : MonoBehaviour
 
     void Start()
     {
-        lines = System.IO.File.ReadAllLines(SimulationManager.streamingAssetsPath + "/" + "input.fds");
-
-        setUsefulWFDSValues();
+        if(SimulationManager.fds){
+            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/fds/fds_input.fds");
+            Debug.Log(lines.Length);
+            setUsefulFDSValues();
+        } else {
+            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/input.fds");
+            setUsefulWFDSValues();
+        }
 
         vertices = getVertices();
         triangles = getTriangles();
@@ -174,6 +179,79 @@ public class TerrainManager : MonoBehaviour
                 ncols = xmax / cellsize;
                 nrows = zmax / cellsize;
             }
+        }
+    }
+
+    
+    /// <summary>
+    /// Sets the useful values for the simulation.
+    /// </summary>
+    private void setUsefulFDSValues()
+    {
+        int slice_count = 0;
+
+        foreach (string line in lines)
+        {
+            string clean = RemoveWhitespace(line);
+
+            if (clean.Contains("&OBST")) { break; } // Past the useful information. Breaks to save time.
+            if (clean.Contains("&HEAD"))
+            {
+                chid = clean.Substring(clean.IndexOf('\'') + 1, clean.LastIndexOf('\'') - (1 + clean.IndexOf('\'')));
+            }
+            else if (clean.Contains("&TIMET_END"))
+            {
+                tEnd = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            else if (clean.Contains("&TIMET_BEGIN"))
+            {
+                tStart = int.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            else if (clean.Contains("DT_OUTPUT_LS"))
+            {
+                tStep = float.Parse(clean.Substring(clean.IndexOf('=') + 1, (clean.LastIndexOf('/')) - (1 + clean.IndexOf('='))));
+            }
+            else if (clean.Contains("&SLCF"))
+            {
+                slice_count++;
+                if (clean.Contains("QUANTITY='TIMEOFARRIVAL'")) 
+                {
+                    SimulationManager.slice_number = slice_count;
+                }
+            }
+            else if(clean.Contains("&MISC"))
+            {   
+                getMiscValues(clean);
+            }
+            else if (clean.Contains("&MESH"))
+            {
+                string[] mesh = clean.Replace("&MESHIJK=", string.Empty).Replace("XB=", string.Empty).Replace("/", string.Empty).Split(',');
+
+                int numx = int.Parse(mesh[0]);
+                int numy = int.Parse(mesh[1]);
+                int numz = int.Parse(mesh[2]);
+
+                xmin = int.Parse(mesh[3]);
+                xmax = int.Parse(mesh[4]);
+                ymin = int.Parse(mesh[7]);
+                ymax = int.Parse(mesh[8]);
+                zmin = int.Parse(mesh[5]);
+                zmax = int.Parse(mesh[6]);
+
+                cellsize = (xmax - xmin) / numx;
+                FireManager.halfCellSize = cellsize / 2;
+                ncols = xmax / cellsize;
+                nrows = zmax / cellsize;
+            }
+        }
+    }
+
+    private void getMiscValues(string clean)
+    {
+        if(clean.Contains("LEVEL_SET_MODE="))
+        {
+            int index = clean.IndexOf("LEVEL_SET_MODE=") + "LEVEL_SET_MODE=".Length;
+            int.TryParse(clean.Substring(index, 1), out SimulationManager.level_set_mode);
         }
     }
 

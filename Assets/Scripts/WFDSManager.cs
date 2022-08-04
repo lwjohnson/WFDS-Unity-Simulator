@@ -48,8 +48,8 @@ public static class WFDSManager
         // Start the asynchronous read of the streams
         wfds_process.BeginOutputReadLine();
         wfds_process.BeginErrorReadLine();
-
         wfds_process.WaitForExit();
+
         VersionSwitcher.fds_runs++;
         logMessage("ADDING RUNS" + VersionSwitcher.fds_runs);
         VersionSwitcher.fds_running = false;
