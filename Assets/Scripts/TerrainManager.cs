@@ -82,6 +82,7 @@ public class TerrainManager : MonoBehaviour
     {
         Vector3 point = new Vector3 (0,0,0);
 
+        int count = 0;
         for(int i = 0; i <= triangles.Count-255; i=i+255) {
             GameObject ground = Instantiate(groundPrefab, point, Quaternion.identity);
             Mesh mesh = new Mesh();
@@ -99,7 +100,25 @@ public class TerrainManager : MonoBehaviour
 
             ground.GetComponent<MeshFilter>().mesh = mesh;
             ground.GetComponent<MeshCollider>().sharedMesh = mesh;
+            count = i;
         } 
+
+        GameObject groundExtra = Instantiate(groundPrefab, point, Quaternion.identity);
+        Mesh meshExtra = new Mesh();
+
+        meshExtra.vertices = vertices.ToArray();
+        List<int> local_triangles_extra = new List<int>{};
+        for(int j = 0; j < triangles.Count - count; j++) {
+            local_triangles_extra.Add(triangles[count + j]);
+        }
+        meshExtra.triangles = local_triangles_extra.ToArray();
+        
+        meshExtra.RecalculateNormals();
+        meshExtra.RecalculateBounds();
+        meshExtra.Optimize();
+
+        groundExtra.GetComponent<MeshFilter>().mesh = meshExtra;
+        groundExtra.GetComponent<MeshCollider>().sharedMesh = meshExtra;
     }
 
     /// <summary>
