@@ -46,7 +46,9 @@ public class FireManager : MonoBehaviour
             return;
         }
 
-        if (SimulationManager.wfds_run_once && SimulationManager.read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * VersionSwitcher.fds_runs)
+        if (SimulationManager.wfds_run_once && 
+            SimulationManager.read_fires_once && 
+            wallclock_time <= starting_time + SimulationManager.time_to_run * VersionSwitcher.fds_runs)
         {
             wallclock_time += Time.deltaTime * time_multiplier;
         }
@@ -296,7 +298,6 @@ public class FireManager : MonoBehaviour
             if(time > 0) {
                 float x = (float) Convert.ToDouble(line_values[1]);
                 float z = (float) Convert.ToDouble(line_values[2]);
-                Debug.Log(x + " " + z + " " + time);
                 Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
                 if (fire_TOA_copy.ContainsKey(time)) {
                     Debug.Log(fire_TOA_copy[time].Contains(point));
@@ -308,8 +309,8 @@ public class FireManager : MonoBehaviour
                     fire_TOA_copy.Add(time, new List<Vector3>() { point });
                 }
             }
-            Debug.Log(time + " /// " + fire_TOA_copy.Count + " /// " + line_values[4]);
         }
+        
         fds_lstoa_count = count;
         fire_TOA = fire_TOA_copy;
         reader.Close();

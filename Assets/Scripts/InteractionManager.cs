@@ -23,10 +23,6 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {   
-        Debug.Log("Restart guard: " + SimulationManager.restart_guard);     
-        Debug.Log("Pause guard: " + SimulationManager.pause_guard);
-
-
         if(placement_cooldown_tracker > 0) { //Tracker to avoid instant placing a million items
             placement_cooldown_tracker -= Time.deltaTime;
         }

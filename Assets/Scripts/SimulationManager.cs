@@ -31,7 +31,6 @@ public class SimulationManager : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(VersionSwitcher.fds_running);
         if(!InteractionManager.interaction_done) {
             return;
         }
@@ -39,7 +38,6 @@ public class SimulationManager : MonoBehaviour
         if (wfds_setup && !VersionSwitcher.fds_running && !reading_fire && ready_to_read)
         {
             wfds_run_once = true;
-            Debug.Log(VersionSwitcher.fds_running);
             FireManager.readFireData();
 
             if(read_fires_once) {

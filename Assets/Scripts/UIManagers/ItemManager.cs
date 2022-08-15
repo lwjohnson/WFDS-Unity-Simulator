@@ -24,9 +24,7 @@ public class ItemManager : MonoBehaviour
         current_text = current.GetComponent<Text>();
         next_text = next.GetComponent<Text>();
         prev_text = prev.GetComponent<Text>();
-        Debug.Log(uiOn);
         if(uiOn) {
-            Debug.Log("UI ON");
             current_text.text = items[currently_selected_item];
             next_text.text = items[ItemManager.NextItem()];
             prev_text.text = items[ItemManager.PrevItem()];
