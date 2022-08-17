@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PauseClockManager : MonoBehaviour
 {
-    public Text status;
+    public static Text status;
 
     // Start is called before the first frame update
     void Start()
@@ -17,23 +17,27 @@ public class PauseClockManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!SimulationManager.wfds_run_once) {
-            status.text = "Start Simulation";   
-        } else {
+        if(!SimulationManager.wfds_run_once){
+            if(VersionSwitcher.fds_running) {
+                status.text = "Starting Simulation...";
+            } else {
+                status.text = "Start Simulation";
+            } 
+        } else if(SimulationManager.wfds_run_once){
             if(InteractionManager.interaction_done) {
-                if(InteractionManager.pause_guard) {
+                if(SimulationManager.pause_guard) {
                     status.text = "Pause blocked while FDS loads...";
                 } else {
                     status.text = "Pause Available";
                 }
             } else {
-                if(InteractionManager.restart_guard) {
+                if(SimulationManager.restart_guard) {
                     status.text = "Restart blocked while FDS loads...";
                 } else {
                     status.text = "Restart Available";
                 }
             }
-        }
 
+        }   
     }
 }

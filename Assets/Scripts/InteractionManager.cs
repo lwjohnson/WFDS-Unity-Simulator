@@ -14,8 +14,6 @@ public class InteractionManager : MonoBehaviour
     public static float placement_cooldown = 0.2f;
     public static float placement_cooldown_tracker = 0;
 
-    public static bool restart_guard = false;
-    public static bool pause_guard = false;
     public static bool catch_up_guard = false;
 
     void Start()
@@ -25,39 +23,35 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {   
-        Debug.Log("Restart guard: " + restart_guard);     
-        Debug.Log("Pause guard: " + pause_guard);
-
-
         if(placement_cooldown_tracker > 0) { //Tracker to avoid instant placing a million items
             placement_cooldown_tracker -= Time.deltaTime;
         }
 
         if (interaction_done) { 
             //Pause simulation
-            if (ControllerManager.menuPressed() && !pause_guard) { //pause the simulation
+            if (ControllerManager.menuPressed() && !SimulationManager.pause_guard) { //pause the simulation
                 interaction_done = false;
-                WFDSManager.stopWFDS();
-                WFDSManager.wfds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
-                restart_guard = true;
+                VersionSwitcher.stopFDS();
+                VersionSwitcher.fds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
+                SimulationManager.restart_guard = true;
 
-                if(!WFDSManager.wfds_running) {
-                    pause_guard = false;
-                    restart_guard = false;
+                if(!VersionSwitcher.fds_running) {
+                    SimulationManager.pause_guard = false;
+                    SimulationManager.restart_guard = false;
                 }
             }
             return; 
         }
 
         // End Interaction (Calls WFDS After)
-        if (ControllerManager.menuPressed() && !restart_guard && !pause_guard)
+        if (ControllerManager.menuPressed() && !SimulationManager.restart_guard && !SimulationManager.pause_guard)
         {            
-            pause_guard = true;
+            SimulationManager.pause_guard = true;
 
             if(SimulationManager.wfds_run_once && !catch_up_guard) { //restarting from 
                 catch_up_guard = true;
-                File.Delete(WFDSManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
-                FireManager.setupInputFile();
+                File.Delete(SimulationManager.persistentDataPath + @"\" + "input" + ".stop"); //remove stop file
+                SetupFileManager.readFireDataFileSetup();
 
                 Thread catchup = new Thread(catchUp);
                 catchup.Start();
@@ -66,7 +60,7 @@ public class InteractionManager : MonoBehaviour
             }
         }
 
-        if(placement_cooldown_tracker <= 0 && !pause_guard) { //can make a place/remove interaction
+        if(placement_cooldown_tracker <= 0 && !SimulationManager.pause_guard) { //can make a place/remove interaction
 
             // Instantiate fire
             if (ControllerManager.gripTriggerPressed(true)) { //right hand
@@ -75,35 +69,11 @@ public class InteractionManager : MonoBehaviour
                 doInteraction(0, false);
             }
 
-            // // Instantiate Tree
-            // if (Input.GetKey(KeyCode.T))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-            //     if (canInteractAt(point))
-            //     {
-            //         TreeManager.createTreeAt(point);
-            //     }
-            // }
-
-            // // Instantiate Trench
-            // if (Input.GetKey(KeyCode.G))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-            //     if (canInteractAt(point))
-            //     {
-            //         TrenchManager.createTrenchAt(point);
-            //     }
-            // }
-
-            // // Delete GameObjects
-            // if (Input.GetKey(KeyCode.Backspace))
-            // {
-            //     Vector3 point = TerrainManager.getNearestVector3(x, z);
-
-            //     FireManager.removeFireAt(point);
-            //     TreeManager.removeTreeAt(point);
-            //     TrenchManager.removeTrenchAt(point);
-            // }
+            if(ControllerManager.primaryPressed(true)) { //right hand
+                ItemManager.SwitchItem(true);
+            } else if(ControllerManager.secondaryPressed(true)) { //right hand
+                ItemManager.SwitchItem(false);
+            } 
         }
     }
 
@@ -117,13 +87,26 @@ public class InteractionManager : MonoBehaviour
 
         getInteractionPoint(right, out point, out placeMarker);
 
-        switch(interaction_type) {
+        switch(ItemManager.currently_selected_item) { //match cases with ItemManager.items array index
             case 0: //Place Fire
-                if(placeMarker.active && canInteractAt(point)) {
+                if(canInteractAt(point)) {
                     FireManager.createFireAt(point);
                     interaction_made = true;
                 }
                 break;
+            // case 1: //Place Tree
+            //     if(placeMarker.active && canInteractAt(point)) {
+            //         FireManager.createFireAt(point);
+            //         interaction_made = true;
+            //     }
+            //     break;
+            // case 2: //Place Trench
+            //     if(placeMarker.active && canInteractAt(point)) {
+            //         FireManager.createFireAt(point);
+            //         interaction_made = true;
+            //     }
+            //     break;
+            
         }
 
         if(interaction_made) {
@@ -156,7 +139,7 @@ public class InteractionManager : MonoBehaviour
 
     //calls catch up function for when we restart after pause
     private static void catchUp() {
-        WFDSManager.runCatchUp();
+        VersionSwitcher.runCatchUp();
         catch_up_guard = false;
         interaction_done = true;            
     }

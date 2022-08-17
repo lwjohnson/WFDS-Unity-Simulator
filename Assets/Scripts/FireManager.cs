@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System;
 
 public class FireManager : MonoBehaviour
 {
@@ -14,20 +15,19 @@ public class FireManager : MonoBehaviour
     [Tooltip("The prefab for the fires")]
     public GameObject firePrefabEditor;
     public GameObject firePrefabStatic;
-    public static GameObject firePrefab;
 
     public bool staticFire;
-
 
     private static int current_key = 0; 
     public static float wallclock_time = 0;
     public static float starting_time = 0;
     public static float time_multiplier = 1;
-    public static bool read_fires_once = false;
-    public static GameObject staticFirePrefab;
     public static float halfCellSize;
+    public static GameObject staticFirePrefab;
+    public static GameObject firePrefab;
 
     public static SortedDictionary<float, List<int>> fires = new SortedDictionary<float, List<int>>();
+    public static int fds_lstoa_count = 0;
 
     void Start()
     {
@@ -46,7 +46,9 @@ public class FireManager : MonoBehaviour
             return;
         }
 
-        if (SimulationManager.wfds_run_once && read_fires_once && wallclock_time <= starting_time + SimulationManager.time_to_run * WFDSManager.wfds_runs)
+        if (SimulationManager.wfds_run_once && 
+            SimulationManager.read_fires_once && 
+            wallclock_time <= starting_time + SimulationManager.time_to_run * VersionSwitcher.fds_runs)
         {
             wallclock_time += Time.deltaTime * time_multiplier;
         }
@@ -156,21 +158,41 @@ public class FireManager : MonoBehaviour
     {   
         SimulationManager.reading_fire = true;
         //Copy output file so can begin another simulation
-        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input_lstoa.sf", WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
-        setupInputFile();
+        FileUtil.DeleteFileOrDirectory(SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        if(SimulationManager.fds){
+            FileUtil.CopyFileOrDirectory(SimulationManager.persistentDataPath + @"\input_1_" + SimulationManager.slice_number + ".lstoa", SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        } else {
+            FileUtil.CopyFileOrDirectory(SimulationManager.persistentDataPath + @"\input_lstoa.sf", SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        }       
+
+        SetupFileManager.readFireDataFileSetup();
 
         Thread read_fire_thread = new Thread(readFires);
         read_fire_thread.Start();
     }
 
-    //reads fire data from the lstoa file
+
+        //reads fire data from the lstoa file
     private static void readFires(){
-        
+        SimulationManager.read_fires_once = true;
         Debug.Log("Reading fires");
 
+        if(SimulationManager.fds){
+            readFDSFires();
+        } else {
+            readWFDSFires();
+        }
+        
+        SimulationManager.reading_fire = false;
+        SimulationManager.read_fires_once = true;
+        Debug.Log("Finished reading fires");
+    }
+
+    //reads fire data from the lstoa file
+    private static void readWFDSFires(){
+        
         //want to read from the output of fires
-        FileInfo toa_file = new FileInfo(WFDSManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        FileInfo toa_file = new FileInfo(SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
         using BinaryReader reader = new BinaryReader(toa_file.OpenRead());
 
         List<long> bounds = new List<long>();
@@ -221,7 +243,7 @@ public class FireManager : MonoBehaviour
                     for (long x = bounds[0]; x <= bounds[1]; x++)
                     {
                         int arrival_time = (int)reader.ReadSingle(); // Read the arrival_time and convert to int instead of float
-                        if (arrival_time >= current_key || (WFDSManager.wfds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
+                        if (arrival_time >= current_key || (VersionSwitcher.fds_runs == 0 && arrival_time >= 0)) // Fire reaches this point
                         {
                             // Multiplied by 10 because in the SLCF file, the x would be 175 but it should be 1750 because of cellsize
                             Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
@@ -243,11 +265,6 @@ public class FireManager : MonoBehaviour
         }
         fire_TOA = fire_TOA_copy;
         reader.Close();
-        SimulationManager.reading_fire = false;
-        
-        read_fires_once = true;
-
-        Debug.Log("Finished reading fires");
     }
 
     // I made this function so it was a bit clearer what was being read.
@@ -257,72 +274,48 @@ public class FireManager : MonoBehaviour
         reader.ReadInt32();
     }
 
-    //gets input file ready with new end time and new fire surfaces
-    public static void setupInputFile()
+    private static void readFDSFires()
     {
-        FileUtil.DeleteFileOrDirectory(WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileUtil.CopyFileOrDirectory(WFDSManager.persistentDataPath + @"\input.fds", WFDSManager.persistentDataPath + @"\input_copy.fds");
-        FileInfo map = new DirectoryInfo(WFDSManager.persistentDataPath).GetFiles("input_copy.fds").FirstOrDefault();
+        //want to read from the output of fires
+        FileInfo toa_file = new FileInfo(SimulationManager.persistentDataPath + @"\input_lstoa_copy.sf");
+        using StreamReader reader = new StreamReader(toa_file.OpenRead());
+        List<long> bounds = new List<long>();
+        SortedDictionary<int, List<Vector3>> fire_TOA_copy = new SortedDictionary<int, List<Vector3>>();
 
-        using StreamWriter writer = new StreamWriter(WFDSManager.persistentDataPath + @"\input.fds");
-        using StreamReader reader = new StreamReader(map.OpenRead());
-        
-        bool added_surfaces = false;
-
-        List<GameObject> fires = GameObject.FindGameObjectsWithTag("Fire").ToList();
-        fires.RemoveAll(afterZero);
-
+        int count = 0;
+        int time = -1;
         while (!reader.EndOfStream)
         {
+            count++;
+            if(count < fds_lstoa_count) {
+                continue;
+            }
             string line = reader.ReadLine();
+            string[] line_values = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            time = -1;
+            time = (int) float.Parse(line_values[4]); 
 
-            if (line.Contains("&TIME T_END")) {
-
-                line = $"&TIME T_END= {starting_time + SimulationManager.time_to_run * (WFDSManager.wfds_runs + 1)} /";
-            } else if (line.Contains("&OBST")) {
-                line = setupHelper(line, ref fires);
-            } else if (!added_surfaces && line.Contains("&SURF")) {
-                //inserting the new fire surfaces
-                foreach(float fire in FireManager.fires.Keys) {
-                    writer.WriteLine($"&SURF ID ='INT_FIRE{fire}',VEG_LSET_IGNITE_TIME={fire},COLOR = 'RED' /");
+            if(time > 0) {
+                float x = (float) Convert.ToDouble(line_values[1]);
+                float z = (float) Convert.ToDouble(line_values[2]);
+                Vector3 point = TerrainManager.getNearestVector3(x * TerrainManager.cellsize, z * TerrainManager.cellsize);
+                if (fire_TOA_copy.ContainsKey(time)) {
+                    Debug.Log(fire_TOA_copy[time].Contains(point));
+                    if(fire_TOA_copy[time].Contains(point)) {
+                        fire_TOA_copy[time].Remove(point);
+                    }   
+                    fire_TOA_copy[time].Add(point);
+                } else {
+                    fire_TOA_copy.Add(time, new List<Vector3>() { point });
                 }
-                added_surfaces = true;
-            }
-            
-            if(!line.Contains("INT_FIRE") || !line.Contains("&SURF")) {
-                writer.WriteLine(line);
             }
         }
+        
+        fds_lstoa_count = count;
+        fire_TOA = fire_TOA_copy;
+        reader.Close();
+        return;
     }
 
-    private static string setupHelper(string line, ref List<GameObject> fires) {
-        string[] split = TerrainManager.RemoveWhitespace(line).Replace("&OBSTXB=", string.Empty).Replace("/", string.Empty).Split(',');
 
-        int x = int.Parse(split[1]);
-        int y = int.Parse(split[3]);
-
-        line = setOBSTLine(line, "FIRE", ref fires, x, y);
-
-        return line;
-    }
-
-    private static string setOBSTLine(string line, string type, ref List<GameObject> objects, int x, int z)
-    {
-        foreach (GameObject obj in objects.ToList())
-        {
-            Vector3 transform = obj.transform.position;
-            if (transform.x - halfCellSize == x && transform.z - halfCellSize == z)
-            {
-                float time = obj.GetComponent<FireLifeTime>().ignite_time;
-                objects.Remove(obj);
-                return line = Regex.Replace(line, "'.*'", $"'INT_{type}{time}'");
-            }
-        }
-
-        return line;
-    }
-
-    private static bool afterZero(GameObject g) {
-        return g.GetComponent<FireLifeTime>().ignite_time <= 0;
-    }
 }
