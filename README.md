@@ -10,6 +10,7 @@
   - Look around using the **right joystick**
   - Right/Left **grip** to display placement markers
     + Right/Left **trigger** to place selected item (fire)
+  - Left **menu** to start/pause the visualization
 
 ### TODOs
 - [x] Implement VR with continuous movement
@@ -29,4 +30,3 @@
 - [1/2] Add text to let user know they can pause/resume
 - [x] Interactions before WFDS called
 - [x] Interactions after WFDS called
-- [ ] Add a readme that explains the contents of all the files and directories
