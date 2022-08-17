@@ -9,21 +9,8 @@ public class FireLifeTime : MonoBehaviour
 
     public float ignite_time = 0;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(!static_fire){
-            if (FireManager.wallclock_time <= 0) { return; }
-
-            if (lifetime > 0)
-            {
-                lifetime -= Time.deltaTime;
-            }
-            else
-            {
-                Destroy(gameObject);
-                FireManager.createFireAt(transform.position, true);
-            }
-        }
+    public void swapFire(){
+        Destroy(gameObject);
+        FireManager.createFireAt(transform.position, true);
     }
 }
