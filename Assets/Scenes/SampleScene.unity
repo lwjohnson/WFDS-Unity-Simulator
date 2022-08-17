@@ -694,7 +694,6 @@ GameObject:
   - component: {fileID: 364919482}
   - component: {fileID: 364919480}
   - component: {fileID: 364919483}
-  - component: {fileID: 364919484}
   - component: {fileID: 364919485}
   - component: {fileID: 364919487}
   - component: {fileID: 364919486}
@@ -750,8 +749,8 @@ MonoBehaviour:
   starting_time: 0
   time_multiplier: 1
   time_to_run_inspector: 60
-  uiOn: 1
-  fds: 1
+  uiOn: 0
+  fds: 0
 --- !u!114 &364919483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -769,24 +768,6 @@ MonoBehaviour:
   firePrefabStatic: {fileID: 2653448754183537507, guid: 487539c8aa82a7d4293de823df8cf236,
     type: 3}
   staticFire: 0
---- !u!114 &364919484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 364919479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b039ebcc3c34ac34d846b32c51f8e109, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data_collection_mode: 0
-  starting_time: 0
-  time_multiplier: 1
-  time_to_run_inspector: 60
-  uiOn: 1
-  fds: 1
 --- !u!114 &364919485
 MonoBehaviour:
   m_ObjectHideFlags: 0
