@@ -32,7 +32,7 @@ public class TerrainManager : MonoBehaviour
             Debug.Log(lines.Length);
             setUsefulFDSValues();
         } else {
-            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/input.fds");
+            lines = System.IO.File.ReadAllLines(Application.streamingAssetsPath + "/small_input.fds");
             setUsefulWFDSValues();
         }
 

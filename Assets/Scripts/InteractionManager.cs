@@ -15,7 +15,7 @@ public class InteractionManager : MonoBehaviour
     public static float placement_cooldown_tracker = 0;
 
     public static bool catch_up_guard = false;
-
+    public static GameObject[] firesTemp;
     void Start()
     {
         XR_Origin = GameObject.Find("XR Origin");
@@ -34,6 +34,8 @@ public class InteractionManager : MonoBehaviour
                 VersionSwitcher.stopFDS();
                 VersionSwitcher.fds_runs = Mathf.FloorToInt(FireManager.wallclock_time / SimulationManager.time_to_run); //Gets current time chunk from wallclock
                 SimulationManager.restart_guard = true;
+
+                shiftFires();
 
                 if(!VersionSwitcher.fds_running) {
                     SimulationManager.pause_guard = false;
@@ -142,6 +144,14 @@ public class InteractionManager : MonoBehaviour
         VersionSwitcher.runCatchUp();
         catch_up_guard = false;
         interaction_done = true;            
+    }
+
+    private static void shiftFires() {
+        firesTemp = GameObject.FindGameObjectsWithTag("Fire");
+        foreach (GameObject fire in firesTemp)
+        {
+            fire.GetComponent<FireLifeTime>().swapFire();
+        }
     }
 
     //determins if the point is valid for interaction
